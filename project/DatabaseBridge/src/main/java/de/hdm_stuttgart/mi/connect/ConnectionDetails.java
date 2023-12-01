@@ -11,7 +11,15 @@ public class ConnectionDetails {
     private final String username;
     private final String password;
     private String jdbcUri;
-
+    /**
+     * Class saves all parameters to connect to databases
+     * @param databaseSystem the DatabaseSystem type
+     * @param hostAddress (weiß nicht genau was das ist bitte selbst ausfüllen)
+     * @param port port number, on which the database is accessible 
+     * @param schema (weiß nicht genau was/wozu das ist bitte selbst ausfüllen)
+     * @param username username to login into the database
+     * @param password passwort to login into the database
+     */
     public ConnectionDetails(DatabaseSystem databaseSystem, String hostAddress, int port, String schema, String username, String password) {
         this.databaseSystem = databaseSystem;
         this.hostAddress = hostAddress;

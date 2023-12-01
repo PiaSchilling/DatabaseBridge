@@ -23,7 +23,11 @@ public class DestinationConnectionHandler implements ConnectionHandler {
         return INSTANCE;
     }
 
-    /*
+    /**
+     * Connects parameter connection to a specific database
+     * @param connectionDetails configuration parameters for the connection
+     * @return return true if connection is possible, return false if connection is not possible
+     */
     Connects parameter connection to a specific database
     return true if connection is possible
     return false if connection is not possible
@@ -37,7 +41,10 @@ public class DestinationConnectionHandler implements ConnectionHandler {
         }
     }
 
-    /*
+    /**
+     * Checks if a database connection is available
+     * @return true if a connection is available, false otherwise
+     */
     Checks if a database connection is available
      */
     public boolean connectionActive() {
