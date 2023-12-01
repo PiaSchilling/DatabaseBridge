@@ -13,11 +13,11 @@ import java.sql.*;
 public class Main {
     public static void main(String[] args) throws SQLException {
         // Usage example, schema movies must exist!
-        SourceConnectionHandler.getInstance().connectDatabase(new ConnectionDetails(DatabaseSystem.MYSQL, "localhost", 3306, "movies", "root", "example"));
+        SourceConnectionHandler.getInstance().connectDatabase(new ConnectionDetails(DatabaseSystem.MYSQL, "localhost", 3306, "", "root", "example"));
         Connection conn = SourceConnectionHandler.getInstance().getConnection();
         Statement stmt = conn.createStatement();
         //Table movie needs to exist
-        ResultSet result = stmt.executeQuery("SELECT * FROM movie");
+        ResultSet result = stmt.executeQuery("SELECT * FROM movies.movie");
 
         while(result.next()) {
             System.out.println(result.getString("movie_name"));

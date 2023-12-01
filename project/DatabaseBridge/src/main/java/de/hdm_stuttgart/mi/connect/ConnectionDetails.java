@@ -1,8 +1,5 @@
 package de.hdm_stuttgart.mi.connect;
 
-/*
-Class saves all parameters to connect to databases
- */
 public class ConnectionDetails {
     private final DatabaseSystem databaseSystem;
     private final String hostAddress;
@@ -11,6 +8,7 @@ public class ConnectionDetails {
     private final String username;
     private final String password;
     private String jdbcUri;
+
     /**
      * Class saves all parameters to connect to databases
      * @param databaseSystem the DatabaseSystem type
@@ -30,8 +28,9 @@ public class ConnectionDetails {
         this.jdbcUri = this.createJdbcUri();
     }
 
-    /*
+    /**
     Creates a JDBC URI from given parameters
+     @return  jdbc URI String needed to connect to database
      */
     private String createJdbcUri() {
         jdbcUri = "jdbc:";
