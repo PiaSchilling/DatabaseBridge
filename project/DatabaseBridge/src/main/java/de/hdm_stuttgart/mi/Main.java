@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         // Usage example, schema movies must exist!
         SourceConnectionHandler.getInstance().connectDatabase(new ConnectionDetails(DatabaseSystem.MYSQL, "localhost", 3306, "movies", "root", "example"));
-        Connection conn = SourceConnectionHandler.getInstance().connection;
+        Connection conn = SourceConnectionHandler.getInstance().getConnection();
         Statement stmt = conn.createStatement();
         //Table movie needs to exist
         ResultSet result = stmt.executeQuery("SELECT * FROM movie");
