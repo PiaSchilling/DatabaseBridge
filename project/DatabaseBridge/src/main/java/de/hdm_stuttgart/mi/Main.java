@@ -1,19 +1,30 @@
 package de.hdm_stuttgart.mi;
 
+
+import de.hdm_stuttgart.mi.connect.ConnectionDetails;
+import de.hdm_stuttgart.mi.connect.DatabaseSystem;
+import de.hdm_stuttgart.mi.connect.SourceConnectionHandler;
+
+import java.sql.*;
+
+
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
-    public static void main(String[] args) {
-        // Press Opt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+    public static void main(String[] args) throws SQLException {
+        // Usage example, schema movies must exist!
+        SourceConnectionHandler.getInstance().connectDatabase(new ConnectionDetails(DatabaseSystem.MYSQL, "localhost", 3306, "", "root", "example"));
+        Connection conn = SourceConnectionHandler.getInstance().getConnection();
+        Statement stmt = conn.createStatement();
+        //Table movie needs to exist
+        ResultSet result = stmt.executeQuery("SELECT * FROM movies.movie");
 
-        // Press Ctrl+R or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
-
-            // Press Ctrl+D to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Cmd+F8.
-            System.out.println("i = " + i);
+        while(result.next()) {
+            System.out.println(result.getString("movie_name"));
         }
+
+        stmt.close();
+        conn.close();
+
     }
 }
