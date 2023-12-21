@@ -1,0 +1,22 @@
+{
+    "sourceDatabase": {
+        "databaseSystem": "MYSQL",
+        "databaseDriverName": "",
+        "databaseDriverJar": "",
+        "hostAddress": "localhost",
+        "port" : 3306,
+        "database": "",
+        "username": "root",
+        "password": "example"
+    },
+    "destinationDatabase": {
+        "databaseSystem": "",
+        "databaseDriverName": "",
+        "databaseDriverJar": "",
+        "hostAddress": "",
+        "port" : "",
+        "database": "",
+        "username": "",
+        "password": ""
+    }
+}

@@ -2,8 +2,14 @@ package de.hdm_stuttgart.mi.subcommands;
 
 import picocli.CommandLine;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+
 /**
- * Piccocli Command, creates new config file, with required structure, values are empty
+ * Picocli Command, creates new config file, with required structure, values are empty
  */
 @CommandLine.Command(
         name = "new",
@@ -14,10 +20,19 @@ public class NewConfigFile implements Runnable{
 
     @Override
     public void run() {
-        //TODO: Implement real functionality
-        System.out.println("I'm the new-config Command");
-        if (fileLocation != null) {
-            System.out.println("creating new file in: " + fileLocation);
+
+        Path sourcePath = Path.of("src/main/resources/empty.json");
+        Path destinationPath = Path.of(fileLocation);
+
+        try {
+            // Copy the file using Files.copy method
+            Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+
+            System.out.println("JSON file created successfully at: " + destinationPath);
+        } catch(NoSuchFileException e) {
+            System.out.println("The file couldn't be created at the provided path, please provide a valid path!");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
