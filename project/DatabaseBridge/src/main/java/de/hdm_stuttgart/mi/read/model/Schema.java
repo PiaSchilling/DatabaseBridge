@@ -3,8 +3,9 @@ package de.hdm_stuttgart.mi.read.model;
 import java.util.ArrayList;
 
 public class Schema {
-    final ArrayList<Table> tables;
+    private final ArrayList<Table> tables;
 
+    // TODO comment
     public Schema(ArrayList<Table> tables) {
         this.tables = tables;
     }

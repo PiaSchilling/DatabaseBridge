@@ -10,7 +10,7 @@ public class Column {
 
     private final int maxLength;
 
-    private final ArrayList<Column> constraints;
+    private final ArrayList<Constraint> constraints;
 
 
     /**
@@ -20,11 +20,21 @@ public class Column {
      * @param maxLength   the maximum length of values this column can hold (e.g. for varchar)
      * @param constraints the constraints this column defines (e.g. not_null, unique, check,...)
      */
-    public Column(String name, int dataType, int maxLength, ArrayList<Column> constraints) {
+    public Column(String name, int dataType, int maxLength, ArrayList<Constraint> constraints) {
         this.name = name;
         this.dataType = dataType;
         this.maxLength = maxLength;
         this.constraints = constraints;
+    }
+
+    @Override
+    public String toString() {
+        return "Column{" +
+                "name='" + name + '\'' +
+                ", dataType=" + dataType +
+                ", maxLength=" + maxLength +
+                ", constraints=" + constraints +
+                '}';
     }
 
     public String getName() {
@@ -39,7 +49,7 @@ public class Column {
         return maxLength;
     }
 
-    public ArrayList<Column> getConstraints() {
+    public ArrayList<Constraint> getConstraints() {
         return constraints;
     }
 }

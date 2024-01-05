@@ -10,23 +10,35 @@ import de.hdm_stuttgart.mi.read.model.Table;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SchemaReader {
 
+    private final Logger log = Logger.getLogger(this.getClass().getName());
     private final DatabaseMetaData metaData;
 
     public SchemaReader(Connection connection) {
         try {
             this.metaData = connection.getMetaData();
         } catch (SQLException e) {
-            System.out.println("Not able to extract metadata from connection"); // TODO replace with logger
+            log.log(Level.SEVERE, "Not able to extract metadata from connection");
+            // TODO add error hanlding
             throw new RuntimeException(e);
         }
     }
 
     public Schema readSchema() {
         final ArrayList<String> tableNames = readTableNames();
-        final ArrayList<Table> tables = readTableColumns(tableNames);
+        ArrayList<Table> tables = new ArrayList<>();
+        final ColumnReader columnReader = new ColumnReader(metaData);
+
+        for (String tableName : tableNames
+        ) {
+            final ArrayList<Column> columns = columnReader.readTableColumns(tableName);
+            tables.add(new Table(tableName, columns, new ArrayList<>(), new ArrayList<>())); // TODO add FK constraints
+        }
+
         return new Schema(tables);
     }
 
@@ -45,26 +57,12 @@ public class SchemaReader {
         return tables;
     }
 
-    private ArrayList<Table> readTableColumns(ArrayList<String> tableNames) {
-        ArrayList<Table> tables = new ArrayList<>();
-        for (final String tableName : tableNames
-        ) {
-            try {
-                ArrayList<Column> columns = new ArrayList<>();
-                final ResultSet currentColumn = metaData.getColumns(null, null, tableName, null);
-                while (currentColumn.next()) {
-                    String columnName = currentColumn.getString("COLUMN_NAME");
-                    columns.add(new Column(columnName));
-                }
-                tables.add(new Table(tableName, columns));
-            } catch (SQLException e) {
-                // TODO add logger
-                System.out.println("SQL Exception");
-                throw new RuntimeException(e);
-            }
-        }
+    private ArrayList<String> readViewNames() {
+        ArrayList<String> tables = new ArrayList<>();
+        // TODO implement me
         return tables;
     }
+
 
     public static void main(String[] args) throws SQLException {
         // Usage example, schema movies must exist!

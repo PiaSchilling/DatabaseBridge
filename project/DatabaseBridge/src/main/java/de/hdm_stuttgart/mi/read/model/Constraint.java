@@ -15,6 +15,11 @@ public class Constraint {
         this.value = value;
     }
 
+    public Constraint(ConstraintType constraintType) {
+        this.constraintType = constraintType;
+        this.value = "";
+    }
+
     @Override
     public String toString() {
         return "Constraint{" +

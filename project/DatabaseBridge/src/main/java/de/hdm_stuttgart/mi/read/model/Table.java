@@ -25,6 +25,16 @@ public class Table {
         this.exportedFkRelations = exportedFkRelations;
     }
 
+    @Override
+    public String toString() {
+        return "Table{" +
+                "name='" + name + '\'' +
+                ", columns=" + columns +
+                ", importedFkRelations=" + importedFkRelations +
+                ", exportedFkRelations=" + exportedFkRelations +
+                '}';
+    }
+
     public String getName() {
         return name;
     }
