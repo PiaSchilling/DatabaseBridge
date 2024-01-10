@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 
 public class ColumnReader {
 
-    // TODO TEST! and clean up classes
     private final Logger log = Logger.getLogger(this.getClass().getName());
 
     private final DatabaseMetaData metaData;
@@ -104,7 +103,6 @@ public class ColumnReader {
         }
         return null;
     }
-    // TODO check how to reduce duplicate code
 
     private Constraint checkPrimaryKeyConstraint(String columnName, String tableName) {
         try {
@@ -144,9 +142,9 @@ public class ColumnReader {
         return null;
     }
 
-    private Constraint checkDetaultConstraint(ResultSet colum) {
+    private Constraint checkDetaultConstraint(ResultSet column) {
         try {
-            String defaultValue = colum.getString("COLUMN_DEF");
+            String defaultValue = column.getString("COLUMN_DEF");
 
             if (defaultValue != null) {
                 return new Constraint(ConstraintType.DEFAULT, defaultValue);
@@ -160,7 +158,6 @@ public class ColumnReader {
 
     private Constraint checkCheckConstraint(ResultSet column) {
         // TODO find a way to extract check constraints
-
         try {
             String checkExpression = column.getString("CHECK");
 
