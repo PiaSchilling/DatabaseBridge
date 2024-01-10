@@ -3,6 +3,7 @@ package de.hdm_stuttgart.mi.read.implementation;
 import de.hdm_stuttgart.mi.read.model.Column;
 import de.hdm_stuttgart.mi.read.model.Constraint;
 import de.hdm_stuttgart.mi.read.model.ConstraintType;
+import de.hdm_stuttgart.mi.util.SQLType;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -14,6 +15,7 @@ import java.util.logging.Logger;
 
 public class ColumnReader {
 
+    // TODO TEST! and clean up classes
     private final Logger log = Logger.getLogger(this.getClass().getName());
 
     private final DatabaseMetaData metaData;
@@ -29,9 +31,10 @@ public class ColumnReader {
             final ResultSet currentColumn = metaData.getColumns(null, null, tableName, null);
             while (currentColumn.next()) {
                 String columnName = currentColumn.getString("COLUMN_NAME");
-                int columnDataType = currentColumn.getInt("DATA_TYPE");
-                final ArrayList<Constraint> constraints = checkConstraints(currentColumn, columnName,tableName);
-                columns.add(new Column(columnName, columnDataType, 1, constraints)); // TODO add length
+                int columnDataTypeCode = currentColumn.getInt("DATA_TYPE");
+                int columnSize = currentColumn.getInt("COLUMN_SIZE");
+                final ArrayList<Constraint> constraints = checkConstraints(currentColumn, columnName, tableName);
+                columns.add(new Column(columnName, SQLType.fromTypeCode(columnDataTypeCode), columnSize, constraints)); // TODO add length
             }
         } catch (SQLException e) {
             log.log(Level.SEVERE, "SQLException while reading columns from table " + tableName + ": " + e.getMessage());
@@ -49,7 +52,7 @@ public class ColumnReader {
         constraints.add(checkPrimaryKeyConstraint(columnName, tableName));
         constraints.add(checkForeignKeyConstraint(columnName, tableName));
         constraints.add(checkDetaultConstraint(column));
-       // constraints.add(checkCheckConstraint(column)); // TODO fix
+        // constraints.add(checkCheckConstraint(column)); // TODO fix
 
         constraints.removeIf(Objects::isNull);
 
@@ -64,7 +67,6 @@ public class ColumnReader {
      * occurs
      */
     private Constraint checkNotNullConstraint(ResultSet column) {
-        // TODO test
         try {
             String isNullable = column.getString("IS_NULLABLE");
             if (Objects.equals(isNullable, "NO")) {
@@ -85,8 +87,6 @@ public class ColumnReader {
      * occurs
      */
     private Constraint checkUniqueConstraint(String columnName, String tableName) {
-
-        // TODO test
         try {
             ResultSet indexes = metaData.getIndexInfo(null, null, tableName, false, true);
             while (indexes.next()) {
@@ -107,8 +107,6 @@ public class ColumnReader {
     // TODO check how to reduce duplicate code
 
     private Constraint checkPrimaryKeyConstraint(String columnName, String tableName) {
-        // TODO test
-
         try {
             ResultSet primaryKeys = metaData.getPrimaryKeys(null, null, tableName);
             while (primaryKeys.next()) {
@@ -126,8 +124,6 @@ public class ColumnReader {
     }
 
     private Constraint checkForeignKeyConstraint(String columnName, String tableName) {
-        // TODO test
-
         try {
             ResultSet foreignKeys = metaData.getImportedKeys(null, null, tableName);
 
@@ -149,8 +145,6 @@ public class ColumnReader {
     }
 
     private Constraint checkDetaultConstraint(ResultSet colum) {
-        // TODO test
-
         try {
             String defaultValue = colum.getString("COLUMN_DEF");
 

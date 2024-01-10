@@ -1,12 +1,14 @@
 package de.hdm_stuttgart.mi.read.model;
 
+import de.hdm_stuttgart.mi.util.SQLType;
+
 import java.util.ArrayList;
 
 public class Column {
 
     private final String name;
 
-    private final int dataType;
+    private final SQLType dataType;
 
     private final int maxLength;
 
@@ -20,7 +22,7 @@ public class Column {
      * @param maxLength   the maximum length of values this column can hold (e.g. for varchar)
      * @param constraints the constraints this column defines (e.g. not_null, unique, check,...)
      */
-    public Column(String name, int dataType, int maxLength, ArrayList<Constraint> constraints) {
+    public Column(String name, SQLType dataType, int maxLength, ArrayList<Constraint> constraints) {
         this.name = name;
         this.dataType = dataType;
         this.maxLength = maxLength;
@@ -41,7 +43,7 @@ public class Column {
         return name;
     }
 
-    public int getDataType() {
+    public SQLType getDataType() {
         return dataType;
     }
 
