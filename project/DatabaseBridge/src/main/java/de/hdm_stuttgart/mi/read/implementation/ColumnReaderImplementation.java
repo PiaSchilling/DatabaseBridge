@@ -1,5 +1,8 @@
 package de.hdm_stuttgart.mi.read.implementation;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import de.hdm_stuttgart.mi.read.api.ColumnReader;
 import de.hdm_stuttgart.mi.read.model.Column;
 import de.hdm_stuttgart.mi.read.model.Constraint;
 import de.hdm_stuttgart.mi.read.model.ConstraintType;
@@ -13,16 +16,18 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ColumnReader {
+public class ColumnReaderImplementation implements ColumnReader {
 
     private final Logger log = Logger.getLogger(this.getClass().getName());
 
     private final DatabaseMetaData metaData;
 
-    public ColumnReader(DatabaseMetaData metaData) {
+    @Inject
+    public ColumnReaderImplementation(@Named("SourceDBMetaData") DatabaseMetaData metaData) {
         this.metaData = metaData;
     }
 
+    @Override
     public ArrayList<Column> readTableColumns(String tableName) {
         ArrayList<Column> columns = new ArrayList<>();
         try {

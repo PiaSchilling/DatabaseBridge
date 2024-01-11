@@ -1,8 +1,9 @@
 package de.hdm_stuttgart.mi.read.implementation;
 
-import de.hdm_stuttgart.mi.connect.ConnectionDetails;
-import de.hdm_stuttgart.mi.connect.DatabaseSystem;
-import de.hdm_stuttgart.mi.connect.SourceConnectionHandler;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import de.hdm_stuttgart.mi.read.api.SchemaReader;
+import de.hdm_stuttgart.mi.read.api.TableReader;
 import de.hdm_stuttgart.mi.read.model.Schema;
 import de.hdm_stuttgart.mi.read.model.Table;
 
@@ -11,24 +12,19 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SchemaReader {
+public class SchemaReaderImplementation implements SchemaReader {
 
     private final Logger log = Logger.getLogger(this.getClass().getName());
     private final DatabaseMetaData metaData;
     private final TableReader tableReader;
 
-
-    public SchemaReader(Connection connection, TableReader tableReader) {
-        try {
-            this.metaData = connection.getMetaData();
-            this.tableReader = tableReader;
-        } catch (SQLException e) {
-            log.log(Level.SEVERE, "Not able to extract metadata from connection");
-            // TODO add error hanlding
-            throw new RuntimeException(e);
-        }
+    @Inject
+    public SchemaReaderImplementation(@Named("SourceDBMetaData") DatabaseMetaData databaseMetaData, TableReader tableReader) {
+        this.tableReader = tableReader;
+        this.metaData = databaseMetaData;
     }
 
+    @Override
     public Schema readSchema() {
         final ArrayList<String> tableNames = readTableNames();
         ArrayList<Table> tables = new ArrayList<>();
@@ -60,20 +56,4 @@ public class SchemaReader {
         // TODO implement me
         return views;
     }
-
-
-    public static void main(String[] args) throws SQLException {
-        // Usage example, schema movies must exist!
-        SourceConnectionHandler.getInstance().connectDatabase(new ConnectionDetails(DatabaseSystem.MYSQL, "localhost", 3306, "movies", "root", "example"));
-        Connection conn = SourceConnectionHandler.getInstance().getConnection();
-
-       // SchemaReader schemaReader = new SchemaReader(conn);
-        //final ArrayList<Table> tables = schemaReader.readSchema().getTables();
-        //System.out.println(Arrays.toString(tables.toArray()));
-
-
-        conn.close();
-    }
-
-
 }
