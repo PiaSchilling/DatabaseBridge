@@ -16,14 +16,14 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ColumnReaderImplementation implements ColumnReader {
+public class ColumnReaderImpl implements ColumnReader {
 
     private final Logger log = Logger.getLogger(this.getClass().getName());
 
     private final DatabaseMetaData metaData;
 
     @Inject
-    public ColumnReaderImplementation(@Named("SourceDBMetaData") DatabaseMetaData metaData) {
+    public ColumnReaderImpl(@Named("SourceDBMetaData") DatabaseMetaData metaData) {
         this.metaData = metaData;
     }
 

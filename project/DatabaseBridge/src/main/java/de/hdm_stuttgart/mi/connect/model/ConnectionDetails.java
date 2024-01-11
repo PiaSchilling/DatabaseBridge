@@ -1,4 +1,4 @@
-package de.hdm_stuttgart.mi.connect;
+package de.hdm_stuttgart.mi.connect.model;
 
 /*
 Class saves all parameters to connect to databases

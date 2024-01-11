@@ -12,7 +12,7 @@ import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-public class TableReaderImplementation implements TableReader {
+public class TableReaderImpl implements TableReader {
 
     private final Logger log = Logger.getLogger(this.getClass().getName());
 
@@ -21,7 +21,7 @@ public class TableReaderImplementation implements TableReader {
     private final ColumnReader columnReader;
 
     @Inject
-    public TableReaderImplementation(@Named("SourceDBMetaData") DatabaseMetaData metaData, ColumnReader columnReader) {
+    public TableReaderImpl(@Named("SourceDBMetaData") DatabaseMetaData metaData, ColumnReader columnReader) {
         this.metaData = metaData;
         this.columnReader = columnReader;
     }

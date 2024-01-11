@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SchemaReaderImplementation implements SchemaReader {
+public class SchemaReaderImpl implements SchemaReader {
 
     private final Logger log = Logger.getLogger(this.getClass().getName());
     private final DatabaseMetaData metaData;
     private final TableReader tableReader;
 
     @Inject
-    public SchemaReaderImplementation(@Named("SourceDBMetaData") DatabaseMetaData databaseMetaData, TableReader tableReader) {
+    public SchemaReaderImpl(@Named("SourceDBMetaData") DatabaseMetaData databaseMetaData, TableReader tableReader) {
         this.tableReader = tableReader;
         this.metaData = databaseMetaData;
     }

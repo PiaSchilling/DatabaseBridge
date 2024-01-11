@@ -3,8 +3,8 @@ package de.hdm_stuttgart.mi;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import de.hdm_stuttgart.mi.connect.ConnectionDetails;
-import de.hdm_stuttgart.mi.connect.DatabaseSystem;
+import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
+import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import de.hdm_stuttgart.mi.di.BasicModule;
 import de.hdm_stuttgart.mi.read.api.SchemaReader;
 import de.hdm_stuttgart.mi.read.model.Table;

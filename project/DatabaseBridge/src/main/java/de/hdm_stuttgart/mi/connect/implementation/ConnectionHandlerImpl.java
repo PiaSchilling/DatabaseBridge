@@ -1,4 +1,8 @@
-package de.hdm_stuttgart.mi.connect;
+package de.hdm_stuttgart.mi.connect.implementation;
+
+import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
+import de.hdm_stuttgart.mi.connect.model.ConnectionType;
+import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -7,7 +11,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ConnectionHandlerImplementation implements ConnectionHandler {
+public class ConnectionHandlerImpl implements ConnectionHandler {
 
     private final Logger log = Logger.getLogger(this.getClass().getName());
 
@@ -15,7 +19,7 @@ public class ConnectionHandlerImplementation implements ConnectionHandler {
     private Connection connection;
 
 
-    public ConnectionHandlerImplementation(ConnectionType connectionType, ConnectionDetails connectionDetails) {
+    public ConnectionHandlerImpl(ConnectionType connectionType, ConnectionDetails connectionDetails) {
         this.connectionType = connectionType;
         if (connectionType == ConnectionType.SOURCE) {
             connectDatabase(connectionDetails); // TODO remove once destination DB should be used!

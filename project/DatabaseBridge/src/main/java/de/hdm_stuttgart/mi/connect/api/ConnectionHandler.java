@@ -1,4 +1,4 @@
-package de.hdm_stuttgart.mi.connect;
+package de.hdm_stuttgart.mi.connect.api;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;

@@ -1,4 +1,4 @@
-package de.hdm_stuttgart.mi.connect;
+package de.hdm_stuttgart.mi.connect.model;
 
 /*
 Defines all currently supported database systems
