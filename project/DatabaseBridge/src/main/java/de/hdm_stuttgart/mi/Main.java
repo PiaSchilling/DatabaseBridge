@@ -1,30 +1,45 @@
 package de.hdm_stuttgart.mi;
 
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import de.hdm_stuttgart.mi.connect.ConnectionDetails;
 import de.hdm_stuttgart.mi.connect.DatabaseSystem;
-import de.hdm_stuttgart.mi.connect.SourceConnectionHandler;
+import de.hdm_stuttgart.mi.di.BasicModule;
+import de.hdm_stuttgart.mi.read.api.SchemaReader;
+import de.hdm_stuttgart.mi.read.model.Table;
 
-import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         // Usage example, schema movies must exist!
-        SourceConnectionHandler.getInstance().connectDatabase(new ConnectionDetails(DatabaseSystem.MYSQL, "localhost", 3306, "movies", "root", "example"));
-        Connection conn = SourceConnectionHandler.getInstance().getConnection();
-        Statement stmt = conn.createStatement();
-        //Table movie needs to exist
-        ResultSet result = stmt.executeQuery("SELECT * FROM movie");
+        final ConnectionDetails sourceDetails = new ConnectionDetails(DatabaseSystem.MYSQL,
+                "localhost",
+                3306,
+                "movies",
+                "root",
+                "example");
 
-        while(result.next()) {
-            System.out.println(result.getString("movie_name"));
-        }
+        // Just dummy data, destination db currently not in use!
+        final ConnectionDetails destinationDetails = new ConnectionDetails(DatabaseSystem.POSTGRES,
+                "localhost",
+                8888,
+                "example",
+                "root",
+                "example");
 
-        stmt.close();
-        conn.close();
+        Injector injector = Guice.createInjector(new BasicModule(sourceDetails, destinationDetails));
+
+        SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
+        final ArrayList<Table> tables = schemaReader.readSchema().getTables();
+        System.out.println(Arrays.toString(tables.toArray()));
+
+        // TODO close DB connection
 
     }
 }
