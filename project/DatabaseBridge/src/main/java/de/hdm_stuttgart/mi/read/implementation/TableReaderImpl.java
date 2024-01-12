@@ -9,6 +9,8 @@ import de.hdm_stuttgart.mi.read.model.FkRelation;
 import de.hdm_stuttgart.mi.read.model.Table;
 
 import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -29,8 +31,8 @@ public class TableReaderImpl implements TableReader {
     @Override
     public Table readTable(String tableName) {
         final ArrayList<Column> columns = readTableColumns(tableName);
-        final ArrayList<FkRelation> importedFkRelations = readImportedFkRelations();
-        final ArrayList<FkRelation> exportedFkRelations = readExportedFkRelations();
+        final ArrayList<FkRelation> importedFkRelations = readImportedFkRelations(tableName);
+        final ArrayList<FkRelation> exportedFkRelations = readExportedFkRelations(tableName);
 
         return new Table(tableName, columns, importedFkRelations, exportedFkRelations);
     }
@@ -39,14 +41,53 @@ public class TableReaderImpl implements TableReader {
         return columnReader.readTableColumns(tableName);
     }
 
-    private ArrayList<FkRelation> readImportedFkRelations() {
-        // TODO implement me
-        return new ArrayList<>();
+
+    /**
+     * Read the foreign key relations where this table references other tables primary keys (this table is the child)
+     * @param tableName the name of the table of which the imported fk relations should be read
+     * @return a list of the imported fk relations
+     */
+    private ArrayList<FkRelation> readImportedFkRelations(String tableName) {
+        final ArrayList<FkRelation> importedFkRelations = new ArrayList<>();
+        try {
+            final ResultSet importedKeys = metaData.getImportedKeys(null,null,tableName);
+            while (importedKeys.next()){
+                final String referencedTableName = importedKeys.getString("PKTABLE_NAME");
+                final String referencedColumnName = importedKeys.getString("PKCOLUMN_NAME");
+                final String fkName = importedKeys.getString("FK_NAME");
+
+                importedFkRelations.add(new FkRelation(referencedTableName,referencedColumnName,fkName));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return importedFkRelations;
     }
 
-    private ArrayList<FkRelation> readExportedFkRelations() {
-        // TODO implement me
-        return new ArrayList<>();
+
+    /**
+     * Read the foreign key relations where this tables primary key is referenced by other tables (this table is the parent)
+     * @param tableName the name of the table of which the exported fk relations should be read
+     * @return a list of the exported fk relations
+     */
+    private ArrayList<FkRelation> readExportedFkRelations(String tableName) {
+        // TODO test
+        final ArrayList<FkRelation> importedFkRelations = new ArrayList<>();
+        try {
+            final ResultSet importedKeys = metaData.getExportedKeys(null,null,tableName);
+            while (importedKeys.next()){
+                final String referencingTableName = importedKeys.getString("FKTABLE_NAME");
+                final String referencingColumnName = importedKeys.getString("FKCOLUMN_NAME");
+                final String fkName = importedKeys.getString("FK_NAME");
+
+                final String thisTableName = importedKeys.getString("FKTABLE_NAME");
+
+                importedFkRelations.add(new FkRelation(referencingTableName,referencingColumnName,fkName));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return importedFkRelations;
     }
 
 

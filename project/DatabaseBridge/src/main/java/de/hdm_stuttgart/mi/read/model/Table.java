@@ -50,4 +50,20 @@ public class Table {
     public ArrayList<FkRelation> getExportedFkRelations() {
         return exportedFkRelations;
     }
+
+    /**
+     * Check if this table is a parent table which means its referenced by other tables via FK relations
+     * @return true if it is referenced by other tables, false if not
+     */
+    public boolean isParentTable(){
+        return  exportedFkRelations.size() > 0;
+    }
+
+    /**
+     * Check if this table is a child table which means it references other tables via FK relations
+     * @return true if it references other tables, false if not
+     */
+    public boolean isChildTable(){
+        return importedFkRelations.size() > 0;
+    }
 }

@@ -32,7 +32,7 @@ public class BasicModule extends AbstractModule {
         bind(DatabaseMetaData.class)
                 .annotatedWith(Names.named("SourceDBMetaData"))
                 .toInstance(new ConnectionHandlerImpl(ConnectionType.SOURCE, sourceConnectionDetails)
-                        .getDatabaseMetaData()); // TODO clean up and use factory
+                        .getDatabaseMetaData());
       /*  bind(DatabaseMetaData.class)
                 .annotatedWith(Names.named("DestinationDBMetaData"))
                 .toInstance(new ConnectionHandlerImplementation(ConnectionType.DESTINATION, destinationConnectionDetails)

@@ -32,12 +32,12 @@ public class ColumnReaderImpl implements ColumnReader {
         ArrayList<Column> columns = new ArrayList<>();
         try {
 
-            final ResultSet currentColumn = metaData.getColumns(null, null, tableName, null);
-            while (currentColumn.next()) {
-                String columnName = currentColumn.getString("COLUMN_NAME");
-                int columnDataTypeCode = currentColumn.getInt("DATA_TYPE");
-                int columnSize = currentColumn.getInt("COLUMN_SIZE");
-                final ArrayList<Constraint> constraints = checkConstraints(currentColumn, columnName, tableName);
+            final ResultSet metaColumns = metaData.getColumns(null, null, tableName, null);
+            while (metaColumns.next()) {
+                String columnName = metaColumns.getString("COLUMN_NAME");
+                int columnDataTypeCode = metaColumns.getInt("DATA_TYPE");
+                int columnSize = metaColumns.getInt("COLUMN_SIZE");
+                final ArrayList<Constraint> constraints = checkConstraints(metaColumns, columnName, tableName);
                 columns.add(new Column(columnName, SQLType.fromTypeCode(columnDataTypeCode), columnSize, constraints)); // TODO add length
             }
         } catch (SQLException e) {
