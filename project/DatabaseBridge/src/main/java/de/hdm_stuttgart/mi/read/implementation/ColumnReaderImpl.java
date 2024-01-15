@@ -38,7 +38,7 @@ public class ColumnReaderImpl implements ColumnReader {
                 int columnDataTypeCode = metaColumns.getInt("DATA_TYPE");
                 int columnSize = metaColumns.getInt("COLUMN_SIZE");
                 final ArrayList<Constraint> constraints = checkConstraints(metaColumns, columnName, tableName);
-                columns.add(new Column(columnName, SQLType.fromTypeCode(columnDataTypeCode), columnSize, constraints)); // TODO add length
+                columns.add(new Column(columnName, SQLType.fromTypeCode(columnDataTypeCode), columnSize, constraints));
             }
         } catch (SQLException e) {
             log.log(Level.SEVERE, "SQLException while reading columns from table " + tableName + ": " + e.getMessage());
@@ -115,7 +115,6 @@ public class ColumnReaderImpl implements ColumnReader {
             while (primaryKeys.next()) {
                 String currentColumnName = primaryKeys.getString("COLUMN_NAME");
                 if (Objects.equals(currentColumnName, columnName)) {
-                    // TODO test for composite primary keys
                     return new Constraint(ConstraintType.PRIMARY_KEY);
                 }
             }

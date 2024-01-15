@@ -71,7 +71,6 @@ public class TableReaderImpl implements TableReader {
      * @return a list of the exported fk relations
      */
     private ArrayList<FkRelation> readExportedFkRelations(String tableName) {
-        // TODO test
         final ArrayList<FkRelation> importedFkRelations = new ArrayList<>();
         try {
             final ResultSet importedKeys = metaData.getExportedKeys(null,null,tableName);

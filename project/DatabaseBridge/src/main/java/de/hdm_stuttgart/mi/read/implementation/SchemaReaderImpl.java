@@ -9,6 +9,7 @@ import de.hdm_stuttgart.mi.read.model.Table;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +28,7 @@ public class SchemaReaderImpl implements SchemaReader {
     @Override
     public Schema readSchema() {
         final ArrayList<String> tableNames = readTableNames();
+        readViewNames();
         ArrayList<Table> tables = new ArrayList<>();
 
         for (String tableName : tableNames
@@ -52,8 +54,17 @@ public class SchemaReaderImpl implements SchemaReader {
     }
 
     private ArrayList<String> readViewNames() {
+        // TODO get rid of system views
         ArrayList<String> views = new ArrayList<>();
-        // TODO implement me
+        try (ResultSet tablesResult = metaData.getTables(null, null, null, new String[]{"VIEW"})) {
+            while (tablesResult.next()) {
+                String tableName = tablesResult.getString("TABLE_NAME");
+                views.add(tableName);
+            }
+        } catch (SQLException sqlException) {
+            log.log(Level.SEVERE, "SQLException while reading table names: " + sqlException.getMessage());
+        }
+        System.out.println(Arrays.toString(views.toArray()));
         return views;
     }
 }

@@ -37,6 +37,7 @@ public class Main {
         System.out.println(Arrays.toString(tables.toArray()));
 
         // TODO close DB connection
+        // TODO split schemas?
 
     }
 }
