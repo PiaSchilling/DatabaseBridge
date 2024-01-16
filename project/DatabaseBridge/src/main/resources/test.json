@@ -1,8 +1,8 @@
 {
     "sourceDatabase": {
         "databaseSystem": "MYSQL",
-        "databaseDriverName": "",
-        "databaseDriverJar": "",
+        "databaseDriverName": "com.mysql.cj.jdbc.Driver",
+        "databaseDriverJar": "jar:file:src/main/resources/jar/mysql-connector-j-8.0.33.jar!/",
         "hostAddress": "localhost",
         "port" : 3306,
         "database": "",

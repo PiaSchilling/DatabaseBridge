@@ -35,6 +35,8 @@ public class Execute implements Runnable {
             // Create ConnectionDetails Instance for Source Database from Json file
             ConnectionDetails sourceDatabase = new ConnectionDetails(
                     DatabaseSystem.valueOf(rootNode.get("sourceDatabase").get("databaseSystem").asText()),
+                    rootNode.get("sourceDatabase").get("databaseDriverName").asText(),
+                    rootNode.get("sourceDatabase").get("databaseDriverJar").asText(),
                     rootNode.get("sourceDatabase").get("hostAddress").asText(),
                     rootNode.get("sourceDatabase").get("port").asInt(),
                     rootNode.get("sourceDatabase").get("database").asText(),
@@ -43,7 +45,9 @@ public class Execute implements Runnable {
             );
 
             //Connect Database to SourceConnectionHandler and create Connection
-            SourceConnectionHandler.getInstance().connectDatabase(sourceDatabase);
+            if(!SourceConnectionHandler.getInstance().connectDatabase(sourceDatabase)){
+                return;
+            }
             Connection connection = SourceConnectionHandler.getInstance().getConnection();
             Statement stmt = connection.createStatement();
 
