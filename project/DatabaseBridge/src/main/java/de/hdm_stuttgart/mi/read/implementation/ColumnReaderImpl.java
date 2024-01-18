@@ -51,6 +51,7 @@ public class ColumnReaderImpl implements ColumnReader {
     private ArrayList<Constraint> readConstraints(ResultSet column, String columnName, String tableName) {
         final ArrayList<Constraint> constraints = new ArrayList<>();
 
+        constraints.add(readAutoInkrementConstraint(column));
         constraints.add(readNotNullConstraint(column));
         constraints.add(readUniqueConstraint(columnName, tableName));
         constraints.add(readPrimaryKeyConstraint(columnName, tableName));
@@ -60,6 +61,26 @@ public class ColumnReaderImpl implements ColumnReader {
         constraints.removeIf(Objects::isNull);
 
         return constraints;
+    }
+
+    /**
+     * Checks if {@code column} this column is auto incremented
+     *
+     * @param column the column to check
+     * @return a Constraint object with type AUTO_INKREMENT if the column defines this the constraint, null if not or if an error
+     * occurs
+     */
+    private Constraint readAutoInkrementConstraint(ResultSet column){
+        try {
+            String isAutoIncrement = column.getString("IS_AUTOINCREMENT");
+            if (Objects.equals(isAutoIncrement, "YES")) {
+                return new Constraint(ConstraintType.AUTO_INKREMENT);
+            }
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "SQLException while extracting IS_AUTOINCREMENT from column: " + e.getMessage());
+            return null;
+        }
+        return null;
     }
 
     /**

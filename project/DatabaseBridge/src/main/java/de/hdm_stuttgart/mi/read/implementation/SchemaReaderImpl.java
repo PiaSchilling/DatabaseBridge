@@ -61,7 +61,7 @@ public class SchemaReaderImpl implements SchemaReader {
     }
 
     private ArrayList<String> readViewNames(String schemaName) {
-        // TODO get rid of system views
+        // TODO read view definition (which select statement was used to create the view?)
         ArrayList<String> views = new ArrayList<>();
         try (ResultSet tablesResult = metaData.getTables(schemaName, schemaName, null, new String[]{"VIEW"})) {
             System.out.println(metaData.getUserName());
