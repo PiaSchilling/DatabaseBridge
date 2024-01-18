@@ -5,11 +5,23 @@ import java.util.ArrayList;
 public class Schema {
     private final ArrayList<Table> tables;
     private final ArrayList<Table> views;
+    private final ArrayList<User> users;
+
+    private final ArrayList<Privilege> tablePrivileges;
+
+    private final ArrayList<ColumnPrivilege> columnPrivileges;
 
     // TODO comment
-    public Schema(ArrayList<Table> tables, ArrayList<Table> views) {
+    public Schema(ArrayList<Table> tables,
+                  ArrayList<Table> views,
+                  ArrayList<User> users,
+                  ArrayList<Privilege> tablePrivileges,
+                  ArrayList<ColumnPrivilege> columnPrivileges) {
         this.tables = tables;
         this.views = views;
+        this.users = users;
+        this.tablePrivileges = tablePrivileges;
+        this.columnPrivileges = columnPrivileges;
     }
 
     public ArrayList<Table> getTables() {

@@ -6,14 +6,8 @@ import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
 import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
 import de.hdm_stuttgart.mi.connect.implementation.ConnectionHandlerImpl;
 import de.hdm_stuttgart.mi.connect.model.ConnectionType;
-import de.hdm_stuttgart.mi.read.api.ColumnReader;
-import de.hdm_stuttgart.mi.read.api.SchemaReader;
-import de.hdm_stuttgart.mi.read.api.TableReader;
-import de.hdm_stuttgart.mi.read.api.UsersReader;
-import de.hdm_stuttgart.mi.read.implementation.ColumnReaderImpl;
-import de.hdm_stuttgart.mi.read.implementation.SchemaReaderImpl;
-import de.hdm_stuttgart.mi.read.implementation.TableReaderImpl;
-import de.hdm_stuttgart.mi.read.implementation.UsersReaderImpl;
+import de.hdm_stuttgart.mi.read.api.*;
+import de.hdm_stuttgart.mi.read.implementation.*;
 
 import java.sql.DatabaseMetaData;
 
@@ -39,6 +33,7 @@ public class BasicModule extends AbstractModule {
         bind(TableReader.class).to(TableReaderImpl.class);
         bind(SchemaReader.class).to(SchemaReaderImpl.class);
         bind(UsersReader.class).to(UsersReaderImpl.class);
+        bind(PrivilegeReader.class).to(PrivilegeReaderImpl.class);
         bind(DatabaseMetaData.class)
                 .annotatedWith(Names.named("SourceDBMetaData"))
                 .toInstance(sourceConnectionHandler.getDatabaseMetaData());
