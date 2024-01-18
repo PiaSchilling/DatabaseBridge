@@ -37,7 +37,7 @@ public class ColumnReaderImpl implements ColumnReader {
                 String columnName = metaColumns.getString("COLUMN_NAME");
                 int columnDataTypeCode = metaColumns.getInt("DATA_TYPE");
                 int columnSize = metaColumns.getInt("COLUMN_SIZE");
-                final ArrayList<Constraint> constraints = checkConstraints(metaColumns, columnName, tableName);
+                final ArrayList<Constraint> constraints = readConstraints(metaColumns, columnName, tableName);
                 columns.add(new Column(columnName, SQLType.fromTypeCode(columnDataTypeCode), columnSize, constraints));
             }
         } catch (SQLException e) {
@@ -48,15 +48,14 @@ public class ColumnReaderImpl implements ColumnReader {
         return columns;
     }
 
-    private ArrayList<Constraint> checkConstraints(ResultSet column, String columnName, String tableName) {
+    private ArrayList<Constraint> readConstraints(ResultSet column, String columnName, String tableName) {
         final ArrayList<Constraint> constraints = new ArrayList<>();
 
-        constraints.add(checkNotNullConstraint(column));
-        constraints.add(checkUniqueConstraint(columnName, tableName));
-        constraints.add(checkPrimaryKeyConstraint(columnName, tableName));
-        constraints.add(checkForeignKeyConstraint(columnName, tableName));
-        constraints.add(checkDetaultConstraint(column));
-        // constraints.add(checkCheckConstraint(column)); // TODO fix
+        constraints.add(readNotNullConstraint(column));
+        constraints.add(readUniqueConstraint(columnName, tableName));
+        constraints.add(readPrimaryKeyConstraint(columnName, tableName));
+        constraints.add(readForeignKeyConstraint(columnName, tableName));
+        constraints.add(readDefaultConstraint(column));
 
         constraints.removeIf(Objects::isNull);
 
@@ -70,7 +69,7 @@ public class ColumnReaderImpl implements ColumnReader {
      * @return a Constraint object with type NOT_NULL if the column defines this the constraint, null if not or if an error
      * occurs
      */
-    private Constraint checkNotNullConstraint(ResultSet column) {
+    private Constraint readNotNullConstraint(ResultSet column) {
         try {
             String isNullable = column.getString("IS_NULLABLE");
             if (Objects.equals(isNullable, "NO")) {
@@ -90,7 +89,7 @@ public class ColumnReaderImpl implements ColumnReader {
      * @return a Constraint object with type UNIQUE if the column defines this the constraint, null if not or if an error
      * occurs
      */
-    private Constraint checkUniqueConstraint(String columnName, String tableName) {
+    private Constraint readUniqueConstraint(String columnName, String tableName) {
         try {
             ResultSet indexes = metaData.getIndexInfo(null, null, tableName, false, true);
             while (indexes.next()) {
@@ -109,7 +108,15 @@ public class ColumnReaderImpl implements ColumnReader {
         return null;
     }
 
-    private Constraint checkPrimaryKeyConstraint(String columnName, String tableName) {
+    /**
+     * Checks if {@code column} defines a PRIMARY KEY constraint
+     *
+     * @param columnName the name of the column to check
+     * @param tableName the name of the table to check
+     * @return a Constraint object with type PRIMARY KEY if the column defines this the constraint, null if not or if an error
+     * occurs
+     */
+    private Constraint readPrimaryKeyConstraint(String columnName, String tableName) {
         try {
             ResultSet primaryKeys = metaData.getPrimaryKeys(null, null, tableName);
             while (primaryKeys.next()) {
@@ -125,7 +132,15 @@ public class ColumnReaderImpl implements ColumnReader {
         return null;
     }
 
-    private Constraint checkForeignKeyConstraint(String columnName, String tableName) {
+    /**
+     * Checks if {@code column} defines a FOREIGN KEY constraint
+     *
+     * @param columnName the name of the column to check
+     * @param tableName the name of the table to check
+     * @return a Constraint object with type FOREIGN KEY if the column defines this the constraint, null if not or if an error
+     * occurs
+     */
+    private Constraint readForeignKeyConstraint(String columnName, String tableName) {
         try {
             ResultSet foreignKeys = metaData.getImportedKeys(null, null, tableName);
 
@@ -146,7 +161,13 @@ public class ColumnReaderImpl implements ColumnReader {
         return null;
     }
 
-    private Constraint checkDetaultConstraint(ResultSet column) {
+    /**
+     * Checks if {@code column} defines the DEFAULT constraint
+     *
+     * @return a Constraint object with type DEFAULT and the according default value if the column defines this the
+     * constraint, null if not or if an error occurs
+     */
+    private Constraint readDefaultConstraint(ResultSet column) {
         try {
             String defaultValue = column.getString("COLUMN_DEF");
 
@@ -155,21 +176,6 @@ public class ColumnReaderImpl implements ColumnReader {
             }
         } catch (SQLException e) {
             log.log(Level.SEVERE, "SQLException while extracting DEFAULT from column: " + e.getMessage());
-            return null;
-        }
-        return null;
-    }
-
-    private Constraint checkCheckConstraint(ResultSet column) {
-        // TODO find a way to extract check constraints
-        try {
-            String checkExpression = column.getString("CHECK");
-
-            if (checkExpression != null) {
-                return new Constraint(ConstraintType.CHECK, checkExpression);
-            }
-        } catch (SQLException e) {
-            log.log(Level.SEVERE, "SQLException while extracting CHECK from column: " + e.getMessage());
             return null;
         }
         return null;
