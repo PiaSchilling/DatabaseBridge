@@ -9,11 +9,10 @@ public class ColumnPrivilege extends Privilege {
      * @param grantor     grantor of access
      * @param grantee     grantee of access
      * @param accessType  type of access (DELETE,UPDATE,...)
-     * @param isGrantable if grantee is permitted to grant to others
      * @param columnName  name of column this privilege applies to
      */
-    public ColumnPrivilege(String tableName, String grantor, String grantee, AccessType accessType, boolean isGrantable, String columnName) {
-        super(tableName, grantor, grantee, accessType, isGrantable);
+    public ColumnPrivilege(String tableName, String grantor, String grantee, AccessType accessType, String columnName) {
+        super(tableName, grantor, grantee, accessType);
         this.columnName = columnName;
     }
 
@@ -25,7 +24,6 @@ public class ColumnPrivilege extends Privilege {
                 ", grantor='" + grantor + '\'' +
                 ", grantee='" + grantee + '\'' +
                 ", accessType=" + accessType +
-                ", isGrantable=" + isGrantable +
                 '}';
     }
 }

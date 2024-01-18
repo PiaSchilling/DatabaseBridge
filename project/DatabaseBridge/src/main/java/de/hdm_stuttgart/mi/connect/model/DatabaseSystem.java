@@ -5,7 +5,7 @@ Defines all currently supported database systems
  */
 public enum DatabaseSystem {
     // TODO move to config file
-    POSTGRES("pg_user","username"),
+    POSTGRES("pg_user","usename"),
     MYSQL("mysql.user","User"),
     MARIADB("mysql.user","User");
 

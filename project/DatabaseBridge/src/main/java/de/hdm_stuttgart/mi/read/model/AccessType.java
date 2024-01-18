@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum AccessType {
-    SELECT,INSERT,UPDATE,DELETE,REFERENCES,UNKNOWN;
+    SELECT,INSERT,UPDATE,DELETE,REFERENCES,TRIGGER,TRUNCATE,UNKNOWN;
 
     public static AccessType fromString(String privilegeString){
         final Optional<AccessType> match = Arrays.stream(values()).filter(p -> p.name().equals(privilegeString)).findFirst();

@@ -24,22 +24,20 @@ public class PrivilegeReaderImpl implements de.hdm_stuttgart.mi.read.api.Privile
     }
 
     @Override
-    public ArrayList<Privilege> readTablePrivileges(){
+    public ArrayList<Privilege> readTablePrivileges() {
         ArrayList<Privilege> tablePrivileges = new ArrayList<>();
-        try (ResultSet privilegesResult = metaData.getTablePrivileges(null,null,null)) {
+        try (ResultSet privilegesResult = metaData.getTablePrivileges(null, null, null)) {
             while (privilegesResult.next()) {
                 final String tableName = privilegesResult.getString("TABLE_NAME");
                 final String grantor = privilegesResult.getString("GRANTOR");
                 final String grantee = privilegesResult.getString("GRANTEE");
                 final String accessType = privilegesResult.getString("PRIVILEGE");
-                //final boolean isGrantable = privilegesResult.getString("IS_GRANTABLE").equals("YES");
 
                 tablePrivileges.add(new Privilege(
                         tableName,
                         grantor,
                         grantee,
-                        AccessType.fromString(accessType),
-                        false));
+                        AccessType.fromString(accessType)));
             }
         } catch (SQLException sqlException) {
             log.log(Level.SEVERE, "SQLException while reading tablePrivileges: " + sqlException.getMessage());
@@ -48,24 +46,22 @@ public class PrivilegeReaderImpl implements de.hdm_stuttgart.mi.read.api.Privile
     }
 
     @Override
-    public ArrayList<ColumnPrivilege> readColumnPrivileges(){
+    public ArrayList<ColumnPrivilege> readColumnPrivileges() {
         // TODO does not work for mysql
         ArrayList<ColumnPrivilege> columnPrivileges = new ArrayList<>();
-        try (ResultSet privilegesResult = metaData.getColumnPrivileges(null,null,"employees",null)) {
+        try (ResultSet privilegesResult = metaData.getColumnPrivileges(null, null, "employees", null)) {
             while (privilegesResult.next()) {
                 final String tableName = privilegesResult.getString("TABLE_NAME");
                 final String columnName = privilegesResult.getString("COLUMN_NAME");
                 final String grantor = privilegesResult.getString("GRANTOR");
                 final String grantee = privilegesResult.getString("GRANTEE");
                 final String accessType = privilegesResult.getString("PRIVILEGE");
-                final boolean isGrantable = privilegesResult.getString("IS_GRANTABLE").equals("YES");
 
                 columnPrivileges.add(new ColumnPrivilege(
                         tableName,
                         grantor,
                         grantee,
                         AccessType.fromString(accessType),
-                        isGrantable,
                         columnName));
             }
         } catch (SQLException sqlException) {
