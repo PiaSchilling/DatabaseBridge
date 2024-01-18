@@ -33,7 +33,7 @@ public class Main {
         Injector injector = Guice.createInjector(new BasicModule(sourceDetails, destinationDetails));
 
         SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
-        final ArrayList<Table> tables = schemaReader.readSchema().getTables();
+        final ArrayList<Table> tables = schemaReader.readSchema(sourceDetails.getSchema()).getTables();
         System.out.println(Arrays.toString(tables.toArray()));
 
         // TODO close DB connection

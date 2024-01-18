@@ -26,23 +26,30 @@ public class SchemaReaderImpl implements SchemaReader {
     }
 
     @Override
-    public Schema readSchema() {
-        final ArrayList<String> tableNames = readTableNames();
-        readViewNames();
+    public Schema readSchema(String schemaName) {
+        final ArrayList<String> tableNames = readTableNames(schemaName);
+        final ArrayList<String> viewNames = readViewNames(schemaName);
+
         ArrayList<Table> tables = new ArrayList<>();
+        ArrayList<Table> views = new ArrayList<>();
 
         for (String tableName : tableNames
         ) {
             tables.add(tableReader.readTable(tableName));
         }
 
-        return new Schema(tables);
+        for (String viewName : viewNames
+        ) {
+            views.add(tableReader.readTable(viewName));
+        }
+
+        return new Schema(tables,views);
     }
 
 
-    private ArrayList<String> readTableNames() {
+    private ArrayList<String> readTableNames(String schemaName) { // TODO hier weitermachen: rausfinden, wie man die user defined views von system views trennt: evtl. üer getCatalogs
         ArrayList<String> tables = new ArrayList<>();
-        try (ResultSet tablesResult = metaData.getTables(null, null, null, new String[]{"TABLE"})) {
+        try (ResultSet tablesResult = metaData.getTables(schemaName, schemaName, null, new String[]{"TABLE"})) {
             while (tablesResult.next()) {
                 String tableName = tablesResult.getString("TABLE_NAME");
                 tables.add(tableName);
@@ -53,16 +60,18 @@ public class SchemaReaderImpl implements SchemaReader {
         return tables;
     }
 
-    private ArrayList<String> readViewNames() {
+    private ArrayList<String> readViewNames(String schemaName) {
         // TODO get rid of system views
         ArrayList<String> views = new ArrayList<>();
-        try (ResultSet tablesResult = metaData.getTables(null, null, null, new String[]{"VIEW"})) {
+        try (ResultSet tablesResult = metaData.getTables(schemaName, schemaName, null, new String[]{"VIEW"})) {
+            System.out.println(metaData.getUserName());
+
             while (tablesResult.next()) {
                 String tableName = tablesResult.getString("TABLE_NAME");
                 views.add(tableName);
             }
         } catch (SQLException sqlException) {
-            log.log(Level.SEVERE, "SQLException while reading table names: " + sqlException.getMessage());
+            log.log(Level.SEVERE, "SQLException while reading view names: " + sqlException.getMessage());
         }
         System.out.println(Arrays.toString(views.toArray()));
         return views;

@@ -28,14 +28,10 @@ public class ConnectionDetails {
     private String createJdbcUri() {
         jdbcUri = "jdbc:";
         switch (this.databaseSystem) {
-            case MYSQL:
-                jdbcUri = jdbcUri + "mysql://" + this.hostAddress + ":" + this.port + "/" + this.schema;
-                break;
-            case MARIADB:
-                jdbcUri = jdbcUri + "mariadb://" + this.hostAddress + ":" + this.port + "/" + this.schema;
-                break;
-            case POSTGRES:
-                jdbcUri = jdbcUri + "postgresql://" + this.hostAddress + ":" + this.port + "/" + this.schema;
+            case MYSQL -> jdbcUri = jdbcUri + "mysql://" + this.hostAddress + ":" + this.port + "/" + this.schema;
+            case MARIADB -> jdbcUri = jdbcUri + "mariadb://" + this.hostAddress + ":" + this.port + "/" + this.schema;
+            case POSTGRES ->
+                    jdbcUri = jdbcUri + "postgresql://" + this.hostAddress + ":" + this.port + "/" + this.schema;
         }
 
         return jdbcUri;
@@ -51,5 +47,9 @@ public class ConnectionDetails {
 
     public String getJdbcUri() {
         return jdbcUri;
+    }
+
+    public String getSchema() {
+        return schema;
     }
 }
