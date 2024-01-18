@@ -13,6 +13,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class TableReaderImpl implements TableReader {
@@ -69,7 +70,8 @@ public class TableReaderImpl implements TableReader {
                         DeleteUpdateRule.fromCode(deleteRule)));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            log.log(Level.SEVERE, "SQLException while reading readImportedFkRelations from table: " + tableName + e.getMessage());
+            return importedFkRelations;
         }
         return importedFkRelations;
     }
@@ -82,7 +84,7 @@ public class TableReaderImpl implements TableReader {
      * @return a list of the exported fk relations
      */
     private ArrayList<FkRelation> readExportedFkRelations(String tableName) {
-        final ArrayList<FkRelation> importedFkRelations = new ArrayList<>();
+        final ArrayList<FkRelation> exportedFkRelations = new ArrayList<>();
         try {
             final ResultSet importedKeys = metaData.getExportedKeys(null, null, tableName);
             while (importedKeys.next()) {
@@ -94,7 +96,7 @@ public class TableReaderImpl implements TableReader {
 
                 final String thisTableName = importedKeys.getString("FKTABLE_NAME");
 
-                importedFkRelations.add(new FkRelation(
+                exportedFkRelations.add(new FkRelation(
                         referencingTableName,
                         referencingColumnName,
                         fkName,
@@ -102,9 +104,10 @@ public class TableReaderImpl implements TableReader {
                         DeleteUpdateRule.fromCode(deleteRule)));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            log.log(Level.SEVERE, "SQLException while reading readImportedFkRelations from table: " + tableName + e.getMessage());
+            return exportedFkRelations;
         }
-        return importedFkRelations;
+        return exportedFkRelations;
     }
 
 

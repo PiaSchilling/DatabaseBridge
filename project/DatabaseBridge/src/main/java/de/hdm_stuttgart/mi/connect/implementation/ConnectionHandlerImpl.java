@@ -18,9 +18,12 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
     private final ConnectionType connectionType;
     private Connection connection;
 
+    private final ConnectionDetails connectionDetails;
+
 
     public ConnectionHandlerImpl(ConnectionType connectionType, ConnectionDetails connectionDetails) {
         this.connectionType = connectionType;
+        this.connectionDetails = connectionDetails;
         if (connectionType == ConnectionType.SOURCE) {
             connectDatabase(connectionDetails); // TODO remove once destination DB should be used!
         }
@@ -67,5 +70,10 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
             log.log(Level.SEVERE, "SQLException while trying to extract metadata: " + e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public ConnectionDetails getConnectionDetails() {
+        return connectionDetails;
     }
 }

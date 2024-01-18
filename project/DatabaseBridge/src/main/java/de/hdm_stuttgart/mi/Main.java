@@ -6,8 +6,8 @@ import com.google.inject.Injector;
 import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
 import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import de.hdm_stuttgart.mi.di.BasicModule;
-import de.hdm_stuttgart.mi.read.api.SchemaReader;
-import de.hdm_stuttgart.mi.read.model.Table;
+import de.hdm_stuttgart.mi.read.api.UsersReader;
+import de.hdm_stuttgart.mi.read.model.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,9 +32,13 @@ public class Main {
 
         Injector injector = Guice.createInjector(new BasicModule(sourceDetails, destinationDetails));
 
-        SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
-        final ArrayList<Table> tables = schemaReader.readSchema(sourceDetails.getSchema()).getTables();
-        System.out.println(Arrays.toString(tables.toArray()));
+        //SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
+        //final ArrayList<Table> tables = schemaReader.readSchema(sourceDetails.getSchema()).getTables();
+        //System.out.println(Arrays.toString(tables.toArray()));
+
+        UsersReader usersReader = injector.getInstance(UsersReader.class);
+        final ArrayList<User> users = usersReader.readUsers();
+        System.out.println(Arrays.toString(users.toArray()));
 
         // TODO close DB connection
         // TODO split schemas?

@@ -52,4 +52,8 @@ public class ConnectionDetails {
     public String getSchema() {
         return schema;
     }
+
+    public DatabaseSystem getDatabaseSystem() {
+        return databaseSystem;
+    }
 }
