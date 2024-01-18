@@ -27,7 +27,7 @@ public class Main {
                 "root",
                 "example");
 
-       final ConnectionDetails sourceDetailsMySql = new ConnectionDetails(DatabaseSystem.MYSQL,
+        final ConnectionDetails sourceDetailsMySql = new ConnectionDetails(DatabaseSystem.MYSQL,
                 "localhost",
                 3306,
                 "employees",
@@ -65,12 +65,15 @@ public class Main {
 
         System.out.println("\n\n\n");
 
-        System.out.println("PRIVILEGES");
+
         PrivilegeReader privilegeReader = injector.getInstance(PrivilegeReader.class);
         final ArrayList<Privilege> p1 = privilegeReader.readTablePrivileges();
         final ArrayList<ColumnPrivilege> p2 = privilegeReader.readColumnPrivileges();
 
+        System.out.println("TABLE PRIVILEGES");
         System.out.println(Arrays.toString(p1.toArray()));
+
+        System.out.println("COLUMN PRIVILEGES");
         System.out.println(Arrays.toString(p2.toArray()));
 
         // TODO close DB connection

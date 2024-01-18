@@ -10,7 +10,6 @@ import de.hdm_stuttgart.mi.read.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -85,8 +84,6 @@ public class SchemaReaderImpl implements SchemaReader {
         // TODO read view definition (which select statement was used to create the view?)
         ArrayList<String> views = new ArrayList<>();
         try (ResultSet tablesResult = metaData.getTables(schemaName, schemaName, null, new String[]{"VIEW"})) {
-            System.out.println(metaData.getUserName());
-
             while (tablesResult.next()) {
                 String tableName = tablesResult.getString("TABLE_NAME");
                 views.add(tableName);
@@ -94,7 +91,6 @@ public class SchemaReaderImpl implements SchemaReader {
         } catch (SQLException sqlException) {
             log.log(Level.SEVERE, "SQLException while reading view names: " + sqlException.getMessage());
         }
-        System.out.println(Arrays.toString(views.toArray()));
         return views;
     }
 }
