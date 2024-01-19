@@ -48,6 +48,14 @@ public class ColumnReaderImpl implements ColumnReader {
         return columns;
     }
 
+    /**
+     * Read all constraints of one table columns
+     *
+     * @param column     the column the constraints should be read of
+     * @param columnName the name of the column the constraints should be read of
+     * @param tableName  the name of the table the column belongs to
+     * @return a list of constraints, containing only constraints which are defined by the column
+     */
     private ArrayList<Constraint> readConstraints(ResultSet column, String columnName, String tableName) {
         final ArrayList<Constraint> constraints = new ArrayList<>();
 
@@ -70,7 +78,7 @@ public class ColumnReaderImpl implements ColumnReader {
      * @return a Constraint object with type AUTO_INKREMENT if the column defines this the constraint, null if not or if an error
      * occurs
      */
-    private Constraint readAutoInkrementConstraint(ResultSet column){
+    private Constraint readAutoInkrementConstraint(ResultSet column) {
         try {
             String isAutoIncrement = column.getString("IS_AUTOINCREMENT");
             if (Objects.equals(isAutoIncrement, "YES")) {
@@ -133,7 +141,7 @@ public class ColumnReaderImpl implements ColumnReader {
      * Checks if {@code column} defines a PRIMARY KEY constraint
      *
      * @param columnName the name of the column to check
-     * @param tableName the name of the table to check
+     * @param tableName  the name of the table to check
      * @return a Constraint object with type PRIMARY KEY if the column defines this the constraint, null if not or if an error
      * occurs
      */
@@ -157,7 +165,7 @@ public class ColumnReaderImpl implements ColumnReader {
      * Checks if {@code column} defines a FOREIGN KEY constraint
      *
      * @param columnName the name of the column to check
-     * @param tableName the name of the table to check
+     * @param tableName  the name of the table to check
      * @return a Constraint object with type FOREIGN KEY if the column defines this the constraint, null if not or if an error
      * occurs
      */

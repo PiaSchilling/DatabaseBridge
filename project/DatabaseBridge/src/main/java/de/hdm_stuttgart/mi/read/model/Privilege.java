@@ -2,10 +2,10 @@ package de.hdm_stuttgart.mi.read.model;
 
 public class Privilege {
 
-    final String tableName;
-    final String grantor;
-    final String grantee;
-    final AccessType accessType;
+    private final String tableName;
+    private final String grantor;
+    private final String grantee;
+    private final AccessType accessType;
 
 
     /**
@@ -31,5 +31,21 @@ public class Privilege {
                 ", grantee='" + grantee + '\'' +
                 ", accessType=" + accessType +
                 '}';
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public String getGrantor() {
+        return grantor;
+    }
+
+    public String getGrantee() {
+        return grantee;
+    }
+
+    public AccessType getAccessType() {
+        return accessType;
     }
 }

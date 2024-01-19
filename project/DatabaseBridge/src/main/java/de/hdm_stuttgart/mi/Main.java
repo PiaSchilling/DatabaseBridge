@@ -6,17 +6,12 @@ import com.google.inject.Injector;
 import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
 import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import de.hdm_stuttgart.mi.di.BasicModule;
-import de.hdm_stuttgart.mi.read.api.PrivilegeReader;
 import de.hdm_stuttgart.mi.read.api.SchemaReader;
-import de.hdm_stuttgart.mi.read.api.UsersReader;
 import de.hdm_stuttgart.mi.read.model.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        // Usage example, schema movies must exist!
         final ConnectionDetails sourceDetailsMariaDB = new ConnectionDetails(DatabaseSystem.MARIADB,
                 "localhost",
                 3307,
@@ -49,35 +44,10 @@ public class Main {
         Injector injector = Guice.createInjector(new BasicModule(sourceDetailsPostgres, destinationDetails));
 
         SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
-        final ArrayList<Table> tables = schemaReader.readSchema(sourceDetailsPostgres.getSchema()).getTables();
-        final ArrayList<View> views = schemaReader.readSchema(sourceDetailsPostgres.getSchema()).getViews();
+        final Schema schema = schemaReader.readSchema(sourceDetailsPostgres.getSchema());
 
-        System.out.println("TABLES");
-        System.out.println(Arrays.toString(tables.toArray()));
-        System.out.println("VIEWS");
-        System.out.println(Arrays.toString(views.toArray()));
-        System.out.println("\n\n\n");
-
-        System.out.println("USERS");
-        UsersReader usersReader = injector.getInstance(UsersReader.class);
-        final ArrayList<User> users = usersReader.readUsers();
-        System.out.println(Arrays.toString(users.toArray()));
-
-        System.out.println("\n\n\n");
-
-
-        PrivilegeReader privilegeReader = injector.getInstance(PrivilegeReader.class);
-        final ArrayList<Privilege> p1 = privilegeReader.readTablePrivileges();
-        final ArrayList<ColumnPrivilege> p2 = privilegeReader.readColumnPrivileges();
-
-        System.out.println("TABLE PRIVILEGES");
-        System.out.println(Arrays.toString(p1.toArray()));
-
-        System.out.println("COLUMN PRIVILEGES");
-        System.out.println(Arrays.toString(p2.toArray()));
+        System.out.println(schema);
 
         // TODO close DB connection
-        // TODO split schemas?
-
     }
 }

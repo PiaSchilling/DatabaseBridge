@@ -24,9 +24,9 @@ public class PrivilegeReaderImpl implements de.hdm_stuttgart.mi.read.api.Privile
     }
 
     @Override
-    public ArrayList<Privilege> readTablePrivileges() {
+    public ArrayList<Privilege> readTablePrivileges(String schemaName) {
         ArrayList<Privilege> tablePrivileges = new ArrayList<>();
-        try (ResultSet privilegesResult = metaData.getTablePrivileges(null, null, null)) {
+        try (ResultSet privilegesResult = metaData.getTablePrivileges(null, schemaName, null)) {
             while (privilegesResult.next()) {
                 final String tableName = privilegesResult.getString("TABLE_NAME");
                 final String grantor = privilegesResult.getString("GRANTOR");
@@ -46,10 +46,10 @@ public class PrivilegeReaderImpl implements de.hdm_stuttgart.mi.read.api.Privile
     }
 
     @Override
-    public ArrayList<ColumnPrivilege> readColumnPrivileges() {
-        // TODO does not work for mysql
+    public ArrayList<ColumnPrivilege> readColumnPrivileges(String schemaName) {
+        // TODO does not work for mysql and mariaDB
         ArrayList<ColumnPrivilege> columnPrivileges = new ArrayList<>();
-        try (ResultSet privilegesResult = metaData.getColumnPrivileges(null, null, "employees", null)) {
+        try (ResultSet privilegesResult = metaData.getColumnPrivileges(null, schemaName, "employees", null)) {
             while (privilegesResult.next()) {
                 final String tableName = privilegesResult.getString("TABLE_NAME");
                 final String columnName = privilegesResult.getString("COLUMN_NAME");

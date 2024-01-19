@@ -30,7 +30,7 @@ public class UsersReaderImpl implements UsersReader {
     public ArrayList<User> readUsers() {
         final ArrayList<User> users = new ArrayList<>();
         try(Statement statement = sourceConnection.getConnection().createStatement()){
-            final ResultSet usersResult = statement.executeQuery(buildUserTableQuery());
+            final ResultSet usersResult = statement.executeQuery(buildSelectUserTableQuery());
             while (usersResult.next()){
                 final String userName = usersResult.getString(sourceDatabaseSystem.userNameColumnName);
                 users.add(new User(userName));
@@ -46,7 +46,7 @@ public class UsersReaderImpl implements UsersReader {
      * Builds a database system specific query to select all users from the users-table
      * @return a SELECT query based on the database system
      */
-    private String buildUserTableQuery() {
+    private String buildSelectUserTableQuery() {
         String base = "SELECT * FROM ";
         return switch (sourceDatabaseSystem) {
             case POSTGRES -> base + DatabaseSystem.POSTGRES.userTableName;

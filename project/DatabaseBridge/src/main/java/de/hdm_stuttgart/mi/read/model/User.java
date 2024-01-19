@@ -1,16 +1,10 @@
 package de.hdm_stuttgart.mi.read.model;
 
-public class User {
-    final String username;
-
-    public User(String username) {
-        this.username = username;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                '}';
-    }
+/**
+ * Model class for a single database user
+ * TODO maybe add more attributes like password hash
+ *
+ * @param username the name of the user
+ */
+public record User(String username) {
 }

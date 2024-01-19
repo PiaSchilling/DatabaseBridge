@@ -6,6 +6,8 @@ public class Constraint {
     private final String value;
 
     /**
+     * Model class for a single column constraint
+     *
      * @param constraintType the type of this constraint
      * @param value          Additional value for this constraint e.g. default value when ConstraintType.DEFAULT or
      *                       check expression when ConstraintType.CHECK

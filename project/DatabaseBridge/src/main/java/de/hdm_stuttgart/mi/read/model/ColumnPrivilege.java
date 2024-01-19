@@ -20,10 +20,10 @@ public class ColumnPrivilege extends Privilege {
     public String toString() {
         return "ColumnPrivilege{" +
                 "columnName='" + columnName + '\'' +
-                ", tableName='" + tableName + '\'' +
-                ", grantor='" + grantor + '\'' +
-                ", grantee='" + grantee + '\'' +
-                ", accessType=" + accessType +
+                ", tableName='" + getTableName() + '\'' +
+                ", grantor='" + getGrantor() + '\'' +
+                ", grantee='" + getGrantee() + '\'' +
+                ", accessType=" + getAccessType() +
                 '}';
     }
 }

@@ -33,12 +33,18 @@ public class ViewReaderImpl implements de.hdm_stuttgart.mi.read.api.ViewReader {
 
         for (String viewName : viewNames
         ) {
-            views.add(new View(viewName, readCreateViewStatement(viewName,schemaName)));
+            views.add(new View(viewName, readCreateViewStatement(viewName, schemaName)));
         }
 
         return views;
     }
 
+    /**
+     * Read all view name available in one schema
+     *
+     * @param schemaName the name of the schema the views belong to
+     * @return a list of view names
+     */
     private ArrayList<String> readViewNames(String schemaName) {
         ArrayList<String> views = new ArrayList<>();
         try (ResultSet tablesResult = metaData.getTables(schemaName, schemaName, null, new String[]{"VIEW"})) {
@@ -52,11 +58,17 @@ public class ViewReaderImpl implements de.hdm_stuttgart.mi.read.api.ViewReader {
         return views;
     }
 
-    // TODO comment all and check all since i was tired
+    /**
+     * Read the "createViewStatement" which was used to create the view
+     *
+     * @param viewName   the name of the view the createViewStatement should be read of
+     * @param schemaName the name of the schema the view belongs to
+     * @return a string containing the whole SQL-Query to recreate the view
+     */
     private String readCreateViewStatement(String viewName, String schemaName) {
         String viewStatement = "";
         try (Statement statement = sourceConnection.getConnection().createStatement()) {
-            final ResultSet viewResult = statement.executeQuery(buildViewStatementQuery(viewName, schemaName));
+            final ResultSet viewResult = statement.executeQuery(buildSelectCreateViewStatementQuery(viewName, schemaName));
             while (viewResult.next()) {
                 viewStatement = viewResult.getString(getViewStatementColumnName());
             }
@@ -66,15 +78,25 @@ public class ViewReaderImpl implements de.hdm_stuttgart.mi.read.api.ViewReader {
         return viewStatement;
     }
 
-    // TODO comment
-    // TODO make consistent with userReader and evtl. extract to config file
-    private String buildViewStatementQuery(String viewName, String schemaName) {
+    /**
+     * Builds a database system specific query to select a "createViewStatement"
+     *
+     * @param viewName   the name of the view which should be selected
+     * @param schemaName the name of the schema the view belongs to
+     * @return a database system specific SQL-Query to select the "createViewStatement"
+     */
+    private String buildSelectCreateViewStatementQuery(String viewName, String schemaName) {
         return switch (sourceConnection.getConnectionDetails().getDatabaseSystem()) {
             case POSTGRES -> "select pg_get_viewdef('" + schemaName + "." + viewName + "', true)";
             case MYSQL, MARIADB -> "SHOW CREATE VIEW " + viewName;
         };
     }
 
+    /**
+     * Returns the database system specific column name which contains "createViewStatements"
+     *
+     * @return a String which contains the columns name
+     */
     private String getViewStatementColumnName() {
         return switch (sourceConnection.getConnectionDetails().getDatabaseSystem()) {
             case POSTGRES -> "pg_get_viewdef";
