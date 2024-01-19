@@ -41,10 +41,10 @@ public class Main {
                 "root",
                 "example");
 
-        Injector injector = Guice.createInjector(new BasicModule(sourceDetailsPostgres, destinationDetails));
+        Injector injector = Guice.createInjector(new BasicModule(sourceDetailsMySql, destinationDetails));
 
         SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
-        final Schema schema = schemaReader.readSchema(sourceDetailsPostgres.getSchema());
+        final Schema schema = schemaReader.readSchema(sourceDetailsMySql.getSchema());
 
         System.out.println(schema);
 

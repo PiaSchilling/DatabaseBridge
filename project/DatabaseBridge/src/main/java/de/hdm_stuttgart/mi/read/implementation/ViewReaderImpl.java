@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
 import de.hdm_stuttgart.mi.read.model.View;
+import de.hdm_stuttgart.mi.util.DbSysConstsProvider;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -19,6 +20,7 @@ public class ViewReaderImpl implements de.hdm_stuttgart.mi.read.api.ViewReader {
 
     private final ConnectionHandler sourceConnection;
     private final DatabaseMetaData metaData;
+    private final DbSysConstsProvider constsProvider = DbSysConstsProvider.INSTANCE();
 
     @Inject
     public ViewReaderImpl(@Named("sourceConnection") ConnectionHandler sourceConnection) {
@@ -87,8 +89,8 @@ public class ViewReaderImpl implements de.hdm_stuttgart.mi.read.api.ViewReader {
      */
     private String buildSelectCreateViewStatementQuery(String viewName, String schemaName) {
         return switch (sourceConnection.getConnectionDetails().getDatabaseSystem()) {
-            case POSTGRES -> "select pg_get_viewdef('" + schemaName + "." + viewName + "', true)";
-            case MYSQL, MARIADB -> "SHOW CREATE VIEW " + viewName;
+            case POSTGRES -> constsProvider.getPlaceholderProperty("viewStmtQueryPG", schemaName, viewName);
+            case MYSQL, MARIADB -> constsProvider.getProperty("viewStmtQueryMSMD") + viewName;
         };
     }
 
@@ -99,8 +101,8 @@ public class ViewReaderImpl implements de.hdm_stuttgart.mi.read.api.ViewReader {
      */
     private String getViewStatementColumnName() {
         return switch (sourceConnection.getConnectionDetails().getDatabaseSystem()) {
-            case POSTGRES -> "pg_get_viewdef";
-            case MYSQL, MARIADB -> "Create View";
+            case POSTGRES -> constsProvider.getProperty("viewStmtColNamePG");
+            case MYSQL, MARIADB -> constsProvider.getProperty("viewStmtColNameMSMD");
         };
     }
 }
