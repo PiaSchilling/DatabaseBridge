@@ -9,10 +9,7 @@ import de.hdm_stuttgart.mi.di.BasicModule;
 import de.hdm_stuttgart.mi.read.api.PrivilegeReader;
 import de.hdm_stuttgart.mi.read.api.SchemaReader;
 import de.hdm_stuttgart.mi.read.api.UsersReader;
-import de.hdm_stuttgart.mi.read.model.ColumnPrivilege;
-import de.hdm_stuttgart.mi.read.model.Privilege;
-import de.hdm_stuttgart.mi.read.model.Table;
-import de.hdm_stuttgart.mi.read.model.User;
+import de.hdm_stuttgart.mi.read.model.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,13 +46,16 @@ public class Main {
                 "root",
                 "example");
 
-        Injector injector = Guice.createInjector(new BasicModule(sourceDetailsMariaDB, destinationDetails));
+        Injector injector = Guice.createInjector(new BasicModule(sourceDetailsPostgres, destinationDetails));
+
+        SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
+        final ArrayList<Table> tables = schemaReader.readSchema(sourceDetailsPostgres.getSchema()).getTables();
+        final ArrayList<View> views = schemaReader.readSchema(sourceDetailsPostgres.getSchema()).getViews();
 
         System.out.println("TABLES");
-        SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
-        final ArrayList<Table> tables = schemaReader.readSchema(sourceDetailsMariaDB.getSchema()).getTables();
         System.out.println(Arrays.toString(tables.toArray()));
-
+        System.out.println("VIEWS");
+        System.out.println(Arrays.toString(views.toArray()));
         System.out.println("\n\n\n");
 
         System.out.println("USERS");

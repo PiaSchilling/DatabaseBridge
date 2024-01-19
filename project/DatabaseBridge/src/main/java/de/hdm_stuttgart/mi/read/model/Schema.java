@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Schema {
     private final ArrayList<Table> tables;
-    private final ArrayList<Table> views;
+    private final ArrayList<View> views;
     private final ArrayList<User> users;
 
     private final ArrayList<Privilege> tablePrivileges;
@@ -13,7 +13,7 @@ public class Schema {
 
     // TODO comment
     public Schema(ArrayList<Table> tables,
-                  ArrayList<Table> views,
+                  ArrayList<View> views,
                   ArrayList<User> users,
                   ArrayList<Privilege> tablePrivileges,
                   ArrayList<ColumnPrivilege> columnPrivileges) {
@@ -28,7 +28,7 @@ public class Schema {
         return tables;
     }
 
-    public ArrayList<Table> getViews() {
+    public ArrayList<View> getViews() {
         return views;
     }
 }

@@ -15,11 +15,11 @@ public class ConnectionDetails {
     /**
      * Model class to encapsulate connection details
      * @param databaseSystem the type of the databaseSystem
-     * @param hostAddress host address of the database
-     * @param port the port on which the database is available
-     * @param schema the name of the schema which should be converted
-     * @param username the name of the user who started the conversion
-     * @param password the password of the user who started the conversion
+     * @param hostAddress    host address of the database
+     * @param port           the port on which the database is available
+     * @param schema         the name of the schema which should be converted
+     * @param username       the name of the user who started the conversion
+     * @param password       the password of the user who started the conversion
      */
     public ConnectionDetails(DatabaseSystem databaseSystem, String hostAddress, int port, String schema, String username, String password) {
         this.databaseSystem = databaseSystem;
@@ -32,18 +32,17 @@ public class ConnectionDetails {
     }
 
     /**
-     *  Creates a JDBC URI from given parameters.
-     *  Note: schema names are not added to the end of the jdbc uri since it causes problems for some database systems,
-     *  so the schema is only specified when the schema is read
+     * Creates a JDBC URI from given parameters
+     * Note: since database systems differ in behavior, for some the schema-name might not be added to the jdbc uri since
+     * it would cause problems. The schema-name is specified on schema-read again, to keep the desired functionality
      * @return the JDBC URI to connect to the database
      */
     private String createJdbcUri() {
         jdbcUri = "jdbc:";
         switch (this.databaseSystem) {
-            case MYSQL -> jdbcUri = jdbcUri + "mysql://" + this.hostAddress + ":" + this.port + "/" ;
-            case MARIADB -> jdbcUri = jdbcUri + "mariadb://" + this.hostAddress + ":" + this.port + "/";
-            case POSTGRES ->
-                    jdbcUri = jdbcUri + "postgresql://" + this.hostAddress + ":" + this.port + "/";
+            case MYSQL -> jdbcUri = jdbcUri + "mysql://" + this.hostAddress + ":" + this.port + "/" + schema;
+            case MARIADB -> jdbcUri = jdbcUri + "mariadb://" + this.hostAddress + ":" + this.port + "/" + schema;
+            case POSTGRES -> jdbcUri = jdbcUri + "postgresql://" + this.hostAddress + ":" + this.port + "/";
         }
 
         return jdbcUri;

@@ -31,6 +31,7 @@ public class BasicModule extends AbstractModule {
     protected void configure() {
         bind(ColumnReader.class).to(ColumnReaderImpl.class);
         bind(TableReader.class).to(TableReaderImpl.class);
+        bind(ViewReader.class).to(ViewReaderImpl.class);
         bind(SchemaReader.class).to(SchemaReaderImpl.class);
         bind(UsersReader.class).to(UsersReaderImpl.class);
         bind(PrivilegeReader.class).to(PrivilegeReaderImpl.class);

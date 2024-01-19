@@ -2,10 +2,7 @@ package de.hdm_stuttgart.mi.read.implementation;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import de.hdm_stuttgart.mi.read.api.PrivilegeReader;
-import de.hdm_stuttgart.mi.read.api.SchemaReader;
-import de.hdm_stuttgart.mi.read.api.TableReader;
-import de.hdm_stuttgart.mi.read.api.UsersReader;
+import de.hdm_stuttgart.mi.read.api.*;
 import de.hdm_stuttgart.mi.read.model.*;
 
 import java.sql.*;
@@ -18,16 +15,18 @@ public class SchemaReaderImpl implements SchemaReader {
     private final Logger log = Logger.getLogger(this.getClass().getName());
     private final DatabaseMetaData metaData;
     private final TableReader tableReader;
+    private final ViewReader viewReader;
     private final UsersReader usersReader;
-
     private final PrivilegeReader privilegeReader;
 
     @Inject
     public SchemaReaderImpl(@Named("SourceDBMetaData") DatabaseMetaData databaseMetaData,
                             TableReader tableReader,
+                            ViewReader viewReader,
                             UsersReader usersReader,
                             PrivilegeReader privilegeReader) {
         this.tableReader = tableReader;
+        this.viewReader = viewReader;
         this.metaData = databaseMetaData;
         this.usersReader = usersReader;
         this.privilegeReader = privilegeReader;
@@ -36,7 +35,7 @@ public class SchemaReaderImpl implements SchemaReader {
     @Override
     public Schema readSchema(String schemaName) {
         final ArrayList<Table> tables = readTables(schemaName);
-        final ArrayList<Table> views = readViews(schemaName);
+        final ArrayList<View> views = viewReader.readViews(schemaName);
         final ArrayList<User> users = usersReader.readUsers();
         final ArrayList<Privilege> tablePrivileges = privilegeReader.readTablePrivileges();
         final ArrayList<ColumnPrivilege> columnPrivileges = privilegeReader.readColumnPrivileges();
@@ -55,18 +54,6 @@ public class SchemaReaderImpl implements SchemaReader {
         return tables;
     }
 
-    private ArrayList<Table> readViews(String schemaName) {
-        final ArrayList<String> viewNames = readViewNames(schemaName);
-        final ArrayList<Table> views = new ArrayList<>();
-
-        for (String viewName : viewNames
-        ) {
-            views.add(tableReader.readTable(viewName));
-        }
-        return views;
-    }
-
-
     private ArrayList<String> readTableNames(String schemaName) {
         ArrayList<String> tables = new ArrayList<>();
         try (ResultSet tablesResult = metaData.getTables(schemaName, schemaName, null, new String[]{"TABLE"})) {
@@ -78,19 +65,5 @@ public class SchemaReaderImpl implements SchemaReader {
             log.log(Level.SEVERE, "SQLException while reading table names: " + sqlException.getMessage());
         }
         return tables;
-    }
-
-    private ArrayList<String> readViewNames(String schemaName) {
-        // TODO read view definition (which select statement was used to create the view?)
-        ArrayList<String> views = new ArrayList<>();
-        try (ResultSet tablesResult = metaData.getTables(schemaName, schemaName, null, new String[]{"VIEW"})) {
-            while (tablesResult.next()) {
-                String tableName = tablesResult.getString("TABLE_NAME");
-                views.add(tableName);
-            }
-        } catch (SQLException sqlException) {
-            log.log(Level.SEVERE, "SQLException while reading view names: " + sqlException.getMessage());
-        }
-        return views;
     }
 }
