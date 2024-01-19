@@ -3,8 +3,9 @@ package de.hdm_stuttgart.mi.read.implementation;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
+import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import de.hdm_stuttgart.mi.read.model.View;
-import de.hdm_stuttgart.mi.util.DbSysConstsProvider;
+import de.hdm_stuttgart.mi.util.Consts;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -20,7 +21,6 @@ public class ViewReaderImpl implements de.hdm_stuttgart.mi.read.api.ViewReader {
 
     private final ConnectionHandler sourceConnection;
     private final DatabaseMetaData metaData;
-    private final DbSysConstsProvider constsProvider = DbSysConstsProvider.INSTANCE();
 
     @Inject
     public ViewReaderImpl(@Named("sourceConnection") ConnectionHandler sourceConnection) {
@@ -88,9 +88,10 @@ public class ViewReaderImpl implements de.hdm_stuttgart.mi.read.api.ViewReader {
      * @return a database system specific SQL-Query to select the "createViewStatement"
      */
     private String buildSelectCreateViewStatementQuery(String viewName, String schemaName) {
-        return switch (sourceConnection.getConnectionDetails().getDatabaseSystem()) {
-            case POSTGRES -> constsProvider.getPlaceholderProperty("viewStmtQueryPG", schemaName, viewName);
-            case MYSQL, MARIADB -> constsProvider.getProperty("viewStmtQueryMSMD") + viewName;
+        final DatabaseSystem databaseSystem = sourceConnection.getConnectionDetails().getDatabaseSystem();
+        return switch (databaseSystem) {
+            case POSTGRES -> Consts.viewStmtQueryPG(schemaName, viewName);
+            case MYSQL, MARIADB -> databaseSystem.viewQuery + viewName;
         };
     }
 
@@ -100,9 +101,6 @@ public class ViewReaderImpl implements de.hdm_stuttgart.mi.read.api.ViewReader {
      * @return a String which contains the columns name
      */
     private String getViewStatementColumnName() {
-        return switch (sourceConnection.getConnectionDetails().getDatabaseSystem()) {
-            case POSTGRES -> constsProvider.getProperty("viewStmtColNamePG");
-            case MYSQL, MARIADB -> constsProvider.getProperty("viewStmtColNameMSMD");
-        };
+        return sourceConnection.getConnectionDetails().getDatabaseSystem().viewColumnName;
     }
 }

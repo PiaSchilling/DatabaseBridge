@@ -47,12 +47,7 @@ public class UsersReaderImpl implements UsersReader {
      * @return a SELECT query based on the database system
      */
     private String buildSelectUserTableQuery() {
-        String base = "SELECT * FROM ";
-        return switch (sourceDatabaseSystem) {
-            case POSTGRES -> base + DatabaseSystem.POSTGRES.userTableName;
-            case MYSQL -> base + DatabaseSystem.MYSQL.userTableName;
-            case MARIADB -> base + DatabaseSystem.MARIADB.userTableName;
-        };
+        return  "SELECT * FROM " + sourceDatabaseSystem.userTableName;
     }
 
 }

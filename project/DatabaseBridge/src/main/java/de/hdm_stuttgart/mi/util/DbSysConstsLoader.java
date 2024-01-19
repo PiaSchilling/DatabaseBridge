@@ -9,23 +9,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Provides database system specific constants like select queries or table column names
+ * Loads database system specific constants like select queries or table column names
  */
-public class DbSysConstsProvider {
+public class DbSysConstsLoader {
 
     private final Logger log = Logger.getLogger(this.getClass().getName());
 
-    private static DbSysConstsProvider INSTANCE;
+    private static DbSysConstsLoader INSTANCE;
 
     private Properties databaseSystemsConsts;
 
-    private DbSysConstsProvider() {
+    private DbSysConstsLoader() {
         init();
     }
 
-    public static DbSysConstsProvider INSTANCE() {
+    public static DbSysConstsLoader INSTANCE() {
         if (INSTANCE == null) {
-            INSTANCE = new DbSysConstsProvider();
+            INSTANCE = new DbSysConstsLoader();
         }
         return INSTANCE;
     }
