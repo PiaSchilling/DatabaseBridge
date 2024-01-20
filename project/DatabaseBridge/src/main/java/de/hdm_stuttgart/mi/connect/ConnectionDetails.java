@@ -2,6 +2,9 @@ package de.hdm_stuttgart.mi.connect;
 
 public class ConnectionDetails {
     private final DatabaseSystem databaseSystem;
+    private final String databaseDriverName;
+
+    private final String databaseDriverJar;
     private final String hostAddress;
     private final int port;
     private final String database;
@@ -11,15 +14,20 @@ public class ConnectionDetails {
 
     /**
      * Class saves all parameters to connect to databases
-     * @param databaseSystem the DatabaseSystem type
-     * @param hostAddress (weiß nicht genau was das ist bitte selbst ausfüllen)
-     * @param port port number, on which the database is accessible 
-     * @param database (weiß nicht genau was/wozu das ist bitte selbst ausfüllen)
-     * @param username username to login into the database
-     * @param password passwort to login into the database
+     *
+     * @param databaseSystem     the DatabaseSystem type
+     * @param databaseDriverName name of the database driver (e.g. com.mysql.cj.jdbc.Driver)
+     * @param databaseDriverJar  the location of the databaseDriver Jar (e.g. mysql-connector-j-8.0.33.jar)
+     * @param hostAddress        host address of the database server (e.g. localhost)
+     * @param port               port number, on which the database is accessible
+     * @param database           In case only specific database should be copied
+     * @param username           username to login into the database
+     * @param password           passwort to login into the database
      */
-    public ConnectionDetails(DatabaseSystem databaseSystem, String hostAddress, int port, String database, String username, String password) {
+    public ConnectionDetails(DatabaseSystem databaseSystem, String databaseDriverName, String databaseDriverJar, String hostAddress, int port, String database, String username, String password) {
         this.databaseSystem = databaseSystem;
+        this.databaseDriverName = databaseDriverName;
+        this.databaseDriverJar = databaseDriverJar;
         this.hostAddress = hostAddress;
         this.port = port;
         this.database = database;
@@ -58,5 +66,13 @@ public class ConnectionDetails {
 
     public String getJdbcUri() {
         return jdbcUri;
+    }
+
+    public String getDatabaseDriverName() {
+        return databaseDriverName;
+    }
+
+    public String getDatabaseDriverJar() {
+        return "jar:file:" + databaseDriverJar + "!/";
     }
 }
