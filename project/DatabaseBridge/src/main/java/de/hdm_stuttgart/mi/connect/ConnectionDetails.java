@@ -16,7 +16,7 @@ public class ConnectionDetails {
      * Class saves all parameters to connect to databases
      *
      * @param databaseSystem     the DatabaseSystem type
-     * @param databaseDriverName name of the database driver (e. g. com.mysql.cj.jdbc.Driver)
+     * @param databaseDriverName name of the database driver (e.g. com.mysql.cj.jdbc.Driver)
      * @param databaseDriverJar  the location of the databaseDriver Jar (e.g. mysql-connector-j-8.0.33.jar)
      * @param hostAddress        host address of the database server (e.g. localhost)
      * @param port               port number, on which the database is accessible
@@ -73,6 +73,6 @@ public class ConnectionDetails {
     }
 
     public String getDatabaseDriverJar() {
-        return databaseDriverJar;
+        return "jar:file:" + databaseDriverJar + "!/";
     }
 }

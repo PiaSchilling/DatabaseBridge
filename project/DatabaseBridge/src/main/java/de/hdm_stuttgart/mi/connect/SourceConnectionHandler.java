@@ -34,24 +34,40 @@ public class SourceConnectionHandler implements ConnectionHandler {
      * @param connectionDetails configuration parameters for the connection
      * @return return true if connection is possible, return false if connection is not possible
      */
-    public boolean connectDatabase(ConnectionDetails connectionDetails) throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, URISyntaxException, SQLException, NoSuchMethodException {
-        URL u;
+    public boolean connectDatabase(ConnectionDetails connectionDetails) {
         try {
+            URL u;
             u = new URI(connectionDetails.getDatabaseDriverJar()).toURL();
+            String classname = connectionDetails.getDatabaseDriverName();
+            URLClassLoader ucl = new URLClassLoader(new URL[] { u });
+            Driver driver = (Driver)Class.forName(classname, true, ucl).getDeclaredConstructor().newInstance();
+            DriverManager.registerDriver(new DriverShim(driver));
+            this.connection = DriverManager.getConnection(connectionDetails.getJdbcUri(), connectionDetails.getUsername(), connectionDetails.getPassword());
+            return true;
         }
-       catch(MalformedURLException e) {
-           System.out.println("Error: Couldn't find the file provided by the URL");
+       catch(MalformedURLException e ) {
+           System.out.println("Error: Couldn't find the jar file provided, please check if the path is correct");
            System.out.println(e.getMessage());
            return false;
        }
-        String classname = connectionDetails.getDatabaseDriverName();
-        URLClassLoader ucl = new URLClassLoader(new URL[] { u });
-        Driver d = (Driver)Class.forName(classname, true, ucl).getDeclaredConstructor().newInstance();
-        DriverManager.registerDriver(new DriverShim(d));
-        try {
-            this.connection = DriverManager.getConnection(connectionDetails.getJdbcUri(), connectionDetails.getUsername(), connectionDetails.getPassword());
-            return true;
-        } catch (SQLException var3) {
+        catch(URISyntaxException e) {
+            System.out.println("Error: The path to the jar file is formatted incorrectly");
+            System.out.println(e.getMessage());
+            return false;
+        }
+        catch(ClassNotFoundException e) {
+            System.out.println("Error: Couldn't load the jdbc driver class");
+            System.out.println(e.getMessage());
+            return false;
+        }
+        catch(NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            System.out.println("Error: Couldn't create new instance of specified driver class");
+            System.out.println(e.getMessage());
+            return false;
+        }
+        catch (SQLException e) {
+            System.out.println("Error: Couldn't connect to the database, please recheck connection details like username, password, host address, port, database name and database system");
+            System.out.println(e.getMessage());
             return false;
         }
     }

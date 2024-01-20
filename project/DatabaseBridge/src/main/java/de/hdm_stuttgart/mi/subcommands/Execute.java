@@ -10,9 +10,6 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 /**
  * Picocli Command, executes the database transfer, if possible
@@ -27,7 +24,7 @@ public class Execute implements Runnable {
     @Override
     public void run() {
 
-        //Try to read data from source database
+        //At the moment: try to connect to source database
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(new File(fileLocation));
@@ -45,21 +42,10 @@ public class Execute implements Runnable {
             );
 
             //Connect Database to SourceConnectionHandler and create Connection
-            if(!SourceConnectionHandler.getInstance().connectDatabase(sourceDatabase)){
-                return;
-            }
-            Connection connection = SourceConnectionHandler.getInstance().getConnection();
-            Statement stmt = connection.createStatement();
+            SourceConnectionHandler.getInstance().connectDatabase(sourceDatabase);
+            boolean connected = SourceConnectionHandler.getInstance().connectionActive();
+            System.out.println("Is connected: " + connected);
 
-            //For now Test if data can be read
-            //TODO Read Schema, ...
-            ResultSet result = stmt.executeQuery("SELECT * FROM movies.movie");
-
-            while (result.next()) {
-                System.out.println(result.getString("movie_name"));
-            }
-            stmt.close();
-            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
