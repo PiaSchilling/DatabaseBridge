@@ -1,0 +1,22 @@
+{
+  "sourceDatabase": {
+    "databaseSystem": "",
+    "databaseDriverName": "",
+    "databaseDriverJar": "",
+    "hostAddress": "",
+    "port" : "",
+    "database": "",
+    "username": "",
+    "password": ""
+  },
+  "destinationDatabase": {
+    "databaseSystem": "",
+    "databaseDriverName": "",
+    "databaseDriverJar": "",
+    "hostAddress": "",
+    "port" : "",
+    "database": "",
+    "username": "",
+    "password": ""
+  }
+}

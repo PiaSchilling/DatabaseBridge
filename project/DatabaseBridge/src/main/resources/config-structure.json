@@ -1,0 +1,22 @@
+{
+  "sourceDatabase": {
+    "databaseSystem": "MYSQL, POSTGRES, MARIADB",
+    "databaseDriverName": "?name of the driver class?",
+    "databaseDriverJar": "?.jar file of the database driver",
+    "hostAddress": "localhost",
+    "port" : "3306",
+    "database": "database name",
+    "username": "your username",
+    "password": "your password"
+  },
+  "destinationDatabase": {
+    "databaseSystem": "MYSQL, POSTGRES, MARIADB",
+    "databaseDriverName": "?name of the driver class?",
+    "databaseDriverJar": "?.jar file of the database driver",
+    "hostAddress": "localhost",
+    "port" : "3306",
+    "database": "database name",
+    "username": "your username",
+    "password": "your password"
+  }
+}
