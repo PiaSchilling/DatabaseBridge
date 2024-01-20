@@ -12,7 +12,10 @@ import de.hdm_stuttgart.mi.read.model.*;
 
 public class Main {
     public static void main(String[] args) {
-        final ConnectionDetails sourceDetailsMariaDB = new ConnectionDetails(DatabaseSystem.MARIADB,
+        final ConnectionDetails sourceDetailsMariaDB = new ConnectionDetails(
+                DatabaseSystem.MARIADB,
+                "org.mariadb.jdbc.Driver",
+                "src/main/resources/jar/mariadb-java-client-3.3.0.jar",
                 "localhost",
                 3307,
                 "travel",
@@ -20,6 +23,8 @@ public class Main {
                 "example");
 
         final ConnectionDetails sourceDetailsMySql = new ConnectionDetails(DatabaseSystem.MYSQL,
+                "com.mysql.cj.jdbc.Driver",
+                "src/main/resources/jar/mysql-connector-j-8.0.33.ja",
                 "localhost",
                 3306,
                 "employees",
@@ -27,6 +32,8 @@ public class Main {
                 "example");
 
         final ConnectionDetails sourceDetailsPostgres = new ConnectionDetails(DatabaseSystem.POSTGRES,
+                "org.postgresql.Driver",
+                "src/main/resources/jar/postgresql-42.7.1.jar",
                 "localhost",
                 5432,
                 "test",
@@ -34,14 +41,16 @@ public class Main {
                 "example");
 
         // Just dummy data, destination db currently not in use!
-        final ConnectionDetails destinationDetails = new ConnectionDetails(DatabaseSystem.POSTGRES,
+        final ConnectionDetails destinationDetailsPostgres = new ConnectionDetails(DatabaseSystem.POSTGRES,
+                "org.postgresql.Driver",
+                "src/main/resources/jar/postgresql-42.7.1.jar",
                 "localhost",
-                8888,
-                "example",
-                "root",
+                5432,
+                "test",
+                "postgres",
                 "example");
 
-        Injector injector = Guice.createInjector(new BasicModule(sourceDetailsMySql, destinationDetails));
+        Injector injector = Guice.createInjector(new BasicModule(sourceDetailsMySql, destinationDetailsPostgres));
 
         SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
         final Schema schema = schemaReader.readSchema(sourceDetailsMySql.getSchema());

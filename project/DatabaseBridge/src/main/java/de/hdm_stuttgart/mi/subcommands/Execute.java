@@ -2,10 +2,8 @@ package de.hdm_stuttgart.mi.subcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import de.hdm_stuttgart.mi.connect.ConnectionDetails;
-import de.hdm_stuttgart.mi.connect.DatabaseSystem;
-import de.hdm_stuttgart.mi.connect.SourceConnectionHandler;
+import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
+import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
@@ -42,9 +40,9 @@ public class Execute implements Runnable {
             );
 
             //Connect Database to SourceConnectionHandler and create Connection
-            SourceConnectionHandler.getInstance().connectDatabase(sourceDatabase);
+           /* SourceConnectionHandler.getInstance().connectDatabase(sourceDatabase);
             boolean connected = SourceConnectionHandler.getInstance().connectionActive();
-            System.out.println("Is connected: " + connected);
+            System.out.println("Is connected: " + connected);*/
 
         } catch (Exception e) {
             e.printStackTrace();

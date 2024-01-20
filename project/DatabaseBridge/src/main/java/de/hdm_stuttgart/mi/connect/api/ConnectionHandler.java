@@ -7,7 +7,6 @@ import java.sql.DatabaseMetaData;
 
 public interface ConnectionHandler {
 
-
     boolean connectionActive();
 
     Connection getConnection();
