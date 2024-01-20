@@ -17,7 +17,7 @@ public class NewConfigFile implements Runnable {
 
     @Override
     public void run() {
-        final Controller controller = new Controller(); // TODO inject
+        final Controller controller = new Controller();
         controller.onNewConfigFile(fileLocation);
     }
 }

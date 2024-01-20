@@ -16,7 +16,7 @@ public class Execute implements Runnable {
 
     @Override
     public void run() {
-        final Controller controller = new Controller(); // TODO inject controller
+        final Controller controller = new Controller();
         controller.onExecute(fileLocation);
     }
 }

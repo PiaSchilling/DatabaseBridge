@@ -6,7 +6,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
 import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
-import de.hdm_stuttgart.mi.di.BasicModule;
+import de.hdm_stuttgart.mi.di.ConnectModule;
+import de.hdm_stuttgart.mi.di.SchemaReadModule;
 import de.hdm_stuttgart.mi.read.api.SchemaReader;
 import de.hdm_stuttgart.mi.read.model.Schema;
 
@@ -25,17 +26,20 @@ public class Controller {
     /**
      * Defines what should happen when the Execute command is executed
      * Currently runs only schema read
+     *
      * @param configFilePath the path to the configuration file the user specified
      */
     public void onExecute(String configFilePath) {
         final ConnectionDetails sourceConnectionDetails = buildConnectionDetails(configFilePath, "source");
         final ConnectionDetails destinationConnectionDetails = buildConnectionDetails(configFilePath, "destination");
 
-        if(sourceConnectionDetails == null || destinationConnectionDetails == null){
+        if (sourceConnectionDetails == null || destinationConnectionDetails == null) {
             return;
         }
 
-        final Injector injector = Guice.createInjector(new BasicModule(sourceConnectionDetails, destinationConnectionDetails));
+        final Injector injector = Guice.createInjector(
+                new ConnectModule(sourceConnectionDetails, destinationConnectionDetails),
+                new SchemaReadModule());
 
         // TODO put missing the application logic here e.g. writeSchema, readData, ....
         SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
@@ -46,6 +50,7 @@ public class Controller {
     /**
      * Defines what should happen when the NewConfigFile command is executed
      * Creates a new config file template at the configFileLocation
+     *
      * @param configFileLocation the path to location the user wants the template file to be placed
      */
     public void onNewConfigFile(String configFileLocation) {
