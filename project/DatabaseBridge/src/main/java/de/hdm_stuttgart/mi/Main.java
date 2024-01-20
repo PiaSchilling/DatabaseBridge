@@ -24,7 +24,7 @@ public class Main {
 
         final ConnectionDetails sourceDetailsMySql = new ConnectionDetails(DatabaseSystem.MYSQL,
                 "com.mysql.cj.jdbc.Driver",
-                "src/main/resources/jar/mysql-connector-j-8.0.33.ja",
+                "src/main/resources/jar/mysql-connector-j-8.0.33.jar",
                 "localhost",
                 3306,
                 "employees",
