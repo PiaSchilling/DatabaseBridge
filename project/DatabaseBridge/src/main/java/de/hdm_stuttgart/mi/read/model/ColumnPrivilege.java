@@ -5,11 +5,12 @@ public class ColumnPrivilege extends Privilege {
 
     /**
      * Model class for a columnPrivilege
-     * @param tableName   name of table this privilege applies to
-     * @param grantor     grantor of access
-     * @param grantee     grantee of access
-     * @param accessType  type of access (DELETE,UPDATE,...)
-     * @param columnName  name of column this privilege applies to
+     *
+     * @param tableName  name of table this privilege applies to
+     * @param grantor    grantor of access
+     * @param grantee    grantee of access
+     * @param accessType type of access (DELETE,UPDATE,...)
+     * @param columnName name of column this privilege applies to
      */
     public ColumnPrivilege(String tableName, String grantor, String grantee, AccessType accessType, String columnName) {
         super(tableName, grantor, grantee, accessType);

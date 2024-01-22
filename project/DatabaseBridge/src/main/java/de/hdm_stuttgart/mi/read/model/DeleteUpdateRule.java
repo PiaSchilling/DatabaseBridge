@@ -10,38 +10,40 @@ public enum DeleteUpdateRule {
     /**
      * Do not allow delete or update of primary key if it has been imported
      */
-    IMPORTED_NO_ACTION(3),
+    IMPORTED_NO_ACTION(3,"NO ACTION"),
 
     /**
      * on update: change imported key to agree with primary key update
      * on delete: delete rows that import a deleted key
      */
-    IMPORTED_KEY_CASCADE(0),
+    IMPORTED_KEY_CASCADE(0,"CASCADE"),
 
     /**
      * change imported key to NULL if its primary key has been deleted/updated
      */
-    IMPORTED_KEY_SET_NULL(2),
+    IMPORTED_KEY_SET_NULL(2,"SET NULL"),
 
     /**
      * change imported key to default if its primary key has been deleted/updated
      */
-    IMPORTED_KEY_SET_DEFAULT(4),
+    IMPORTED_KEY_SET_DEFAULT(4,"SET DEFAULT"),
 
     /**
      * same as importedKeyNoAction (for ODBC 2.x compatibility)
      */
-    IMPORTED_KEY_RESTRICT(1),
+    IMPORTED_KEY_RESTRICT(1,"RESTRICT"),
 
     /**
      * Update rule is unknown
      */
-    UNKNOWN(-13);
+    UNKNOWN(-13,"UNKNOWN");
 
     final int ruleCode;
+    final String asString;
 
-    DeleteUpdateRule(int ruleCode) {
+    DeleteUpdateRule(int ruleCode,String asString) {
         this.ruleCode = ruleCode;
+        this.asString = asString;
     }
 
     /**
@@ -55,5 +57,6 @@ public enum DeleteUpdateRule {
         final Optional<DeleteUpdateRule> match = Arrays.stream(values()).filter(e -> e.ruleCode == ruleCode).findFirst();
         return match.orElse(UNKNOWN);
     }
+
 
 }

@@ -3,49 +3,51 @@ package de.hdm_stuttgart.mi.util;
 import java.sql.Types;
 
 public enum SQLType {
-    ARRAY(Types.ARRAY, "ARRAY"),
-    BIGINT(Types.BIGINT, "BIGINT"),
-    BINARY(Types.BINARY, "BINARY"),
-    BIT(Types.BIT, "BIT"),
-    BLOB(Types.BLOB, "BLOB"),
-    BOOLEAN(Types.BOOLEAN, "BOOLEAN"),
-    CHAR(Types.CHAR, "CHAR"),
-    CLOB(Types.CLOB, "CLOB"),
-    DATALINK(Types.DATALINK, "DATALINK"),
-    DATE(Types.DATE, "DATE"),
-    DECIMAL(Types.DECIMAL, "DECIMAL"),
-    DOUBLE(Types.DOUBLE, "DOUBLE"),
-    FLOAT(Types.FLOAT, "FLOAT"),
-    INTEGER(Types.INTEGER, "INTEGER"),
-    JAVA_OBJECT(Types.JAVA_OBJECT, "JAVA_OBJECT"),
-    LONGNVARCHAR(Types.LONGNVARCHAR, "LONGNVARCHAR"),
-    LONGVARBINARY(Types.LONGVARBINARY, "LONGVARBINARY"),
-    LONGVARCHAR(Types.LONGVARCHAR, "LONGVARCHAR"),
-    NCHAR(Types.NCHAR, "NCHAR"),
-    NCLOB(Types.NCLOB, "NCLOB"),
-    NULL(Types.NULL, "NULL"),
-    NUMERIC(Types.NUMERIC, "NUMERIC"),
-    NVARCHAR(Types.NVARCHAR, "NVARCHAR"),
-    OTHER(Types.OTHER, "OTHER"),
-    REAL(Types.REAL, "REAL"),
-    REF(Types.REF, "REF"),
-    ROWID(Types.ROWID, "ROWID"),
-    SMALLINT(Types.SMALLINT, "SMALLINT"),
-    SQLXML(Types.SQLXML, "SQLXML"),
-    STRUCT(Types.STRUCT, "STRUCT"),
-    TIME(Types.TIME, "TIME"),
-    TIMESTAMP(Types.TIMESTAMP, "TIMESTAMP"),
-    TINYINT(Types.TINYINT, "TINYINT"),
-    VARBINARY(Types.VARBINARY, "VARBINARY"),
-    VARCHAR(Types.VARCHAR, "VARCHAR"),
-    UNKNOWN(-13,"UNKNOWN");
+    ARRAY(Types.ARRAY, "ARRAY", false),
+    BIGINT(Types.BIGINT, "BIGINT", false),
+    BINARY(Types.BINARY, "BINARY", true),
+    BIT(Types.BIT, "BIT", false),
+    BLOB(Types.BLOB, "BLOB", true),
+    BOOLEAN(Types.BOOLEAN, "BOOLEAN", false),
+    CHAR(Types.CHAR, "CHAR", true),
+    CLOB(Types.CLOB, "CLOB", true),
+    DATALINK(Types.DATALINK, "DATALINK", false),
+    DATE(Types.DATE, "DATE", false),
+    DECIMAL(Types.DECIMAL, "DECIMAL", false),
+    DOUBLE(Types.DOUBLE, "DOUBLE", false),
+    FLOAT(Types.FLOAT, "FLOAT", false),
+    INTEGER(Types.INTEGER, "INTEGER", false),
+    JAVA_OBJECT(Types.JAVA_OBJECT, "JAVA_OBJECT", false),
+    LONGNVARCHAR(Types.LONGNVARCHAR, "LONGNVARCHAR", false),
+    LONGVARBINARY(Types.LONGVARBINARY, "LONGVARBINARY", true),
+    LONGVARCHAR(Types.LONGVARCHAR, "LONGVARCHAR", true),
+    NCHAR(Types.NCHAR, "NCHAR", true),
+    NCLOB(Types.NCLOB, "NCLOB", true),
+    NULL(Types.NULL, "NULL", false),
+    NUMERIC(Types.NUMERIC, "NUMERIC", false),
+    NVARCHAR(Types.NVARCHAR, "NVARCHAR", true),
+    OTHER(Types.OTHER, "OTHER", false),
+    REAL(Types.REAL, "REAL", false),
+    REF(Types.REF, "REF", false),
+    ROWID(Types.ROWID, "ROWID", false),
+    SMALLINT(Types.SMALLINT, "SMALLINT", false),
+    SQLXML(Types.SQLXML, "SQLXML", false),
+    STRUCT(Types.STRUCT, "STRUCT", false),
+    TIME(Types.TIME, "TIME", false),
+    TIMESTAMP(Types.TIMESTAMP, "TIMESTAMP", false),
+    TINYINT(Types.TINYINT, "TINYINT", false),
+    VARBINARY(Types.VARBINARY, "VARBINARY", true),
+    VARCHAR(Types.VARCHAR, "VARCHAR", true),
+    UNKNOWN(-13,"UNKNOWN",false);
 
     private final int typeCode;
     private final String typeName;
+    public final boolean hasLength;
 
-    SQLType(int typeCode, String typeName) {
+    SQLType(int typeCode, String typeName, boolean hasLength) {
         this.typeCode = typeCode;
         this.typeName = typeName;
+        this.hasLength = hasLength;
     }
 
     public int getTypeCode() {

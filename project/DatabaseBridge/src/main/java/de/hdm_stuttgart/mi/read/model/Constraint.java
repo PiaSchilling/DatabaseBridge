@@ -9,8 +9,7 @@ public class Constraint {
      * Model class for a single column constraint
      *
      * @param constraintType the type of this constraint
-     * @param value          Additional value for this constraint e.g. default value when ConstraintType.DEFAULT or
-     *                       check expression when ConstraintType.CHECK
+     * @param value          Additional value for this constraint e.g. default value when ConstraintType.DEFAULT
      */
     public Constraint(ConstraintType constraintType, String value) {
         this.constraintType = constraintType;
@@ -36,5 +35,16 @@ public class Constraint {
 
     public String getValue() {
         return value;
+    }
+
+    /**
+     * Get this constraint as statement representation which can be used to build the columns in a CREATE TABLE statement
+     * @example {@code DEFAULT false}
+     * @return a SQL statement string
+     */
+    public String asStatement() {
+        return constraintType == ConstraintType.DEFAULT
+                ? constraintType.asString + " " + value
+                : constraintType.asString;
     }
 }

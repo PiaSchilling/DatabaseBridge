@@ -57,6 +57,7 @@ public class TableReaderImpl implements TableReader {
             while (importedKeys.next()) {
                 final String referencedTableName = importedKeys.getString("PKTABLE_NAME");
                 final String referencedColumnName = importedKeys.getString("PKCOLUMN_NAME");
+                final String referencingColumnName = importedKeys.getString("FKCOLUMN_NAME");
                 final short updateRule = importedKeys.getShort("UPDATE_RULE");
                 final short deleteRule = importedKeys.getShort("DELETE_RULE");
                 final String fkName = importedKeys.getString("FK_NAME");
@@ -65,6 +66,7 @@ public class TableReaderImpl implements TableReader {
                 importedFkRelations.add(new FkRelation(
                         referencedTableName,
                         referencedColumnName,
+                        referencingColumnName,
                         fkName,
                         DeleteUpdateRule.fromCode(updateRule),
                         DeleteUpdateRule.fromCode(deleteRule)));
@@ -90,6 +92,7 @@ public class TableReaderImpl implements TableReader {
             while (importedKeys.next()) {
                 final String referencingTableName = importedKeys.getString("FKTABLE_NAME");
                 final String referencingColumnName = importedKeys.getString("FKCOLUMN_NAME");
+                final String referencedColumnName = importedKeys.getString("PKCOLUMN_NAME");
                 final short updateRule = importedKeys.getShort("UPDATE_RULE");
                 final short deleteRule = importedKeys.getShort("DELETE_RULE");
                 final String fkName = importedKeys.getString("FK_NAME");
@@ -99,6 +102,7 @@ public class TableReaderImpl implements TableReader {
                 exportedFkRelations.add(new FkRelation(
                         referencingTableName,
                         referencingColumnName,
+                        referencedColumnName,
                         fkName,
                         DeleteUpdateRule.fromCode(updateRule),
                         DeleteUpdateRule.fromCode(deleteRule)));

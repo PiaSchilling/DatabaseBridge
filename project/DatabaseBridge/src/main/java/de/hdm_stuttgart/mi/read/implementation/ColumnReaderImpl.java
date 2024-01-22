@@ -63,7 +63,6 @@ public class ColumnReaderImpl implements ColumnReader {
         constraints.add(readNotNullConstraint(column));
         constraints.add(readUniqueConstraint(columnName, tableName));
         constraints.add(readPrimaryKeyConstraint(columnName, tableName));
-        constraints.add(readForeignKeyConstraint(columnName, tableName));
         constraints.add(readDefaultConstraint(column));
 
         constraints.removeIf(Objects::isNull);
@@ -161,7 +160,7 @@ public class ColumnReaderImpl implements ColumnReader {
         return null;
     }
 
-    /**
+    /** todo check if this can be removed
      * Checks if {@code column} defines a FOREIGN KEY constraint
      *
      * @param columnName the name of the column to check
