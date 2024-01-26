@@ -1,0 +1,47 @@
+DROP SCHEMA IF EXISTS test CASCADE ;
+CREATE SCHEMA test;
+
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS users;
+
+
+
+CREATE TABLE test.users
+(
+    user_id  SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE  ,
+    email    VARCHAR(100) UNIQUE
+
+);
+
+
+CREATE TABLE  test.orders
+(
+    order_id     SERIAL PRIMARY KEY,
+    user_id      INT REFERENCES test.users (user_id),
+    order_date   DATE NULL,
+    total_amount DECIMAL(10, 2),
+    CONSTRAINT fk_order_user FOREIGN KEY (user_id) REFERENCES test.users(user_id),
+    CONSTRAINT uk_order_user UNIQUE (order_id, user_id)
+);
+
+CREATE VIEW test.user_order_view AS
+SELECT
+    u.user_id,
+    u.username,
+    u.email,
+    o.order_id,
+    o.order_date,
+    o.total_amount
+FROM
+    test.users u
+        JOIN
+    test.orders o ON u.user_id = o.user_id;
+
+INSERT INTO  test.users (username, email)
+VALUES ('Benutzer1', 'benutzer1@example.com'),
+       ('Benutzer2', 'benutzer2@example.com');
+
+INSERT INTO  test.orders (user_id, order_date, total_amount)
+VALUES (1, '2024-01-12', 50.00),
+       (2, '2024-01-13', 75.50);

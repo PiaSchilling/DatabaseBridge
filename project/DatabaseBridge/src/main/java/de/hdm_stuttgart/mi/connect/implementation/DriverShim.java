@@ -1,4 +1,4 @@
-package de.hdm_stuttgart.mi.connect;
+package de.hdm_stuttgart.mi.connect.implementation;
 import java.sql.*;
 import java.util.Properties;
 import java.util.logging.Logger;
