@@ -6,12 +6,10 @@ import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
 import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
 import de.hdm_stuttgart.mi.connect.implementation.ConnectionHandlerImpl;
 import de.hdm_stuttgart.mi.connect.model.ConnectionType;
-import de.hdm_stuttgart.mi.read.api.*;
-import de.hdm_stuttgart.mi.read.implementation.*;
 
 import java.sql.DatabaseMetaData;
 
-public class BasicModule extends AbstractModule {
+public class ConnectModule extends AbstractModule {
 
     final ConnectionDetails sourceConnectionDetails;
     final ConnectionDetails destinationConnectionDetails;
@@ -20,7 +18,7 @@ public class BasicModule extends AbstractModule {
 
     final ConnectionHandlerImpl destinationConnectionHandler;
 
-    public BasicModule(ConnectionDetails sourceConnectionDetails, ConnectionDetails destinationConnectionDetails) {
+    public ConnectModule(ConnectionDetails sourceConnectionDetails, ConnectionDetails destinationConnectionDetails) {
         this.sourceConnectionDetails = sourceConnectionDetails;
         this.destinationConnectionDetails = destinationConnectionDetails;
         this.sourceConnectionHandler = new ConnectionHandlerImpl(ConnectionType.SOURCE, sourceConnectionDetails);
@@ -29,12 +27,6 @@ public class BasicModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(ColumnReader.class).to(ColumnReaderImpl.class);
-        bind(TableReader.class).to(TableReaderImpl.class);
-        bind(ViewReader.class).to(ViewReaderImpl.class);
-        bind(SchemaReader.class).to(SchemaReaderImpl.class);
-        bind(UsersReader.class).to(UsersReaderImpl.class);
-        bind(PrivilegeReader.class).to(PrivilegeReaderImpl.class);
         bind(DatabaseMetaData.class)
                 .annotatedWith(Names.named("SourceDBMetaData"))
                 .toInstance(sourceConnectionHandler.getDatabaseMetaData());
