@@ -31,35 +31,35 @@ public class WriteData {
             for(int columnIndex = 0; columnIndex < table.columns().size(); columnIndex++) {
                 columns.add(schema.tables().get(tableIndex).columns().get(columnIndex).name());
             }
-            //Create Prepared Statement
-            String insertQuery = createPreparedStatement(table.name(), columns);
-            PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
+
+            Statement stmt = connection.createStatement();
             // Iterate over the ResultSet and construct INSERT statement
             while (tables.get(tableIndex).next()) {
                 StringBuilder values = new StringBuilder();
-                for (int i = 0; i < columns.size(); i++) {
+                for (int i = 1; i <= columns.size(); i++) {
                     Object value = tables.get(tableIndex).getObject(i);
                     //Check which type the current column has
                     if (value == null) {
-                        preparedStatement.setNull(i, Types.NULL);
-                        //values.append("NULL");
+                        //preparedStatement.setNull(i, Types.NULL);
+                        values.append("NULL");
                     } else if (value instanceof Number) {
-                        preparedStatement.setObject(i, value);
-                        //values.append(value);
+                        //preparedStatement.setObject(i, value);
+                        values.append(value);
                     } else {
-                        preparedStatement.setString(i, value.toString());
-                        //values.append("'").append(value).append("'");
+                        //preparedStatement.setString(i, value.toString());
+                        values.append("'").append(value).append("'");
                     }
-                    preparedStatement.addBatch();
+
                     //Limit Batch size?
-                    /*
                     if (i < columns.size()) {
                         values.append(", ");
                     }
-                     */
                 }
-                // Construct and execute the INSERT statement
-                preparedStatement.executeBatch();
+                // Construct the INSERT statement
+                String insertQuery = "INSERT INTO " + schema.name() + '.' + schema.tables().get(tableIndex).name() +
+                        " VALUES (" + values + ")";
+
+               stmt.executeUpdate(insertQuery);
             }
 
         }
@@ -67,8 +67,8 @@ public class WriteData {
 
         } catch(Exception e) {
             System.out.println(e.getMessage());
+            return false;
         }
-
 
         return true;
     }
@@ -94,14 +94,4 @@ public class WriteData {
 
         return  insertQueryBuilder.toString();
     }
-
-    /*
-    ArrayList<String> columns = new ArrayList<>();
-            //Get column names of current table
-            for(int columnIndex = 0; columnIndex < table.columns().size(); columnIndex++) {
-                columns.add(schema.tables().get(tableIndex).columns().get(columnIndex).name());
-            }
-     */
-
-
 }
