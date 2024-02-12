@@ -31,5 +31,10 @@ public class Consts {
      */
     final public static String userNameColName = propLoader.getProperty("userNameColName");
 
+    /**
+     * The name of the auto increment constraint
+     */
+    final public static String autoIncrementConstraintName = propLoader.getProperty("autoIncrementConstraintName");
+
 
 }

@@ -1,7 +1,9 @@
 package de.hdm_stuttgart.mi.write.schema;
 
 import de.hdm_stuttgart.mi.read.model.*;
+import de.hdm_stuttgart.mi.util.Consts;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class StatementBuilder {
@@ -13,9 +15,13 @@ public class StatementBuilder {
      * @return a SQL statement string which contains all attributes of this table
      * @example {@code CREATE TABLE departments(dept_no CHAR(4) NOT NULL UNIQUE,dept_name VARCHAR(40) NOT NULL UNIQUE,PRIMARY KEY (dept_no))}
      */
-    public static String asCreateTableStatement(final Table table) {
+    public static String createTableStatement(final Table table) {
         final String columnString = table.columns().stream().map(StatementBuilder::columnsAsStatement).collect(Collectors.joining());
-        final String pkString = "PRIMARY KEY (" + String.join(",", table.primaryKeys().stream().map(Column::name).toList()) + ")";
+
+        final ArrayList<Column> primaryKeys = table.primaryKeys();
+        final String pkString = primaryKeys.isEmpty()
+                ? ""
+                : "PRIMARY KEY (" + String.join(",", primaryKeys.stream().map(Column::name).toList()) + ")";
 
         String createTableString = "CREATE TABLE " + table.name() + "(" + columnString + pkString;
 
@@ -24,6 +30,10 @@ public class StatementBuilder {
         }
 
         return createTableString + ");";
+    }
+
+    public static String createViewStatement(final View view) {
+        return "CREATE OR REPLACE VIEW " + view.name() + " AS" + view.createViewStatement();
     }
 
     /**
@@ -72,9 +82,12 @@ public class StatementBuilder {
      */
     private static String constraintAsStatement(final Constraint constraint) {
         final ConstraintType constraintType = constraint.getConstraintType();
-        return constraintType == ConstraintType.DEFAULT
-                ? constraintType.asString + " " + constraint.getValue()
-                : constraintType.asString;
+
+        return switch (constraintType) {
+            case NOT_NULL, UNIQUE, PRIMARY_KEY, FOREIGN_KEY -> constraintType.asString;
+            case DEFAULT -> constraintType.asString + " " + constraint.getValue();
+            case AUTO_INKREMENT -> Consts.autoIncrementConstraintName;
+        };
     }
 
     /**
@@ -85,7 +98,7 @@ public class StatementBuilder {
      * @example {@code REFERENCES employees(emp_no) ON UPDATE RESTRICT ON DELETE CASCADE}
      */
     private static String fkRelationAsStatement(final FkRelation fkRelation) {
-        return "FOREIGN KEY(" + fkRelation.referencingColumnName() + ")"
+        return fkRelation.fkName() + " FOREIGN KEY(" + fkRelation.referencingColumnName() + ")"
                 + " REFERENCES " + fkRelation.tableName() + "(" + fkRelation.referencedColumnName()
                 + ") ON UPDATE " + fkRelation.updateRule().asString
                 + " ON DELETE " + fkRelation.deleteRule().asString;
