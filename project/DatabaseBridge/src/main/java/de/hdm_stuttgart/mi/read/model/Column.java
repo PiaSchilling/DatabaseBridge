@@ -18,12 +18,14 @@ public record Column(String name, SQLType dataType, int maxLength, ArrayList<Con
 
     /**
      * Get this column as statement representation which can be used to build the columns in a CREATE TABLE statement
+     * (primary key constraints will be ignored since they will be added on table level)
      *
      * @return a SQL statement string containing all attributes of this column
      * @example {@code first_name VARCHAR(14) NOT NULL}
      */
     public String asStatement() {
         final String constraintString = constraints.stream()
+                .filter(constraint -> constraint.getConstraintType() != ConstraintType.PRIMARY_KEY)
                 .map(Constraint::asStatement)
                 .collect(Collectors.joining(" "));
 
