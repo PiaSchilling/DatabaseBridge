@@ -39,7 +39,7 @@ public enum DeleteUpdateRule {
     UNKNOWN(-13,"UNKNOWN");
 
     final int ruleCode;
-    final String asString;
+    public final String asString;
 
     DeleteUpdateRule(int ruleCode,String asString) {
         this.ruleCode = ruleCode;

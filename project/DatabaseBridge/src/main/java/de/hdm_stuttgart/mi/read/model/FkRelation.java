@@ -17,17 +17,4 @@ public record FkRelation(String tableName,
                          String fkName,
                          DeleteUpdateRule updateRule,
                          DeleteUpdateRule deleteRule) {
-
-    /**
-     * Get this relation as statement representation which can be used to build the relations in a CREATE TABLE statement
-     * @example {@code REFERENCES employees(emp_no) ON UPDATE RESTRICT ON DELETE CASCADE}
-     * @return a SQL statement string containing all attributes of this fk relation
-     */
-    public String asStatement() {
-        return "FOREIGN KEY(" + referencingColumnName + ")"
-                + " REFERENCES " + tableName + "(" + referencedColumnName
-                + ") ON UPDATE " + updateRule.asString
-                + " ON DELETE " + deleteRule.asString
-                + ",";
-    }
 }

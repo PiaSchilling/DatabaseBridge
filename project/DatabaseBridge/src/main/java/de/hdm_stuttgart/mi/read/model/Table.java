@@ -1,7 +1,6 @@
 package de.hdm_stuttgart.mi.read.model;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 /**
  * Model class for a single database table
@@ -33,24 +32,5 @@ public record Table(String name, ArrayList<Column> columns, ArrayList<FkRelation
      */
     public boolean isChildTable() {
         return importedFkRelations.size() > 0;
-    }
-
-    /**
-     * Get this table as CREATE TABLE statement representation
-     * @example {@code CREATE TABLE departments(dept_no CHAR(4) NOT NULL UNIQUE,dept_name VARCHAR(40) NOT NULL UNIQUE,PRIMARY KEY (dept_no))}
-     * @return a SQL statement string which contains all attributes of this table
-     */
-    public String asStatement() {
-        final String columnString = columns.stream().map(Column::asStatement).collect(Collectors.joining());
-        final String fkString = importedFkRelations.stream().map(FkRelation::asStatement).collect(Collectors.joining());
-        final String pkString = "PRIMARY KEY (" + String.join(",", primaryKeys.stream().map(Column::name).toList()) + ")";
-
-        String createTableString = "CREATE TABLE " + name + "(" + columnString + fkString + pkString;
-
-        if (createTableString.endsWith(",")) {
-            createTableString = createTableString.substring(0, createTableString.lastIndexOf(","));
-        }
-
-        return createTableString + ");";
     }
 }

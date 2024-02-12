@@ -3,7 +3,6 @@ package de.hdm_stuttgart.mi.read.model;
 import de.hdm_stuttgart.mi.util.SQLType;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 /**
  * Model class for a single table column
@@ -15,21 +14,4 @@ import java.util.stream.Collectors;
  * @param constraints the constraints this column defines (e.g. not_null, unique, check,...)
  */
 public record Column(String name, SQLType dataType, int maxLength, ArrayList<Constraint> constraints) {
-
-    /**
-     * Get this column as statement representation which can be used to build the columns in a CREATE TABLE statement
-     * (primary key constraints will be ignored since they will be added on table level)
-     *
-     * @return a SQL statement string containing all attributes of this column
-     * @example {@code first_name VARCHAR(14) NOT NULL}
-     */
-    public String asStatement() {
-        final String constraintString = constraints.stream()
-                .filter(constraint -> constraint.getConstraintType() != ConstraintType.PRIMARY_KEY)
-                .map(Constraint::asStatement)
-                .collect(Collectors.joining(" "));
-
-        return dataType.hasLength ? name + " " + dataType + "(" + maxLength + ")" + " " + constraintString + "," :
-                name + " " + dataType + " " + constraintString + ",";
-    }
 }
