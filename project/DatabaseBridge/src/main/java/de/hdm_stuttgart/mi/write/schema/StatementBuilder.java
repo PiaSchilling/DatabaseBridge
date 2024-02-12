@@ -69,6 +69,10 @@ public class StatementBuilder {
                 .map(StatementBuilder::constraintAsStatement)
                 .collect(Collectors.joining(" "));
 
+        // special case: auto increment (resp. serial) columns in postgres may not define the datatype and default constraint
+        if(constraintString.contains("SERIAL")){
+            return column.name() + " " + constraintString.replaceAll("DEFAULT.*", "") + ",";
+        }
         return column.dataType().hasLength ? column.name() + " " + column.dataType() + "(" + column.maxLength() + ")" + " " + constraintString + "," :
                 column.name() + " " + column.dataType() + " " + constraintString + ",";
     }
