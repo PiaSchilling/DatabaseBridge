@@ -1,51 +1,35 @@
 package de.hdm_stuttgart.mi.util;
 
+
+/**
+ * Class holds database system specific constant values.
+ * The database system has to be defined in the DbSysConstsLoaders init-method before using this class.
+ */
 public class Consts {
     private static final DbSysConstsLoader propLoader = DbSysConstsLoader.INSTANCE();
 
-    // Postgres (PG) related consts - - - - - - -
-    // Views
     /**
-     * The name of the column of a viewDefinition table which contains the createView SQl statement in a postgres database
+     * The name of the column of a viewDefinition table which contains the createView SQl statement
      */
-    final public static String viewStmtColNamePG = propLoader.getProperty("viewStmtColNamePG");
+    final public static String viewStmtColName = propLoader.getProperty("viewStmtColName");
 
     /**
-     * SQL query to select createViewStatements in a postgres database with placeholders
+     * SQL query to select createViewStatements with placeholders
      *
      * @param arguments params to fill the placeholders
      */
-    public static String viewStmtQueryPG(Object... arguments) {
-        return propLoader.getPlaceholderProperty("viewStmtQueryPG", arguments);
+    public static String viewStmtQuery(Object... arguments) {
+        return propLoader.getPlaceholderProperty("viewStmtQuery", arguments);
     }
 
     /**
-     * The name of the table in a postgres database which holds all users
+     * The name of the table which holds all users
      */
-    final public static String userTableNamePG = propLoader.getProperty("userTableNamePG");
+    final public static String userTableName = propLoader.getProperty("userTableName");
     /**
-     * The name of the column in the users table that contains usernames in a postgres database
+     * The name of the column in the users table that contains usernames
      */
-    final public static String userNameColNamePG = propLoader.getProperty("userNameColNamePG");
+    final public static String userNameColName = propLoader.getProperty("userNameColName");
 
-    // MySQL (MS) and MariaDB (MD) related consts - - - - - - -
-    // Views
-    /**
-     * SQL query to select createViewStatements in a mariadb or mysql database
-     */
-    final public static String viewStmtQueryMSMD = propLoader.getProperty("viewStmtQueryMSMD");
-    /**
-     * The name of the column of a viewDefinition table which contains the createView SQl statement in a mariadb or mysql database
-     */
-    final public static String viewStmtColNameMSMD = propLoader.getProperty("viewStmtColNameMSMD");
 
-    //Users
-    /**
-     * The name of the table in a mysql or mariadb database which holds all users
-     */
-    final public static String userTableNameMSMD = propLoader.getProperty("userTableNameMSMD");
-    /**
-     * The name of the column in the users table that contains usernames in a mysql or mariadb database
-     */
-    final public static String userNameColNameMSMD = propLoader.getProperty("userNameColNameMSMD");
 }

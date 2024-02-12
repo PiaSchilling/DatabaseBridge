@@ -1,5 +1,7 @@
 package de.hdm_stuttgart.mi.util;
 
+import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -17,11 +19,9 @@ public class DbSysConstsLoader {
 
     private static DbSysConstsLoader INSTANCE;
 
-    private Properties databaseSystemsConsts;
+    private Properties databaseSystemProps;
 
-    private DbSysConstsLoader() {
-        init();
-    }
+    private boolean isInitialized = false;
 
     public static DbSysConstsLoader INSTANCE() {
         if (INSTANCE == null) {
@@ -31,14 +31,17 @@ public class DbSysConstsLoader {
     }
 
     /**
-     * Initialize the provider by loading the db_sys_consts.properties into databaseSystemsConsts
+     * Initialize the provider by loading the according .properties into databaseSystemsConsts
+     *
+     * @param databaseSystem the databaseSystem for which this class should be initialized
      */
-    private void init() {
+    public void init(DatabaseSystem databaseSystem) {
         try {
             String rootPath = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
-            String appConfigPath = rootPath + "db_sys_consts.properties";
-            databaseSystemsConsts = new Properties();
-            databaseSystemsConsts.load(new FileInputStream(appConfigPath));
+            String appConfigPath = rootPath + databaseSystem.propertyFileName;
+            databaseSystemProps = new Properties();
+            databaseSystemProps.load(new FileInputStream(appConfigPath));
+            isInitialized = true;
         } catch (NullPointerException nE) {
             log.log(Level.SEVERE, "Not able to get Path to resource-directory: " + nE.getMessage());
         } catch (IOException e) {
@@ -53,7 +56,11 @@ public class DbSysConstsLoader {
      * @return the property identified by the key or an empty string if no matching key was found
      */
     public String getProperty(String key) {
-        final String prop = databaseSystemsConsts.getProperty(key);
+        if (!isInitialized) {
+            log.log(Level.SEVERE, "The DbSysConstsLoader has not been initialized. Please do so first by calling init(databaseSystem).");
+            return "";
+        }
+        final String prop = databaseSystemProps.getProperty(key);
         if (prop == null) {
             log.log(Level.SEVERE, "Property for key " + key + " not found. Returning empty string instead");
             return "";
@@ -70,6 +77,10 @@ public class DbSysConstsLoader {
      * @return the property identified by the key containing the arguments or an empty string if no matching key was found
      */
     public String getPlaceholderProperty(String key, Object... arguments) {
-        return MessageFormat.format(databaseSystemsConsts.getProperty(key), arguments);
+        if (!isInitialized) {
+            log.log(Level.SEVERE, "The DbSysConstsLoader has not been initialized. Please do so first by calling init(databaseSystem).");
+            return "";
+        }
+        return MessageFormat.format(databaseSystemProps.getProperty(key), arguments);
     }
 }
