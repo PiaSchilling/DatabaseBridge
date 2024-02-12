@@ -7,8 +7,8 @@ import de.hdm_stuttgart.mi.connect.implementation.ConnectionHandlerImpl;
 import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
 import de.hdm_stuttgart.mi.connect.model.ConnectionType;
 import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
-import de.hdm_stuttgart.mi.data.ReadData;
-import de.hdm_stuttgart.mi.data.WriteData;
+import de.hdm_stuttgart.mi.data.DataReader;
+import de.hdm_stuttgart.mi.data.DataWriter;
 import de.hdm_stuttgart.mi.di.ConnectModule;
 import de.hdm_stuttgart.mi.di.SchemaReadModule;
 import de.hdm_stuttgart.mi.read.api.SchemaReader;
@@ -37,7 +37,7 @@ public class Main {
                 "src/main/resources/jar/mysql-connector-j-8.0.33.jar",
                 "localhost",
                 3306,
-                "test",
+                "movies",
                 "root",
                 "example");
 
@@ -57,7 +57,7 @@ public class Main {
                 "src/main/resources/jar/postgresql-42.7.1.jar",
                 "localhost",
                 5432,
-                "test",
+                "movies",
                 "postgres",
                 "example");
 
@@ -69,6 +69,7 @@ public class Main {
 
         System.out.println(schema);
 
+        //Test DataReader and DataWriter
         final ConnectionHandlerImpl sourceConnectionHandler = new ConnectionHandlerImpl(ConnectionType.SOURCE, sourceDetailsMySql);
         final Connection sourceConnection =  sourceConnectionHandler.getConnection();
 
@@ -76,9 +77,9 @@ public class Main {
         final ConnectionHandlerImpl destinationConnectionHandler = new ConnectionHandlerImpl(ConnectionType.SOURCE, destinationDetailsPostgres);
         final Connection destinationConnection =  destinationConnectionHandler.getConnection();
 
-        ReadData readData = new ReadData(schema, sourceConnection);
+        DataReader readData = new DataReader(schema, sourceConnection);
         ArrayList<ResultSet> tables = readData.readTableData();
-        WriteData writeData = new WriteData(schema, destinationConnection, tables);
+        DataWriter writeData = new DataWriter(schema, destinationConnection, tables);
         System.out.println(writeData.writeTableData());
 
 
