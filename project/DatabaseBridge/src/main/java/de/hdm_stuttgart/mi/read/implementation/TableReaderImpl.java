@@ -3,12 +3,14 @@ package de.hdm_stuttgart.mi.read.implementation;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.read.api.ColumnReader;
+import de.hdm_stuttgart.mi.read.api.DataReader;
 import de.hdm_stuttgart.mi.read.api.TableReader;
 import de.hdm_stuttgart.mi.read.model.Column;
 import de.hdm_stuttgart.mi.read.model.DeleteUpdateRule;
 import de.hdm_stuttgart.mi.read.model.FkRelation;
 import de.hdm_stuttgart.mi.read.model.Table;
 
+import javax.sql.rowset.CachedRowSet;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,10 +26,13 @@ public class TableReaderImpl implements TableReader {
 
     private final ColumnReader columnReader;
 
+    private final DataReader dataReader;
+
     @Inject
-    public TableReaderImpl(@Named("SourceDBMetaData") DatabaseMetaData metaData, ColumnReader columnReader) {
+    public TableReaderImpl(@Named("SourceDBMetaData") DatabaseMetaData metaData, ColumnReader columnReader, DataReader dataReader) {
         this.metaData = metaData;
         this.columnReader = columnReader;
+        this.dataReader = dataReader;
     }
 
     @Override
@@ -35,12 +40,17 @@ public class TableReaderImpl implements TableReader {
         final ArrayList<Column> columns = readTableColumns(tableName);
         final ArrayList<FkRelation> importedFkRelations = readImportedFkRelations(tableName);
         final ArrayList<FkRelation> exportedFkRelations = readExportedFkRelations(tableName);
+        final CachedRowSet data = readTableData(tableName);
 
-        return new Table(tableName, columns, importedFkRelations, exportedFkRelations);
+        return new Table(tableName, columns, data, importedFkRelations, exportedFkRelations);
     }
 
     private ArrayList<Column> readTableColumns(String tableName) {
         return columnReader.readTableColumns(tableName);
+    }
+
+    private CachedRowSet readTableData(String tableName) {
+        return dataReader.readTableData(tableName);
     }
 
 

@@ -3,19 +3,15 @@ package de.hdm_stuttgart.mi;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import de.hdm_stuttgart.mi.connect.implementation.ConnectionHandlerImpl;
 import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
-import de.hdm_stuttgart.mi.connect.model.ConnectionType;
 import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
-import de.hdm_stuttgart.mi.data.DataReader;
-import de.hdm_stuttgart.mi.data.DataWriter;
 import de.hdm_stuttgart.mi.di.ConnectModule;
 import de.hdm_stuttgart.mi.di.SchemaReadModule;
 import de.hdm_stuttgart.mi.read.api.SchemaReader;
 import de.hdm_stuttgart.mi.read.model.*;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
+import javax.sql.rowset.CachedRowSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -47,7 +43,7 @@ public class Main {
                 "src/main/resources/jar/postgresql-42.7.1.jar",
                 "localhost",
                 5432,
-                "test",
+                "movies",
                 "postgres",
                 "example");
 
@@ -61,27 +57,34 @@ public class Main {
                 "postgres",
                 "example");
 
-        Injector injector = Guice.createInjector(new ConnectModule(sourceDetailsMySql, destinationDetailsPostgres),
+        Injector injector = Guice.createInjector(new ConnectModule(sourceDetailsPostgres, destinationDetailsPostgres),
                 new SchemaReadModule());
 
         SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
-        final Schema schema = schemaReader.readSchema(sourceDetailsMySql.getSchema());
+        final Schema schema = schemaReader.readSchema(sourceDetailsPostgres.getSchema());
 
         System.out.println(schema);
 
-        //Test DataReader and DataWriter
-        final ConnectionHandlerImpl sourceConnectionHandler = new ConnectionHandlerImpl(ConnectionType.SOURCE, sourceDetailsMySql);
-        final Connection sourceConnection =  sourceConnectionHandler.getConnection();
+        //Test DataReader print out values
+        ArrayList<CachedRowSet> tables = new ArrayList<>();
+        for(Table table : schema.tables()) {
+            ArrayList<String> columns = new ArrayList<>();
+            for(int columnIndex = 0; columnIndex < table.columns().size(); columnIndex++) {
+                columns.add(table.columns().get(columnIndex).name());
+            }
+            System.out.println(columns);
+            try(CachedRowSet cachedRowSet = table.data()) {
+                while (cachedRowSet.next()) {
+                    for (String column : columns) {
+                        System.out.print(cachedRowSet.getString(column) + ",");
+                    }
+                    System.out.println();
+                }
+            } catch(SQLException e) {
+                System.out.println("Error while trying to print table data: " + e.getMessage());
+            }
 
-
-        final ConnectionHandlerImpl destinationConnectionHandler = new ConnectionHandlerImpl(ConnectionType.SOURCE, destinationDetailsPostgres);
-        final Connection destinationConnection =  destinationConnectionHandler.getConnection();
-
-        DataReader readData = new DataReader(schema, sourceConnection);
-        ArrayList<ResultSet> tables = readData.readTableData();
-        DataWriter writeData = new DataWriter(schema, destinationConnection, tables);
-        System.out.println(writeData.writeTableData());
-
+        }
 
         // TODO close DB connection
     }

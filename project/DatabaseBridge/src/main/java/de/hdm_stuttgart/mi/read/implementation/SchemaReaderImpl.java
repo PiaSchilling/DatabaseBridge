@@ -34,14 +34,13 @@ public class SchemaReaderImpl implements SchemaReader {
 
     @Override
     public Schema readSchema(String schemaName) {
-        final String name = schemaName;
         final ArrayList<Table> tables = readTables(schemaName);
         final ArrayList<View> views = viewReader.readViews(schemaName);
         final ArrayList<User> users = usersReader.readUsers();
         final ArrayList<Privilege> tablePrivileges = privilegeReader.readTablePrivileges(schemaName);
         final ArrayList<ColumnPrivilege> columnPrivileges = privilegeReader.readColumnPrivileges(schemaName);
 
-        return new Schema(name, tables, views, users, tablePrivileges, columnPrivileges);
+        return new Schema(schemaName, tables, views, users, tablePrivileges, columnPrivileges);
     }
 
     private ArrayList<Table> readTables(String schemaName) {

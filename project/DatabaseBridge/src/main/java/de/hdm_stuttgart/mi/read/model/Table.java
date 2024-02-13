@@ -1,5 +1,6 @@
 package de.hdm_stuttgart.mi.read.model;
 
+import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
  * @param exportedFkRelations the foreign key relations where this tables primary key is referenced by other tables
  *                            (this table is the parent)
  */
-public record Table(String name, ArrayList<Column> columns, ArrayList<FkRelation> importedFkRelations,
+public record Table(String name, ArrayList<Column> columns, CachedRowSet data, ArrayList<FkRelation> importedFkRelations,
                     ArrayList<FkRelation> exportedFkRelations) {
 
     /**

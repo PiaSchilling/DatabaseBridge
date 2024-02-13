@@ -13,5 +13,6 @@ public class SchemaReadModule extends AbstractModule {
         bind(SchemaReader.class).to(SchemaReaderImpl.class);
         bind(UsersReader.class).to(UsersReaderImpl.class);
         bind(PrivilegeReader.class).to(PrivilegeReaderImpl.class);
+        bind(DataReader.class).to(DataReaderImpl.class);
     }
 }
