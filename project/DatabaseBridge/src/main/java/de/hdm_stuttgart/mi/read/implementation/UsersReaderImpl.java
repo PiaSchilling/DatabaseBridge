@@ -3,9 +3,9 @@ package de.hdm_stuttgart.mi.read.implementation;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
-import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import de.hdm_stuttgart.mi.read.api.UsersReader;
 import de.hdm_stuttgart.mi.read.model.User;
+import de.hdm_stuttgart.mi.util.Consts;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,12 +18,10 @@ public class UsersReaderImpl implements UsersReader {
     private final Logger log = Logger.getLogger(this.getClass().getName());
 
     private final ConnectionHandler sourceConnection;
-    private final DatabaseSystem sourceDatabaseSystem;
 
     @Inject
     public UsersReaderImpl(@Named("sourceConnection") ConnectionHandler sourceConnection) {
         this.sourceConnection = sourceConnection;
-        this.sourceDatabaseSystem = sourceConnection.getConnectionDetails().getDatabaseSystem();
     }
 
     @Override
@@ -32,7 +30,7 @@ public class UsersReaderImpl implements UsersReader {
         try(Statement statement = sourceConnection.getConnection().createStatement()){
             final ResultSet usersResult = statement.executeQuery(buildSelectUserTableQuery());
             while (usersResult.next()){
-                final String userName = usersResult.getString(sourceDatabaseSystem.userNameColumnName);
+                final String userName = usersResult.getString(Consts.userNameColName);
                 users.add(new User(userName));
             }
         } catch (SQLException e) {
@@ -47,7 +45,7 @@ public class UsersReaderImpl implements UsersReader {
      * @return a SELECT query based on the database system
      */
     private String buildSelectUserTableQuery() {
-        return  "SELECT * FROM " + sourceDatabaseSystem.userTableName;
+        return  "SELECT * FROM " + Consts.userTableName;
     }
 
 }

@@ -3,20 +3,16 @@ package de.hdm_stuttgart.mi.read.implementation;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.read.api.ColumnReader;
-import de.hdm_stuttgart.mi.read.api.DataReader;
 import de.hdm_stuttgart.mi.read.api.TableReader;
-import de.hdm_stuttgart.mi.read.model.Column;
-import de.hdm_stuttgart.mi.read.model.DeleteUpdateRule;
-import de.hdm_stuttgart.mi.read.model.FkRelation;
-import de.hdm_stuttgart.mi.read.model.Table;
+import de.hdm_stuttgart.mi.read.model.*;
 
-import javax.sql.rowset.CachedRowSet;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class TableReaderImpl implements TableReader {
 
@@ -26,13 +22,10 @@ public class TableReaderImpl implements TableReader {
 
     private final ColumnReader columnReader;
 
-    private final DataReader dataReader;
-
     @Inject
-    public TableReaderImpl(@Named("SourceDBMetaData") DatabaseMetaData metaData, ColumnReader columnReader, DataReader dataReader) {
+    public TableReaderImpl(@Named("SourceDBMetaData") DatabaseMetaData metaData, ColumnReader columnReader) {
         this.metaData = metaData;
         this.columnReader = columnReader;
-        this.dataReader = dataReader;
     }
 
     @Override
@@ -40,17 +33,20 @@ public class TableReaderImpl implements TableReader {
         final ArrayList<Column> columns = readTableColumns(tableName);
         final ArrayList<FkRelation> importedFkRelations = readImportedFkRelations(tableName);
         final ArrayList<FkRelation> exportedFkRelations = readExportedFkRelations(tableName);
-        final CachedRowSet data = readTableData(tableName);
 
-        return new Table(tableName, columns, data, importedFkRelations, exportedFkRelations);
+        // filter the columns to find all columns with a primary key constraint
+        final ArrayList<Column> primaryKeys = columns
+                .stream()
+                .filter(column -> column.constraints()
+                        .stream()
+                        .anyMatch(constraint -> constraint.getConstraintType() == ConstraintType.PRIMARY_KEY))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        return new Table(tableName, columns, importedFkRelations, exportedFkRelations, primaryKeys);
     }
 
     private ArrayList<Column> readTableColumns(String tableName) {
         return columnReader.readTableColumns(tableName);
-    }
-
-    private CachedRowSet readTableData(String tableName) {
-        return dataReader.readTableData(tableName);
     }
 
 
