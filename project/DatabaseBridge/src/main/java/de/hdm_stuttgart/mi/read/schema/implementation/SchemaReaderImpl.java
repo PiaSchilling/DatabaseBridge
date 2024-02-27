@@ -1,9 +1,9 @@
-package de.hdm_stuttgart.mi.read.implementation;
+package de.hdm_stuttgart.mi.read.schema.implementation;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import de.hdm_stuttgart.mi.read.api.*;
-import de.hdm_stuttgart.mi.read.model.*;
+import de.hdm_stuttgart.mi.read.schema.api.*;
+import de.hdm_stuttgart.mi.read.schema.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;

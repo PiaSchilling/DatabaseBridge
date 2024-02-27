@@ -1,8 +1,8 @@
 package de.hdm_stuttgart.mi.write.schema;
 
-import de.hdm_stuttgart.mi.read.model.Schema;
-import de.hdm_stuttgart.mi.read.model.Table;
-import de.hdm_stuttgart.mi.read.model.View;
+import de.hdm_stuttgart.mi.read.schema.model.Schema;
+import de.hdm_stuttgart.mi.read.schema.model.Table;
+import de.hdm_stuttgart.mi.read.schema.model.View;
 
 public class SchemaWriter {
 

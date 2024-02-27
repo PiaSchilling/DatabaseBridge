@@ -1,4 +1,4 @@
-package de.hdm_stuttgart.mi.read.model;
+package de.hdm_stuttgart.mi.read.schema.model;
 
 public class ColumnPrivilege extends Privilege {
     private final String columnName;

@@ -1,10 +1,11 @@
-package de.hdm_stuttgart.mi.read.implementation;
+package de.hdm_stuttgart.mi.read.schema.implementation;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import de.hdm_stuttgart.mi.read.model.AccessType;
-import de.hdm_stuttgart.mi.read.model.ColumnPrivilege;
-import de.hdm_stuttgart.mi.read.model.Privilege;
+import de.hdm_stuttgart.mi.read.schema.api.PrivilegeReader;
+import de.hdm_stuttgart.mi.read.schema.model.AccessType;
+import de.hdm_stuttgart.mi.read.schema.model.ColumnPrivilege;
+import de.hdm_stuttgart.mi.read.schema.model.Privilege;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PrivilegeReaderImpl implements de.hdm_stuttgart.mi.read.api.PrivilegeReader {
+public class PrivilegeReaderImpl implements PrivilegeReader {
 
     private final Logger log = Logger.getLogger(this.getClass().getName());
     private final DatabaseMetaData metaData;

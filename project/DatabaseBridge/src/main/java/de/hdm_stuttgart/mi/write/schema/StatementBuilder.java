@@ -1,6 +1,6 @@
 package de.hdm_stuttgart.mi.write.schema;
 
-import de.hdm_stuttgart.mi.read.model.*;
+import de.hdm_stuttgart.mi.read.schema.model.*;
 import de.hdm_stuttgart.mi.util.Consts;
 
 import java.util.ArrayList;

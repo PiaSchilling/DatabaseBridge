@@ -1,10 +1,10 @@
-package de.hdm_stuttgart.mi.read.implementation;
+package de.hdm_stuttgart.mi.read.schema.implementation;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import de.hdm_stuttgart.mi.read.api.ColumnReader;
-import de.hdm_stuttgart.mi.read.api.TableReader;
-import de.hdm_stuttgart.mi.read.model.*;
+import de.hdm_stuttgart.mi.read.schema.api.ColumnReader;
+import de.hdm_stuttgart.mi.read.schema.api.TableReader;
+import de.hdm_stuttgart.mi.read.schema.model.*;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -29,7 +29,7 @@ public class TableReaderImpl implements TableReader {
     }
 
     @Override
-    public Table readTable(String tableName,String schemaName) {
+    public Table readTable(String tableName, String schemaName) {
         final ArrayList<Column> columns = readTableColumns(tableName,schemaName);
         final ArrayList<FkRelation> importedFkRelations = readImportedFkRelations(tableName,schemaName);
         final ArrayList<FkRelation> exportedFkRelations = readExportedFkRelations(tableName,schemaName);

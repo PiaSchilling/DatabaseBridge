@@ -1,4 +1,4 @@
-package de.hdm_stuttgart.mi.read.model;
+package de.hdm_stuttgart.mi.read.schema.model;
 
 /**
  * Model class for a single database user

@@ -1,9 +1,10 @@
-package de.hdm_stuttgart.mi.read.implementation;
+package de.hdm_stuttgart.mi.read.schema.implementation;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
-import de.hdm_stuttgart.mi.read.model.View;
+import de.hdm_stuttgart.mi.read.schema.api.ViewReader;
+import de.hdm_stuttgart.mi.read.schema.model.View;
 import de.hdm_stuttgart.mi.util.Consts;
 
 import java.sql.DatabaseMetaData;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ViewReaderImpl implements de.hdm_stuttgart.mi.read.api.ViewReader {
+public class ViewReaderImpl implements ViewReader {
 
     private final Logger log = Logger.getLogger(this.getClass().getName());
 

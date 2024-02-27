@@ -1,8 +1,8 @@
 package de.hdm_stuttgart.mi.di;
 
 import com.google.inject.AbstractModule;
-import de.hdm_stuttgart.mi.read.api.*;
-import de.hdm_stuttgart.mi.read.implementation.*;
+import de.hdm_stuttgart.mi.read.schema.api.*;
+import de.hdm_stuttgart.mi.read.schema.implementation.*;
 
 public class SchemaReadModule extends AbstractModule {
     @Override

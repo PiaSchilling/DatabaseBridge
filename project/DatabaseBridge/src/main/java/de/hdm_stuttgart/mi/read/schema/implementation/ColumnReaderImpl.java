@@ -1,11 +1,11 @@
-package de.hdm_stuttgart.mi.read.implementation;
+package de.hdm_stuttgart.mi.read.schema.implementation;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import de.hdm_stuttgart.mi.read.api.ColumnReader;
-import de.hdm_stuttgart.mi.read.model.Column;
-import de.hdm_stuttgart.mi.read.model.Constraint;
-import de.hdm_stuttgart.mi.read.model.ConstraintType;
+import de.hdm_stuttgart.mi.read.schema.api.ColumnReader;
+import de.hdm_stuttgart.mi.read.schema.model.Column;
+import de.hdm_stuttgart.mi.read.schema.model.Constraint;
+import de.hdm_stuttgart.mi.read.schema.model.ConstraintType;
 import de.hdm_stuttgart.mi.util.Consts;
 import de.hdm_stuttgart.mi.util.SQLType;
 

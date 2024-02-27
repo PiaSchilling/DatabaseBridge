@@ -1,6 +1,6 @@
-package de.hdm_stuttgart.mi.read.api;
+package de.hdm_stuttgart.mi.read.schema.api;
 
-import de.hdm_stuttgart.mi.read.model.Table;
+import de.hdm_stuttgart.mi.read.schema.model.Table;
 
 public interface TableReader {
     /**
@@ -10,5 +10,5 @@ public interface TableReader {
      * @param schemaName the name of the schema the table belongs to
      * @return a table object containing columns and other table attributes
      */
-    Table readTable(String tableName,String schemaName);
+    Table readTable(String tableName, String schemaName);
 }

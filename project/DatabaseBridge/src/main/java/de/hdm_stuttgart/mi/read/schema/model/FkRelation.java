@@ -1,4 +1,4 @@
-package de.hdm_stuttgart.mi.read.model;
+package de.hdm_stuttgart.mi.read.schema.model;
 
 /**
  * Models a foreign key relationship to a column of a table
