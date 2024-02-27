@@ -6,19 +6,20 @@ import de.hdm_stuttgart.mi.read.model.View;
 
 public class SchemaWriter {
 
-    public void writeSchema(Schema schema){
+    public void writeSchema(Schema schema) {
+        System.out.println(StatementBuilder.createSchemaStatement(schema));
 
         for (Table table : schema.tables()
-                ) {
-            System.out.println(StatementBuilder.createTableStatement(table));
+        ) {
+            System.out.println(StatementBuilder.createTableStatement(schema.name(), table));
         }
 
         for (Table table : schema.tables()
         ) {
-            System.out.println(StatementBuilder.alterTableAddFkRelationStatement(table));
+            System.out.println(StatementBuilder.alterTableAddFkRelationStatement(schema.name(),table));
         }
 
-        for(View view : schema.views()){
+        for (View view : schema.views()) {
             System.out.println(StatementBuilder.createViewStatement(view));
         }
     }

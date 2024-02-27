@@ -40,7 +40,7 @@ public class SchemaReaderImpl implements SchemaReader {
         final ArrayList<Privilege> tablePrivileges = privilegeReader.readTablePrivileges(schemaName);
         final ArrayList<ColumnPrivilege> columnPrivileges = privilegeReader.readColumnPrivileges(schemaName);
 
-        return new Schema(tables, views, users, tablePrivileges, columnPrivileges);
+        return new Schema(schemaName,tables, views, users, tablePrivileges, columnPrivileges);
     }
 
     private ArrayList<Table> readTables(String schemaName) {

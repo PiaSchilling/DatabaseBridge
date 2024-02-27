@@ -6,6 +6,7 @@ package de.hdm_stuttgart.mi.connect.model;
 public enum DatabaseSystem {
     POSTGRES("postgres_consts.properties"),
     MYSQL("mySQL_consts.properties"),
+    // todo views sind broken
     MARIADB("mariaDB_consts.properties");
 
     public final String propertyFileName;

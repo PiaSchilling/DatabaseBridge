@@ -76,7 +76,7 @@ public class ViewReaderImpl implements de.hdm_stuttgart.mi.read.api.ViewReader {
         } catch (SQLException e) {
             log.log(Level.SEVERE, "SQLException while reading view statement: " + e.getMessage());
         }
-        return viewStatement;
+        return viewStatement.replaceAll("`","");
     }
 
 }

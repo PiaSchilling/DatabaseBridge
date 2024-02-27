@@ -8,6 +8,14 @@ import java.util.stream.Collectors;
 
 public class StatementBuilder {
 
+    public static String dropSchemaStatement(final Schema schema) {
+        return "DROP SCHEMA IF EXISTS " + schema.name() + " CASCADE;";
+    }
+
+    public static String createSchemaStatement(final Schema schema) {
+        return "CREATE SCHEMA " + schema.name() + ";";
+    }
+
     /**
      * Get the CREATE TABLE statement for the provided {@code table}
      *
@@ -15,7 +23,7 @@ public class StatementBuilder {
      * @return a SQL statement string which contains all attributes of this table
      * @example {@code CREATE TABLE departments(dept_no CHAR(4) NOT NULL UNIQUE,dept_name VARCHAR(40) NOT NULL UNIQUE,PRIMARY KEY (dept_no))}
      */
-    public static String createTableStatement(final Table table) {
+    public static String createTableStatement(final String schemaName, final Table table) {
         final String columnString = table.columns().stream().map(StatementBuilder::columnsAsStatement).collect(Collectors.joining());
 
         final ArrayList<Column> primaryKeys = table.primaryKeys();
@@ -23,13 +31,17 @@ public class StatementBuilder {
                 ? ""
                 : "PRIMARY KEY (" + String.join(",", primaryKeys.stream().map(Column::name).toList()) + ")";
 
-        String createTableString = "CREATE TABLE " + table.name() + "(" + columnString + pkString;
+        String createTableString = "CREATE TABLE " + schemaName + "." + table.name() + "(" + columnString + pkString;
 
         if (createTableString.endsWith(",")) {
             createTableString = createTableString.substring(0, createTableString.lastIndexOf(","));
         }
 
         return createTableString + ");";
+    }
+
+    public static String dropTableStatement(final Table table) {
+        return "DROP TABLE IF EXISTS " + table.name() + " CASCADE;";
     }
 
     public static String createViewStatement(final View view) {
@@ -43,7 +55,7 @@ public class StatementBuilder {
      * @return a SQL statement string which can be used to add all fk relations via ALTER TABLE
      * @example {@code ALTER TABLE titles ADD CONSTRAINT FOREIGN KEY(emp_no) REFERENCES employees(emp_no) ON UPDATE RESTRICT ON DELETE CASCADE;}
      */
-    public static String alterTableAddFkRelationStatement(final Table table) {
+    public static String alterTableAddFkRelationStatement(final String schemaName, final Table table) {
         if (!table.isChildTable()) {
             return "";
         }
@@ -51,7 +63,7 @@ public class StatementBuilder {
         return table.importedFkRelations()
                 .stream()
                 .map(StatementBuilder::fkRelationAsStatement)
-                .map(e -> "ALTER TABLE " + table.name() + " ADD CONSTRAINT " + e + ";")
+                .map(e -> "ALTER TABLE " + schemaName + "." + table.name() + " ADD CONSTRAINT " + e + ";")
                 .collect(Collectors.joining());
     }
 
@@ -70,7 +82,7 @@ public class StatementBuilder {
                 .collect(Collectors.joining(" "));
 
         // special case: auto increment (resp. serial) columns in postgres may not define the datatype and default constraint
-        if(constraintString.contains("SERIAL")){
+        if (constraintString.contains("SERIAL")) {
             return column.name() + " " + constraintString.replaceAll("DEFAULT.*", "") + ",";
         }
         return column.dataType().hasLength ? column.name() + " " + column.dataType() + "(" + column.maxLength() + ")" + " " + constraintString + "," :
