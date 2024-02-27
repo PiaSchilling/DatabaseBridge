@@ -49,7 +49,7 @@ public class SchemaReaderImpl implements SchemaReader {
 
         for (String tableName : tableNames
         ) {
-            tables.add(tableReader.readTable(tableName));
+            tables.add(tableReader.readTable(tableName,schemaName));
         }
         return tables;
     }

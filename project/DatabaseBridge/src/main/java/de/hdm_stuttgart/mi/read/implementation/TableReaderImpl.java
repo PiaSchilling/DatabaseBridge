@@ -29,8 +29,8 @@ public class TableReaderImpl implements TableReader {
     }
 
     @Override
-    public Table readTable(String tableName) {
-        final ArrayList<Column> columns = readTableColumns(tableName);
+    public Table readTable(String tableName,String schemaName) {
+        final ArrayList<Column> columns = readTableColumns(tableName,schemaName);
         final ArrayList<FkRelation> importedFkRelations = readImportedFkRelations(tableName);
         final ArrayList<FkRelation> exportedFkRelations = readExportedFkRelations(tableName);
 
@@ -45,8 +45,8 @@ public class TableReaderImpl implements TableReader {
         return new Table(tableName, columns, importedFkRelations, exportedFkRelations, primaryKeys);
     }
 
-    private ArrayList<Column> readTableColumns(String tableName) {
-        return columnReader.readTableColumns(tableName);
+    private ArrayList<Column> readTableColumns(String tableName,String schemaName) {
+        return columnReader.readTableColumns(tableName,schemaName);
     }
 
 

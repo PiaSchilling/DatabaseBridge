@@ -28,11 +28,11 @@ public class ColumnReaderImpl implements ColumnReader {
     }
 
     @Override
-    public ArrayList<Column> readTableColumns(String tableName) {
+    public ArrayList<Column> readTableColumns(String tableName,String schemaName) {
         ArrayList<Column> columns = new ArrayList<>();
         try {
 
-            final ResultSet metaColumns = metaData.getColumns(null, null, tableName, null);
+            final ResultSet metaColumns = metaData.getColumns(null, schemaName, tableName, null);
             while (metaColumns.next()) {
                 String columnName = metaColumns.getString("COLUMN_NAME");
                 int columnDataTypeCode = metaColumns.getInt("DATA_TYPE");
