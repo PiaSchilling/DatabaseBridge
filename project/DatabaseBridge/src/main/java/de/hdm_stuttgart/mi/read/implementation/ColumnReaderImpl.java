@@ -11,6 +11,7 @@ import de.hdm_stuttgart.mi.util.SQLType;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -37,6 +38,10 @@ public class ColumnReaderImpl implements ColumnReader {
                 String columnName = metaColumns.getString("COLUMN_NAME");
                 int columnDataTypeCode = metaColumns.getInt("DATA_TYPE");
                 int columnSize = metaColumns.getInt("COLUMN_SIZE");
+                // Map varchar with exceeding max length to TEXT type
+                if(columnDataTypeCode == Types.VARCHAR && columnSize > 10485760){
+                    columnDataTypeCode = SQLType.TEXT.getTypeCode();
+                }
                 final ArrayList<Constraint> constraints = readConstraints(metaColumns, columnName, tableName);
                 columns.add(new Column(columnName, SQLType.fromTypeCode(columnDataTypeCode), columnSize, constraints));
             }

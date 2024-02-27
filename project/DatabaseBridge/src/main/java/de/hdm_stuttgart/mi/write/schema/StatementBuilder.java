@@ -19,11 +19,12 @@ public class StatementBuilder {
     /**
      * Get the CREATE TABLE statement for the provided {@code table}
      *
-     * @param table the table for which the sql statement should be built
+     * @param table      the table for which the sql statement should be built
+     * @param schemaName the name of the schema the table belongs to
      * @return a SQL statement string which contains all attributes of this table
      * @example {@code CREATE TABLE departments(dept_no CHAR(4) NOT NULL UNIQUE,dept_name VARCHAR(40) NOT NULL UNIQUE,PRIMARY KEY (dept_no))}
      */
-    public static String createTableStatement(final String schemaName, final Table table) {
+    public static String createTableStatement(final Table table, final String schemaName) {
         final String columnString = table.columns().stream().map(StatementBuilder::columnsAsStatement).collect(Collectors.joining());
 
         final ArrayList<Column> primaryKeys = table.primaryKeys();
@@ -40,29 +41,44 @@ public class StatementBuilder {
         return createTableString + ");";
     }
 
-    public static String dropTableStatement(final Table table) {
-        return "DROP TABLE IF EXISTS " + table.name() + " CASCADE;";
+    /**
+     * Get the DROP TABLE statement for the provided {@code table}
+     *
+     * @param table      the table for which the sql statement should be built
+     * @param schemaName the name of the schema the table belongs to
+     * @return a SQL statement string which can be used to delete the provided {@code table}
+     */
+    public static String dropTableStatement(final Table table, final String schemaName) {
+        return "DROP TABLE IF EXISTS " + schemaName + "." + table.name() + " CASCADE;";
     }
 
-    public static String createViewStatement(final View view) {
-        return "CREATE OR REPLACE VIEW " + view.name() + " AS" + view.createViewStatement();
+    /**
+     * Get the CREATE OR REPLACE VIEW statement for the provided {@code view}
+     *
+     * @param view       the view for which the sql statement should be built
+     * @param schemaName the name of the schema the view belongs to
+     * @return a SQL statement string which can be used to build the provided {@code view}
+     */
+    public static String createViewStatement(final View view, final String schemaName) {
+        return "CREATE OR REPLACE VIEW " + schemaName + "." + view.name() + " AS" + view.createViewStatement();
     }
 
     /**
      * Get all ALTER TABLE ADD CONSTRAINT statement for the provided tables fk relations
      *
-     * @param table the table for which the sql statement should be built
+     * @param table      the table for which the sql statement should be built
+     * @param schemaName the name of the schema the provided table belongs to
      * @return a SQL statement string which can be used to add all fk relations via ALTER TABLE
      * @example {@code ALTER TABLE titles ADD CONSTRAINT FOREIGN KEY(emp_no) REFERENCES employees(emp_no) ON UPDATE RESTRICT ON DELETE CASCADE;}
      */
-    public static String alterTableAddFkRelationStatement(final String schemaName, final Table table) {
+    public static String alterTableAddFkRelationStatement(final Table table, final String schemaName) {
         if (!table.isChildTable()) {
             return "";
         }
 
         return table.importedFkRelations()
                 .stream()
-                .map(StatementBuilder::fkRelationAsStatement)
+                .map(relation -> fkRelationAsStatement(relation, schemaName))
                 .map(e -> "ALTER TABLE " + schemaName + "." + table.name() + " ADD CONSTRAINT " + e + ";")
                 .collect(Collectors.joining());
     }
@@ -113,9 +129,9 @@ public class StatementBuilder {
      * @return a SQL statement string containing all attributes of this fk relation
      * @example {@code REFERENCES employees(emp_no) ON UPDATE RESTRICT ON DELETE CASCADE}
      */
-    private static String fkRelationAsStatement(final FkRelation fkRelation) {
+    private static String fkRelationAsStatement(final FkRelation fkRelation, final String schemaName) {
         return fkRelation.fkName() + " FOREIGN KEY(" + fkRelation.referencingColumnName() + ")"
-                + " REFERENCES " + fkRelation.tableName() + "(" + fkRelation.referencedColumnName()
+                + " REFERENCES " + schemaName + "." + fkRelation.tableName() + "(" + fkRelation.referencedColumnName()
                 + ") ON UPDATE " + fkRelation.updateRule().asString
                 + " ON DELETE " + fkRelation.deleteRule().asString;
     }
