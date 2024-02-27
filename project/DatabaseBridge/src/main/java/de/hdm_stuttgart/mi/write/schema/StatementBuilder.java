@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 
 public class StatementBuilder {
 
-    public static String dropSchemaStatement(final Schema schema) {
-        return "DROP SCHEMA IF EXISTS " + schema.name() + " CASCADE;";
+    public static String dropSchemaStatement(final String schemaName) {
+        return Consts.dropSchemaStmt(schemaName);
     }
 
-    public static String createSchemaStatement(final Schema schema) {
-        return "CREATE SCHEMA " + schema.name() + ";";
+    public static String createSchemaStatement(final String schemaName) {
+        return "CREATE SCHEMA " + schemaName + ";";
     }
 
     /**

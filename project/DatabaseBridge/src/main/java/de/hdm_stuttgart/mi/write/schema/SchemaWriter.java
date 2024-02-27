@@ -7,8 +7,8 @@ import de.hdm_stuttgart.mi.read.model.View;
 public class SchemaWriter {
 
     public void writeSchema(Schema schema) {
-        System.out.println(StatementBuilder.dropSchemaStatement(schema));
-        System.out.println(StatementBuilder.createSchemaStatement(schema));
+        System.out.println(StatementBuilder.dropSchemaStatement(schema.name()));
+        System.out.println(StatementBuilder.createSchemaStatement(schema.name()));
 
         for (Table table : schema.tables()
         ) {
