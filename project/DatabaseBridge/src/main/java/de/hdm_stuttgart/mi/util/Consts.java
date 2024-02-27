@@ -36,5 +36,10 @@ public class Consts {
      */
     final public static String autoIncrementConstraintName = propLoader.getProperty("autoIncrementConstraintName");
 
+    /**
+     * The maximum length of a varchar
+     */
+    final public static int varcharMaxLength = Integer.parseInt(propLoader.getProperty("varcharMaxLength"));
+
 
 }
