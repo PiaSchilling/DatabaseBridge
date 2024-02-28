@@ -10,10 +10,6 @@ import de.hdm_stuttgart.mi.di.SchemaReadModule;
 import de.hdm_stuttgart.mi.read.api.SchemaReader;
 import de.hdm_stuttgart.mi.read.model.*;
 import de.hdm_stuttgart.mi.util.DbSysConstsLoader;
-import de.hdm_stuttgart.mi.write.schema.StatementBuilder;
-
-import java.util.ArrayList;
-
 
 public class Main {
 
@@ -65,9 +61,6 @@ public class Main {
         SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
         final Schema schema = schemaReader.readSchema(sourceDetailsMySql.getSchema());
 
-        System.out.println(schema);
-        ArrayList<String> xyz = StatementBuilder.dataAsStatement(schema.tables().get(0));
-        System.out.println(xyz);
 
 
         // TODO close DB connection
