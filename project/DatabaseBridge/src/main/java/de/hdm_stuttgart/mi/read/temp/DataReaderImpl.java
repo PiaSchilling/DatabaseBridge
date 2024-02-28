@@ -1,9 +1,9 @@
-package de.hdm_stuttgart.mi.read.implementation;
+package de.hdm_stuttgart.mi.read.temp;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
-import de.hdm_stuttgart.mi.read.api.DataReader;
+import de.hdm_stuttgart.mi.read.temp.DataReader;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
 import java.sql.PreparedStatement;

@@ -1,4 +1,4 @@
-package de.hdm_stuttgart.mi.read.api;
+package de.hdm_stuttgart.mi.read.temp;
 
 import javax.sql.rowset.CachedRowSet;
 
