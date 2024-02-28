@@ -7,10 +7,17 @@ import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
 import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import de.hdm_stuttgart.mi.di.ConnectModule;
 import de.hdm_stuttgart.mi.di.SchemaReadModule;
+import de.hdm_stuttgart.mi.read.data.DataReader;
+import de.hdm_stuttgart.mi.read.data.TableData;
 import de.hdm_stuttgart.mi.read.schema.api.SchemaReader;
 import de.hdm_stuttgart.mi.read.schema.model.Schema;
 import de.hdm_stuttgart.mi.util.DbSysConstsLoader;
+import de.hdm_stuttgart.mi.write.data.DataWriter;
 import de.hdm_stuttgart.mi.write.schema.SchemaWriter;
+
+import javax.sql.rowset.CachedRowSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 public class Main {
@@ -21,7 +28,7 @@ public class Main {
                 "src/main/resources/jar/mariadb-java-client-3.3.0.jar",
                 "localhost",
                 3307,
-                "travel",
+                "test",
                 "root",
                 "example");
 
@@ -30,7 +37,7 @@ public class Main {
                 "src/main/resources/jar/mysql-connector-j-8.0.33.jar",
                 "localhost",
                 3306,
-                "employees",
+                "movies",
                 "root",
                 "example");
 
@@ -54,7 +61,7 @@ public class Main {
                 "example");
 
         // TODO move logic to controller once finished testing
-        final ConnectionDetails testSourceDetails = sourceDetailsMySql;
+        final ConnectionDetails testSourceDetails = sourceDetailsMariaDB;
 
 
         Injector injector = Guice.createInjector(new ConnectModule(testSourceDetails, destinationDetailsPostgres),
@@ -63,9 +70,12 @@ public class Main {
 
         SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
         final Schema schema = schemaReader.readSchema(testSourceDetails.getSchema());
+        DataReader dataReader = injector.getInstance(DataReader.class);
+        final ArrayList<TableData> data = dataReader.readData(schema);
 
         // System.out.println(schema);
-
+        DataWriter dataWriter = new DataWriter();
+        dataWriter.writeData(data);
         SchemaWriter schemaWriter = new SchemaWriter();
         schemaWriter.writeSchema(schema);
 

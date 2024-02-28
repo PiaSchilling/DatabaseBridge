@@ -1,7 +1,8 @@
-package de.hdm_stuttgart.mi.write.schema.temp;
+package de.hdm_stuttgart.mi.write.data;
 
-import de.hdm_stuttgart.mi.read.model.Column;
-import de.hdm_stuttgart.mi.read.model.Table;
+import de.hdm_stuttgart.mi.read.data.TableData;
+import de.hdm_stuttgart.mi.read.schema.model.Column;
+import de.hdm_stuttgart.mi.read.schema.model.Table;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,36 +13,37 @@ public class DataStatementBuilder   {
      * Get all insert statements from table
      * e. g. {@code INSERT INTO table_name (column1, column2,...) VALUES (value1, value2,...), ...;}
      *
-     * @param table the table for which the sql statement should be built
      * @return a list of SQL statement strings which can be used to insert all data
      */
 
-    public static ArrayList<String> dataAsStatement(final Table table) {
-        if(table.data() == null || table.data().size() <= 1) {
+    public static ArrayList<String> dataAsStatement(final TableData tableData) {
+        if(tableData == null || tableData.data().size() <= 1) {
             return null;
         }
 
         ArrayList<String> statements = new ArrayList<>();
-        StringBuilder base = new StringBuilder("INSERT INTO ")
-                .append(table.name())
+        StringBuilder insertQuery = new StringBuilder("INSERT INTO ")
+                .append(tableData.schemaName())
+                .append(".")
+                .append(tableData.tableName())
                 .append(" (")
-                .append(String.join(", ", table.columns().stream().map(Column::name).toArray(String[]::new)))
+                .append(String.join(", ", tableData.columns()))
                 .append(") VALUES ");
+        String base = insertQuery.toString();
         //Get values of all rows in Form (value1, value2, ...)
         try {
             int rowCount = 0;
-            StringBuilder insertQuery = base;
-            while (table.data().next()) {
+            while (tableData.data().next()) {
                 if(rowCount % 100 == 0 && rowCount > 0) {
                     insertQuery.setLength(insertQuery.length() - 2);
                     insertQuery.append(";");
                     statements.add(insertQuery.toString());
                     insertQuery.setLength(0);
-                    insertQuery = base;
+                    insertQuery = new StringBuilder(base);
                 }
                 StringBuilder values = new StringBuilder("(");
-                for (int i = 1; i <= table.columns().size(); i++) {
-                    Object value = table.data().getObject(i);
+                for (int i = 1; i <= tableData.columns().size(); i++) {
+                    Object value = tableData.data().getObject(i);
                     values.append(getFormattedValue(value)).append(", ");
                 }
                 values.setLength(values.length() - 2);
@@ -52,7 +54,7 @@ public class DataStatementBuilder   {
             insertQuery.setLength(insertQuery.length() - 2);
             insertQuery.append(";");
             statements.add(insertQuery.toString());
-            table.data().close();
+            tableData.data().close();
             return statements;
         } catch (SQLException sqlException) {
             System.out.println(sqlException.getMessage());
@@ -67,4 +69,5 @@ public class DataStatementBuilder   {
             return (value == null) ? "NULL" : "'" + value + "'";
         }
     }
+
 }
