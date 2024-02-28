@@ -9,9 +9,9 @@ import de.hdm_stuttgart.mi.di.ConnectModule;
 import de.hdm_stuttgart.mi.di.SchemaReadModule;
 import de.hdm_stuttgart.mi.read.api.SchemaReader;
 import de.hdm_stuttgart.mi.read.model.*;
+import de.hdm_stuttgart.mi.util.DbSysConstsLoader;
+import de.hdm_stuttgart.mi.write.schema.StatementBuilder;
 
-import javax.sql.rowset.CachedRowSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -57,34 +57,18 @@ public class Main {
                 "postgres",
                 "example");
 
-        Injector injector = Guice.createInjector(new ConnectModule(sourceDetailsPostgres, destinationDetailsPostgres),
+        Injector injector = Guice.createInjector(new ConnectModule(sourceDetailsMySql, destinationDetailsPostgres),
                 new SchemaReadModule());
 
+        DbSysConstsLoader.INSTANCE().init(sourceDetailsMySql.getDatabaseSystem());
+
         SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
-        final Schema schema = schemaReader.readSchema(sourceDetailsPostgres.getSchema());
+        final Schema schema = schemaReader.readSchema(sourceDetailsMySql.getSchema());
 
         System.out.println(schema);
+        ArrayList<String> xyz = StatementBuilder.dataAsStatement(schema.tables().get(0));
+        System.out.println(xyz);
 
-        //Test DataReader print out values
-        ArrayList<CachedRowSet> tables = new ArrayList<>();
-        for(Table table : schema.tables()) {
-            ArrayList<String> columns = new ArrayList<>();
-            for(int columnIndex = 0; columnIndex < table.columns().size(); columnIndex++) {
-                columns.add(table.columns().get(columnIndex).name());
-            }
-            System.out.println(columns);
-            try(CachedRowSet cachedRowSet = table.data()) {
-                while (cachedRowSet.next()) {
-                    for (String column : columns) {
-                        System.out.print(cachedRowSet.getString(column) + ",");
-                    }
-                    System.out.println();
-                }
-            } catch(SQLException e) {
-                System.out.println("Error while trying to print table data: " + e.getMessage());
-            }
-
-        }
 
         // TODO close DB connection
     }
