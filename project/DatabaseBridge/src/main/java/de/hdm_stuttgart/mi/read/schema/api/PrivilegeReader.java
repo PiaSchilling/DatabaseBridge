@@ -1,7 +1,7 @@
-package de.hdm_stuttgart.mi.read.api;
+package de.hdm_stuttgart.mi.read.schema.api;
 
-import de.hdm_stuttgart.mi.read.model.ColumnPrivilege;
-import de.hdm_stuttgart.mi.read.model.Privilege;
+import de.hdm_stuttgart.mi.read.schema.model.ColumnPrivilege;
+import de.hdm_stuttgart.mi.read.schema.model.Privilege;
 
 import java.util.ArrayList;
 

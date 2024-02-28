@@ -16,10 +16,21 @@ public class Consts {
     /**
      * SQL query to select createViewStatements with placeholders
      *
-     * @param arguments params to fill the placeholders
+     * @param arguments params to fill the placeholders,2 arguments required: viewName,schemaName
+     * @return the valid SQL query containing the arguments
      */
     public static String viewStmtQuery(Object... arguments) {
         return propLoader.getPlaceholderProperty("viewStmtQuery", arguments);
+    }
+
+    /**
+     * SQL statement to drop a schema
+     *
+     * @param arguments params to fill the placeholders, 1 argument required: schemaName
+     * @return the valid SQL statement containing the arguments
+     */
+    public static String dropSchemaStmt(Object... arguments) {
+        return propLoader.getPlaceholderProperty("dropSchemaStmt", arguments);
     }
 
     /**
@@ -35,6 +46,11 @@ public class Consts {
      * The name of the auto increment constraint
      */
     final public static String autoIncrementConstraintName = propLoader.getProperty("autoIncrementConstraintName");
+
+    /**
+     * The maximum length of a varchar
+     */
+    final public static int varcharMaxLength = Integer.parseInt(propLoader.getProperty("varcharMaxLength"));
 
 
 }

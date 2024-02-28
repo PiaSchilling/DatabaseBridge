@@ -38,6 +38,7 @@ public enum SQLType {
     TINYINT(Types.TINYINT, "TINYINT", false),
     VARBINARY(Types.VARBINARY, "VARBINARY", true),
     VARCHAR(Types.VARCHAR, "VARCHAR", true),
+    TEXT(78,"TEXT",false),
     UNKNOWN(-13,"UNKNOWN",false);
 
     private final int typeCode;

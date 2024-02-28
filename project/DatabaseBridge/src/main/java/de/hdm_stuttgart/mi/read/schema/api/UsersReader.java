@@ -1,6 +1,6 @@
-package de.hdm_stuttgart.mi.read.api;
+package de.hdm_stuttgart.mi.read.schema.api;
 
-import de.hdm_stuttgart.mi.read.model.User;
+import de.hdm_stuttgart.mi.read.schema.model.User;
 
 import java.util.ArrayList;
 

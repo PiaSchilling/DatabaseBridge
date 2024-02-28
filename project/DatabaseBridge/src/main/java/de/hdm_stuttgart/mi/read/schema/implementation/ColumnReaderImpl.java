@@ -1,16 +1,18 @@
-package de.hdm_stuttgart.mi.read.implementation;
+package de.hdm_stuttgart.mi.read.schema.implementation;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import de.hdm_stuttgart.mi.read.api.ColumnReader;
-import de.hdm_stuttgart.mi.read.model.Column;
-import de.hdm_stuttgart.mi.read.model.Constraint;
-import de.hdm_stuttgart.mi.read.model.ConstraintType;
+import de.hdm_stuttgart.mi.read.schema.api.ColumnReader;
+import de.hdm_stuttgart.mi.read.schema.model.Column;
+import de.hdm_stuttgart.mi.read.schema.model.Constraint;
+import de.hdm_stuttgart.mi.read.schema.model.ConstraintType;
+import de.hdm_stuttgart.mi.util.Consts;
 import de.hdm_stuttgart.mi.util.SQLType;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -28,15 +30,19 @@ public class ColumnReaderImpl implements ColumnReader {
     }
 
     @Override
-    public ArrayList<Column> readTableColumns(String tableName) {
+    public ArrayList<Column> readTableColumns(String tableName,String schemaName) {
         ArrayList<Column> columns = new ArrayList<>();
         try {
 
-            final ResultSet metaColumns = metaData.getColumns(null, null, tableName, null);
+            final ResultSet metaColumns = metaData.getColumns(null, schemaName, tableName, null);
             while (metaColumns.next()) {
                 String columnName = metaColumns.getString("COLUMN_NAME");
                 int columnDataTypeCode = metaColumns.getInt("DATA_TYPE");
                 int columnSize = metaColumns.getInt("COLUMN_SIZE");
+                // Map varchar with exceeding max length to TEXT type
+                if(columnDataTypeCode == Types.VARCHAR && columnSize > Consts.varcharMaxLength){
+                    columnDataTypeCode = SQLType.TEXT.getTypeCode();
+                }
                 final ArrayList<Constraint> constraints = readConstraints(metaColumns, columnName, tableName);
                 columns.add(new Column(columnName, SQLType.fromTypeCode(columnDataTypeCode), columnSize, constraints));
             }

@@ -1,10 +1,10 @@
-package de.hdm_stuttgart.mi.read.implementation;
+package de.hdm_stuttgart.mi.read.schema.implementation;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
-import de.hdm_stuttgart.mi.read.api.UsersReader;
-import de.hdm_stuttgart.mi.read.model.User;
+import de.hdm_stuttgart.mi.read.schema.api.UsersReader;
+import de.hdm_stuttgart.mi.read.schema.model.User;
 import de.hdm_stuttgart.mi.util.Consts;
 
 import java.sql.ResultSet;

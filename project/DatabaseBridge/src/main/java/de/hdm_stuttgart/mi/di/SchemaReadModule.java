@@ -1,10 +1,8 @@
 package de.hdm_stuttgart.mi.di;
 
 import com.google.inject.AbstractModule;
-import de.hdm_stuttgart.mi.read.api.*;
-import de.hdm_stuttgart.mi.read.implementation.*;
-import de.hdm_stuttgart.mi.read.temp.DataReader;
-import de.hdm_stuttgart.mi.read.temp.DataReaderImpl;
+import de.hdm_stuttgart.mi.read.schema.api.*;
+import de.hdm_stuttgart.mi.read.schema.implementation.*;
 
 public class SchemaReadModule extends AbstractModule {
     @Override
@@ -15,6 +13,5 @@ public class SchemaReadModule extends AbstractModule {
         bind(SchemaReader.class).to(SchemaReaderImpl.class);
         bind(UsersReader.class).to(UsersReaderImpl.class);
         bind(PrivilegeReader.class).to(PrivilegeReaderImpl.class);
-        bind(DataReader.class).to(DataReaderImpl.class);
     }
 }

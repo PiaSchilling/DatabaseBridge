@@ -1,9 +1,9 @@
-package de.hdm_stuttgart.mi.read.implementation;
+package de.hdm_stuttgart.mi.read.schema.implementation;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import de.hdm_stuttgart.mi.read.api.*;
-import de.hdm_stuttgart.mi.read.model.*;
+import de.hdm_stuttgart.mi.read.schema.api.*;
+import de.hdm_stuttgart.mi.read.schema.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class SchemaReaderImpl implements SchemaReader {
         final ArrayList<Privilege> tablePrivileges = privilegeReader.readTablePrivileges(schemaName);
         final ArrayList<ColumnPrivilege> columnPrivileges = privilegeReader.readColumnPrivileges(schemaName);
 
-        return new Schema(schemaName, tables, views, users, tablePrivileges, columnPrivileges);
+        return new Schema(schemaName,tables, views, users, tablePrivileges, columnPrivileges);
     }
 
     private ArrayList<Table> readTables(String schemaName) {
@@ -49,7 +49,7 @@ public class SchemaReaderImpl implements SchemaReader {
 
         for (String tableName : tableNames
         ) {
-            tables.add(tableReader.readTable(tableName));
+            tables.add(tableReader.readTable(tableName,schemaName));
         }
         return tables;
     }
