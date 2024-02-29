@@ -98,10 +98,10 @@ public class StatementBuilder {
 
         // special case: auto increment (resp. serial) columns in postgres may not define the datatype and default constraint
         if (constraintString.contains("SERIAL")) {
-            return column.name() + " " + constraintString.replaceAll("DEFAULT.*", "") + ",";
+            return "\n" + column.name() + " " + constraintString.replaceAll("DEFAULT.*", "") + ",";
         }
-        return column.dataType().hasLength ? column.name() + " " + column.dataType() + "(" + column.maxLength() + ")" + " " + constraintString + "," :
-                column.name() + " " + column.dataType() + " " + constraintString + ",";
+        return column.dataType().hasLength ? "\n" + column.name() + " " + column.dataType() + "(" + column.maxLength() + ")" + " " + constraintString + "," :
+                "\n" + column.name() + " " + column.dataType() + " " + constraintString + ",";
     }
 
     /**
