@@ -8,8 +8,8 @@ import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
 import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import de.hdm_stuttgart.mi.di.ConnectModule;
 import de.hdm_stuttgart.mi.di.SchemaReadModule;
-import de.hdm_stuttgart.mi.read.api.SchemaReader;
-import de.hdm_stuttgart.mi.read.model.Schema;
+import de.hdm_stuttgart.mi.read.schema.api.SchemaReader;
+import de.hdm_stuttgart.mi.read.schema.model.Schema;
 
 import java.io.File;
 import java.io.IOException;
