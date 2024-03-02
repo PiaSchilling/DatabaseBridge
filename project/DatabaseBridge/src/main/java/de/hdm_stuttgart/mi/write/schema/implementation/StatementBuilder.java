@@ -1,4 +1,4 @@
-package de.hdm_stuttgart.mi.write.schema;
+package de.hdm_stuttgart.mi.write.schema.implementation;
 
 import de.hdm_stuttgart.mi.read.schema.model.*;
 import de.hdm_stuttgart.mi.util.Consts;

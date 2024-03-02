@@ -31,9 +31,10 @@ public class ConnectModule extends AbstractModule {
                 .annotatedWith(Names.named("SourceDBMetaData"))
                 .toInstance(sourceConnectionHandler.getDatabaseMetaData());
         bind(ConnectionHandler.class).annotatedWith(Names.named("sourceConnection")).toInstance(sourceConnectionHandler);
-      /*  bind(DatabaseMetaData.class)
+        bind(DatabaseMetaData.class)
                 .annotatedWith(Names.named("DestinationDBMetaData"))
-                .toInstance(destinationConnectionDetails.getDatabaseMetaData());*/ // TODO comment in when destination db should be used!
+                .toInstance(destinationConnectionHandler.getDatabaseMetaData());
+        bind(ConnectionHandler.class).annotatedWith(Names.named("destinationConnection")).toInstance(destinationConnectionHandler);
 
     }
 }
