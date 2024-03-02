@@ -1,14 +1,15 @@
 package de.hdm_stuttgart.mi.write.schema.implementation;
 
 import de.hdm_stuttgart.mi.read.schema.model.*;
-import de.hdm_stuttgart.mi.util.Consts;
+import de.hdm_stuttgart.mi.util.DestinationConsts;
+
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class StatementBuilder {
 
     public static String dropSchemaStatement(final String schemaName) {
-        return Consts.dropSchemaStmt(schemaName);
+        return DestinationConsts.dropSchemaStmt(schemaName);
     }
 
     public static String createSchemaStatement(final String schemaName) {
@@ -96,12 +97,14 @@ public class StatementBuilder {
                 .map(StatementBuilder::constraintAsStatement)
                 .collect(Collectors.joining(" "));
 
+        final String dbSpecificType = DestinationConsts.getType(column.dataType());
+
         // special case: auto increment (resp. serial) columns in postgres may not define the datatype and default constraint
         if (constraintString.contains("SERIAL")) {
             return "\n" + column.name() + " " + constraintString.replaceAll("DEFAULT.*", "") + ",";
         }
-        return column.dataType().hasLength ? "\n" + column.name() + " " + column.dataType() + "(" + column.maxLength() + ")" + " " + constraintString + "," :
-                "\n" + column.name() + " " + column.dataType() + " " + constraintString + ",";
+        return column.dataType().hasLength ? "\n" + column.name() + " " + dbSpecificType + "(" + column.maxLength() + ")" + " " + constraintString + "," :
+                "\n" + column.name() + " " + dbSpecificType + " " + constraintString + ",";
     }
 
     /**
@@ -117,7 +120,7 @@ public class StatementBuilder {
         return switch (constraintType) {
             case NOT_NULL, UNIQUE, PRIMARY_KEY, FOREIGN_KEY -> constraintType.asString;
             case DEFAULT -> constraintType.asString + " " + constraint.getValue();
-            case AUTO_INKREMENT -> Consts.autoIncrementConstraintName;
+            case AUTO_INKREMENT -> DestinationConsts.autoIncrementConstraintName;
         };
     }
 
