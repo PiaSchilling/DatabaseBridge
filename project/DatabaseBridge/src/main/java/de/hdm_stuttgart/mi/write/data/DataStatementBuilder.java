@@ -17,7 +17,7 @@ public class DataStatementBuilder   {
      */
 
     public static ArrayList<String> dataAsStatement(final TableData tableData) {
-        if(tableData == null || tableData.data().size() <= 1) {
+        if(tableData == null || tableData.data().size() <= 0) {
             return null;
         }
 

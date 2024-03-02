@@ -9,9 +9,12 @@ public class DataWriter {
     public void writeData(ArrayList<TableData> data){
         for (TableData tableData : data) {
             ArrayList<String> statements = DataStatementBuilder.dataAsStatement(tableData);
-            for(String statement : statements) {
-                System.out.println(statement);
+            if(statements != null) {
+                for(String statement : statements) {
+                    System.out.println(statement);
+                }
             }
+
         }
     }
 }
