@@ -6,7 +6,7 @@ import de.hdm_stuttgart.mi.read.schema.api.ColumnReader;
 import de.hdm_stuttgart.mi.read.schema.model.Column;
 import de.hdm_stuttgart.mi.read.schema.model.Constraint;
 import de.hdm_stuttgart.mi.read.schema.model.ConstraintType;
-import de.hdm_stuttgart.mi.util.SourceConsts;
+import de.hdm_stuttgart.mi.util.consts.SourceConsts;
 import de.hdm_stuttgart.mi.util.SQLType;
 
 import java.sql.DatabaseMetaData;

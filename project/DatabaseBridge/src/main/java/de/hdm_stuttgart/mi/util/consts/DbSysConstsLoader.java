@@ -1,6 +1,7 @@
-package de.hdm_stuttgart.mi.util;
+package de.hdm_stuttgart.mi.util.consts;
 
 import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
+import de.hdm_stuttgart.mi.util.SQLType;
 
 import java.io.FileInputStream;
 import java.io.IOException;

@@ -1,5 +1,7 @@
-package de.hdm_stuttgart.mi.util;
+package de.hdm_stuttgart.mi.util.consts;
 
+
+import de.hdm_stuttgart.mi.util.SQLType;
 
 /**
  * Class holds database system specific constant values of the destination database.

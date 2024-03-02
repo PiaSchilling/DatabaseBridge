@@ -5,7 +5,7 @@ import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
 import de.hdm_stuttgart.mi.read.schema.api.ViewReader;
 import de.hdm_stuttgart.mi.read.schema.model.View;
-import de.hdm_stuttgart.mi.util.SourceConsts;
+import de.hdm_stuttgart.mi.util.consts.SourceConsts;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;

@@ -5,7 +5,7 @@ import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
 import de.hdm_stuttgart.mi.read.schema.api.UsersReader;
 import de.hdm_stuttgart.mi.read.schema.model.User;
-import de.hdm_stuttgart.mi.util.SourceConsts;
+import de.hdm_stuttgart.mi.util.consts.SourceConsts;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

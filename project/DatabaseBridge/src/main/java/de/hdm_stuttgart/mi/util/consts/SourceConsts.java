@@ -1,4 +1,4 @@
-package de.hdm_stuttgart.mi.util;
+package de.hdm_stuttgart.mi.util.consts;
 
 
 /**
