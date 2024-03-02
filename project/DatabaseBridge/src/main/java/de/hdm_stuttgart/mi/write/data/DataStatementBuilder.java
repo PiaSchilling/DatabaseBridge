@@ -1,8 +1,6 @@
 package de.hdm_stuttgart.mi.write.data;
 
 import de.hdm_stuttgart.mi.read.data.TableData;
-import de.hdm_stuttgart.mi.read.schema.model.Column;
-import de.hdm_stuttgart.mi.read.schema.model.Table;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -62,6 +60,11 @@ public class DataStatementBuilder   {
         }
     }
 
+    /**
+     * Check the type of object, if number, bool or null return as is, otherwise surround with ''
+     * @param value object to check
+     * @return object with or without '' depending on type
+     */
     private static String getFormattedValue(Object value) {
         if (value instanceof Number || value instanceof Boolean) {
             return String.valueOf(value);
