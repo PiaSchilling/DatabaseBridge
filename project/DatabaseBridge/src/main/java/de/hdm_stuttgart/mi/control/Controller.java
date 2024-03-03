@@ -8,8 +8,12 @@ import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
 import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import de.hdm_stuttgart.mi.di.ConnectModule;
 import de.hdm_stuttgart.mi.di.SchemaReadModule;
+import de.hdm_stuttgart.mi.di.SchemaWriteModule;
 import de.hdm_stuttgart.mi.read.schema.api.SchemaReader;
 import de.hdm_stuttgart.mi.read.schema.model.Schema;
+import de.hdm_stuttgart.mi.util.consts.DestinationDbSysConstsLoader;
+import de.hdm_stuttgart.mi.util.consts.SourceDbSysConstsLoader;
+import de.hdm_stuttgart.mi.write.schema.api.SchemaWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,12 +43,20 @@ public class Controller {
 
         final Injector injector = Guice.createInjector(
                 new ConnectModule(sourceConnectionDetails, destinationConnectionDetails),
-                new SchemaReadModule());
+                new SchemaReadModule(),
+                new SchemaWriteModule());
 
-        // TODO put missing the application logic here e.g. writeSchema, readData, ....
+        SourceDbSysConstsLoader.INSTANCE().init(sourceConnectionDetails.getDatabaseSystem());
+        DestinationDbSysConstsLoader.INSTANCE().init(destinationConnectionDetails.getDatabaseSystem());
+
         SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
         final Schema schema = schemaReader.readSchema(sourceConnectionDetails.getSchema());
-        System.out.println(schema);
+        final SchemaWriter schemaWriter = injector.getInstance(SchemaWriter.class);
+        schemaWriter.writeTablesToDatabase(schema);
+        // TODO add dataread here
+        // TODO add datawrite here
+        schemaWriter.writeRelationsAndViewsToDatabase(schema);
+        System.out.println("Finished");
     }
 
     /**

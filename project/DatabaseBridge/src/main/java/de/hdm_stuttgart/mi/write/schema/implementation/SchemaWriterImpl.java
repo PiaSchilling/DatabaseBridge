@@ -21,7 +21,7 @@ public class SchemaWriterImpl implements SchemaWriter {
         this.destinationConnection = destinationConnectionHandler.getConnection();
     }
 
-   @Override
+    @Override
     public String getDDLScript(Schema schema) {
         final String schemaName = schema.name();
         final ArrayList<Table> tables = schema.tables();
@@ -36,13 +36,24 @@ public class SchemaWriterImpl implements SchemaWriter {
 
     @Override
     public void writeSchemaToDatabase(Schema schema) {
+        writeTablesToDatabase(schema);
+        writeRelationsAndViewsToDatabase(schema);
+    }
+
+    @Override
+    public void writeTablesToDatabase(Schema schema) {
         final String schemaName = schema.name();
         final ArrayList<Table> tables = schema.tables();
-
         executeDropSchema(schemaName);
         executeDropTables(schemaName, tables);
         executeCreateSchema(schemaName);
         executeCreateTables(schemaName, tables);
+    }
+
+    @Override
+    public void writeRelationsAndViewsToDatabase(Schema schema) {
+        final String schemaName = schema.name();
+        final ArrayList<Table> tables = schema.tables();
         executeCreateRelations(schemaName, tables);
         executeCreateViews(schemaName, schema.views());
     }

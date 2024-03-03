@@ -16,7 +16,27 @@ public interface SchemaWriter {
 
     /**
      * Write the schema to the database which is defined in the {@code destinationConnection}-field of this class
+     * (the schema includes tables, relations and views)
+     *
      * @param schema the schema which should be written to the DB
      */
     void writeSchemaToDatabase(Schema schema);
+
+    /**
+     * Only write the tables of the schema to the database which is defined in the {@code destinationConnection}-field
+     * of this class
+     *
+     * @param schema the schema of which the tables should be written to the DB
+     */
+    void writeTablesToDatabase(Schema schema);
+
+    /**
+     * Only write the relations and views of the schema to the database which is defined in the
+     * {@code destinationConnection}-field of this class
+     * Should only be used after {@code writeTablesToDatabase} was executed since the relations and views depend on the
+     * tables
+     *
+     * @param schema the schema of which the relations should be written to the DB
+     */
+    void writeRelationsAndViewsToDatabase(Schema schema);
 }
