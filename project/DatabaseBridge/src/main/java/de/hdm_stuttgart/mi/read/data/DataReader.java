@@ -2,10 +2,15 @@ package de.hdm_stuttgart.mi.read.data;
 
 import de.hdm_stuttgart.mi.read.schema.model.Schema;
 
-import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
 
 public interface DataReader {
 
+    /**
+     * Read all table data of a single schema
+     *
+     * @param schema the schema the data should be read from
+     * @return ArrayList containing all data of all tables in the schema
+     */
     ArrayList<TableData> readData(Schema schema);
 }
