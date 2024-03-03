@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 public class SchemaWriterImpl implements SchemaWriter {
 
-    // TODO comment this class
     private final Connection destinationConnection;
 
     @Inject
@@ -22,6 +21,7 @@ public class SchemaWriterImpl implements SchemaWriter {
         this.destinationConnection = destinationConnectionHandler.getConnection();
     }
 
+   @Override
     public String getDDLScript(Schema schema) {
         final String schemaName = schema.name();
         final ArrayList<Table> tables = schema.tables();
@@ -34,7 +34,8 @@ public class SchemaWriterImpl implements SchemaWriter {
                 getCreateViewsStatement(schemaName, schema.views());
     }
 
-    public void executeDDLScript(Schema schema) {
+    @Override
+    public void writeSchemaToDatabase(Schema schema) {
         final String schemaName = schema.name();
         final ArrayList<Table> tables = schema.tables();
 
@@ -72,8 +73,26 @@ public class SchemaWriterImpl implements SchemaWriter {
         return builder.toString();
     }
 
+    private String getSingleDropTableStatement(String schemaName, Table table) {
+        return StatementBuilder.dropTableStatement(table, schemaName);
+    }
+
     public void executeDropTables(String schemaName, ArrayList<Table> tables) {
-        StatementExecutor.executeWrite(destinationConnection, getDropTablesStatement(schemaName, tables));
+        for (Table table : tables
+        ) {
+            StatementExecutor.executeWrite(destinationConnection, getSingleDropTableStatement(schemaName, table));
+        }
+    }
+
+    private String getSingleCreateTableStatement(String schemaName, Table table) {
+        return StatementBuilder.createTableStatement(table, schemaName);
+    }
+
+    public void executeCreateTables(String schemaName, ArrayList<Table> tables) {
+        for (Table table : tables
+        ) {
+            StatementExecutor.executeWrite(destinationConnection, getSingleCreateTableStatement(schemaName, table));
+        }
     }
 
     public String getCreateTablesStatement(String schemaName, ArrayList<Table> tables) {
@@ -85,11 +104,6 @@ public class SchemaWriterImpl implements SchemaWriter {
         }
         return builder.toString();
     }
-
-    public void executeCreateTables(String schemaName, ArrayList<Table> tables) {
-        StatementExecutor.executeWrite(destinationConnection, getCreateTablesStatement(schemaName, tables));
-    }
-
 
     public String getCreateRelationsStatement(String schemaName, ArrayList<Table> tables) {
         StringBuilder builder = new StringBuilder();

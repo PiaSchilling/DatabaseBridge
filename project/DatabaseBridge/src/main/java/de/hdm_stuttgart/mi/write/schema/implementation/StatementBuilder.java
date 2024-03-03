@@ -92,6 +92,14 @@ public class StatementBuilder {
      * @example {@code first_name VARCHAR(14) NOT NULL}
      */
     private static String columnsAsStatement(final Column column) {
+
+        // Remove default constraint, if the column is autoincrement
+        column.constraints().removeIf(c ->
+                c.getConstraintType() == ConstraintType.DEFAULT &&
+                        column.constraints().stream().anyMatch(innerC -> innerC.getConstraintType() == ConstraintType.AUTO_INKREMENT)
+        );
+
+
         final String constraintString = column.constraints().stream()
                 .filter(constraint -> constraint.getConstraintType() != ConstraintType.PRIMARY_KEY)
                 .map(StatementBuilder::constraintAsStatement)
