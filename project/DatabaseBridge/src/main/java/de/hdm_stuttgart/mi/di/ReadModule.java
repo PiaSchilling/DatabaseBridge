@@ -1,12 +1,12 @@
 package de.hdm_stuttgart.mi.di;
 
 import com.google.inject.AbstractModule;
-import de.hdm_stuttgart.mi.read.data.DataReader;
-import de.hdm_stuttgart.mi.read.data.DataReaderImpl;
+import de.hdm_stuttgart.mi.read.data.api.DataReader;
+import de.hdm_stuttgart.mi.read.data.implementation.DataReaderImpl;
 import de.hdm_stuttgart.mi.read.schema.api.*;
 import de.hdm_stuttgart.mi.read.schema.implementation.*;
 
-public class SchemaReadModule extends AbstractModule {
+public class ReadModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(ColumnReader.class).to(ColumnReaderImpl.class);

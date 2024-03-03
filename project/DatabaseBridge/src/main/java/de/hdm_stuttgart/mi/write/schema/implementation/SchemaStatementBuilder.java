@@ -6,7 +6,7 @@ import de.hdm_stuttgart.mi.util.consts.DestinationConsts;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class StatementBuilder {
+public class SchemaStatementBuilder {
 
     public static String dropSchemaStatement(final String schemaName) {
         return DestinationConsts.dropSchemaStmt(schemaName);
@@ -25,7 +25,7 @@ public class StatementBuilder {
      * @example {@code CREATE TABLE departments(dept_no CHAR(4) NOT NULL UNIQUE,dept_name VARCHAR(40) NOT NULL UNIQUE,PRIMARY KEY (dept_no))}
      */
     public static String createTableStatement(final Table table, final String schemaName) {
-        final String columnString = table.columns().stream().map(StatementBuilder::columnsAsStatement).collect(Collectors.joining());
+        final String columnString = table.columns().stream().map(SchemaStatementBuilder::columnsAsStatement).collect(Collectors.joining());
 
         final ArrayList<Column> primaryKeys = table.primaryKeys();
         final String pkString = primaryKeys.isEmpty()
@@ -102,7 +102,7 @@ public class StatementBuilder {
 
         final String constraintString = column.constraints().stream()
                 .filter(constraint -> constraint.getConstraintType() != ConstraintType.PRIMARY_KEY)
-                .map(StatementBuilder::constraintAsStatement)
+                .map(SchemaStatementBuilder::constraintAsStatement)
                 .collect(Collectors.joining(" "));
 
         final String dbSpecificType = DestinationConsts.getType(column.dataType());

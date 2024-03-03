@@ -7,12 +7,14 @@ import com.google.inject.Injector;
 import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
 import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import de.hdm_stuttgart.mi.di.ConnectModule;
-import de.hdm_stuttgart.mi.di.SchemaReadModule;
-import de.hdm_stuttgart.mi.di.SchemaWriteModule;
+import de.hdm_stuttgart.mi.di.ReadModule;
+import de.hdm_stuttgart.mi.di.WriteModule;
+import de.hdm_stuttgart.mi.read.data.api.DataReader;
 import de.hdm_stuttgart.mi.read.schema.api.SchemaReader;
 import de.hdm_stuttgart.mi.read.schema.model.Schema;
 import de.hdm_stuttgart.mi.util.consts.DestinationDbSysConstsLoader;
 import de.hdm_stuttgart.mi.util.consts.SourceDbSysConstsLoader;
+import de.hdm_stuttgart.mi.write.data.api.DataWriter;
 import de.hdm_stuttgart.mi.write.schema.api.SchemaWriter;
 
 import java.io.File;
@@ -43,15 +45,18 @@ public class Controller {
 
         final Injector injector = Guice.createInjector(
                 new ConnectModule(sourceConnectionDetails, destinationConnectionDetails),
-                new SchemaReadModule(),
-                new SchemaWriteModule());
+                new ReadModule(),
+                new WriteModule());
 
         SourceDbSysConstsLoader.INSTANCE().init(sourceConnectionDetails.getDatabaseSystem());
         DestinationDbSysConstsLoader.INSTANCE().init(destinationConnectionDetails.getDatabaseSystem());
 
-        SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
-        final Schema schema = schemaReader.readSchema(sourceConnectionDetails.getSchema());
+        final SchemaReader schemaReader = injector.getInstance(SchemaReader.class);
         final SchemaWriter schemaWriter = injector.getInstance(SchemaWriter.class);
+        final DataReader dataReader = injector.getInstance(DataReader.class);
+        final DataWriter dataWriter = injector.getInstance(DataWriter.class);
+
+        final Schema schema = schemaReader.readSchema(sourceConnectionDetails.getSchema());
         schemaWriter.writeTablesToDatabase(schema);
         // TODO add dataread here
         // TODO add datawrite here

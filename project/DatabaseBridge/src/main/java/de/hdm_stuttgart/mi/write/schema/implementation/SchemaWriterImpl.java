@@ -59,7 +59,7 @@ public class SchemaWriterImpl implements SchemaWriter {
     }
 
     private String getDropSchemaStatement(String schemaName) {
-        return StatementBuilder.dropSchemaStatement(schemaName);
+        return SchemaStatementBuilder.dropSchemaStatement(schemaName);
     }
 
     public void executeDropSchema(String schemaName) {
@@ -67,7 +67,7 @@ public class SchemaWriterImpl implements SchemaWriter {
     }
 
     private String getCreateSchemaStatement(String schemaName) {
-        return StatementBuilder.createSchemaStatement(schemaName);
+        return SchemaStatementBuilder.createSchemaStatement(schemaName);
     }
 
     public void executeCreateSchema(String schemaName) {
@@ -78,14 +78,14 @@ public class SchemaWriterImpl implements SchemaWriter {
         StringBuilder builder = new StringBuilder();
         for (Table table : tables
         ) {
-            builder.append(StatementBuilder.dropTableStatement(table, schemaName))
+            builder.append(SchemaStatementBuilder.dropTableStatement(table, schemaName))
                     .append("\n");
         }
         return builder.toString();
     }
 
     private String getSingleDropTableStatement(String schemaName, Table table) {
-        return StatementBuilder.dropTableStatement(table, schemaName);
+        return SchemaStatementBuilder.dropTableStatement(table, schemaName);
     }
 
     public void executeDropTables(String schemaName, ArrayList<Table> tables) {
@@ -96,7 +96,7 @@ public class SchemaWriterImpl implements SchemaWriter {
     }
 
     private String getSingleCreateTableStatement(String schemaName, Table table) {
-        return StatementBuilder.createTableStatement(table, schemaName);
+        return SchemaStatementBuilder.createTableStatement(table, schemaName);
     }
 
     public void executeCreateTables(String schemaName, ArrayList<Table> tables) {
@@ -110,7 +110,7 @@ public class SchemaWriterImpl implements SchemaWriter {
         StringBuilder builder = new StringBuilder();
         for (Table table : tables
         ) {
-            builder.append(StatementBuilder.createTableStatement(table, schemaName))
+            builder.append(SchemaStatementBuilder.createTableStatement(table, schemaName))
                     .append("\n");
         }
         return builder.toString();
@@ -120,7 +120,7 @@ public class SchemaWriterImpl implements SchemaWriter {
         StringBuilder builder = new StringBuilder();
         for (Table table : tables
         ) {
-            builder.append(StatementBuilder.alterTableAddFkRelationStatement(table, schemaName))
+            builder.append(SchemaStatementBuilder.alterTableAddFkRelationStatement(table, schemaName))
                     .append("\n");
         }
         return builder.toString();
@@ -134,7 +134,7 @@ public class SchemaWriterImpl implements SchemaWriter {
         StringBuilder builder = new StringBuilder();
         for (View view : views
         ) {
-            builder.append(StatementBuilder.createViewStatement(view, schemaName))
+            builder.append(SchemaStatementBuilder.createViewStatement(view, schemaName))
                     .append("\n");
         }
         return builder.toString();

@@ -1,9 +1,10 @@
-package de.hdm_stuttgart.mi.read.data;
+package de.hdm_stuttgart.mi.read.data.implementation;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
-import de.hdm_stuttgart.mi.read.data.DataReader;
+import de.hdm_stuttgart.mi.read.data.model.TableData;
+import de.hdm_stuttgart.mi.read.data.api.DataReader;
 import de.hdm_stuttgart.mi.read.schema.model.Column;
 import de.hdm_stuttgart.mi.read.schema.model.Schema;
 import de.hdm_stuttgart.mi.read.schema.model.Table;
