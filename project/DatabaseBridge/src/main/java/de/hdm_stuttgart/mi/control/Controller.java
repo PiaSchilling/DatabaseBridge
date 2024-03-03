@@ -10,6 +10,7 @@ import de.hdm_stuttgart.mi.di.ConnectModule;
 import de.hdm_stuttgart.mi.di.ReadModule;
 import de.hdm_stuttgart.mi.di.WriteModule;
 import de.hdm_stuttgart.mi.read.data.api.DataReader;
+import de.hdm_stuttgart.mi.read.data.model.TableData;
 import de.hdm_stuttgart.mi.read.schema.api.SchemaReader;
 import de.hdm_stuttgart.mi.read.schema.model.Schema;
 import de.hdm_stuttgart.mi.util.consts.DestinationDbSysConstsLoader;
@@ -23,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,8 +60,8 @@ public class Controller {
 
         final Schema schema = schemaReader.readSchema(sourceConnectionDetails.getSchema());
         schemaWriter.writeTablesToDatabase(schema);
-        // TODO add dataread here
-        // TODO add datawrite here
+        final ArrayList<TableData> data = dataReader.readData(schema); // TODO Kiara check if correct
+        dataWriter.writeData(data);
         schemaWriter.writeRelationsAndViewsToDatabase(schema);
         System.out.println("Finished");
     }
