@@ -23,9 +23,8 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
     public ConnectionHandlerImpl(ConnectionType connectionType, ConnectionDetails connectionDetails) {
         this.connectionType = connectionType;
         this.connectionDetails = connectionDetails;
-        if (connectionType == ConnectionType.SOURCE) {
-            connectDatabase(connectionDetails); // TODO remove once destination DB should be used!
-        }
+        connectDatabase(connectionDetails);
+
     }
 
     private void connectDatabase(ConnectionDetails connectionDetails) {
@@ -58,6 +57,7 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
 
     /**
      * Checks if a database connection is available
+     *
      * @return true if a connection is available, false otherwise
      */
     @Override

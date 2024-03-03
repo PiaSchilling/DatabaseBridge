@@ -6,7 +6,7 @@ import de.hdm_stuttgart.mi.read.schema.api.ColumnReader;
 import de.hdm_stuttgart.mi.read.schema.model.Column;
 import de.hdm_stuttgart.mi.read.schema.model.Constraint;
 import de.hdm_stuttgart.mi.read.schema.model.ConstraintType;
-import de.hdm_stuttgart.mi.util.Consts;
+import de.hdm_stuttgart.mi.util.consts.SourceConsts;
 import de.hdm_stuttgart.mi.util.SQLType;
 
 import java.sql.DatabaseMetaData;
@@ -40,7 +40,7 @@ public class ColumnReaderImpl implements ColumnReader {
                 int columnDataTypeCode = metaColumns.getInt("DATA_TYPE");
                 int columnSize = metaColumns.getInt("COLUMN_SIZE");
                 // Map varchar with exceeding max length to TEXT type
-                if(columnDataTypeCode == Types.VARCHAR && columnSize > Consts.varcharMaxLength){
+                if(columnDataTypeCode == Types.VARCHAR && columnSize > SourceConsts.varcharMaxLength){
                     columnDataTypeCode = SQLType.TEXT.getTypeCode();
                 }
                 final ArrayList<Constraint> constraints = readConstraints(metaColumns, columnName, tableName);

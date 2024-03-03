@@ -1,14 +1,15 @@
-package de.hdm_stuttgart.mi.write.schema;
+package de.hdm_stuttgart.mi.write.schema.implementation;
 
 import de.hdm_stuttgart.mi.read.schema.model.*;
-import de.hdm_stuttgart.mi.util.Consts;
+import de.hdm_stuttgart.mi.util.consts.DestinationConsts;
+
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class StatementBuilder {
+public class SchemaStatementBuilder {
 
     public static String dropSchemaStatement(final String schemaName) {
-        return Consts.dropSchemaStmt(schemaName);
+        return DestinationConsts.dropSchemaStmt(schemaName);
     }
 
     public static String createSchemaStatement(final String schemaName) {
@@ -24,7 +25,7 @@ public class StatementBuilder {
      * @example {@code CREATE TABLE departments(dept_no CHAR(4) NOT NULL UNIQUE,dept_name VARCHAR(40) NOT NULL UNIQUE,PRIMARY KEY (dept_no))}
      */
     public static String createTableStatement(final Table table, final String schemaName) {
-        final String columnString = table.columns().stream().map(StatementBuilder::columnsAsStatement).collect(Collectors.joining());
+        final String columnString = table.columns().stream().map(SchemaStatementBuilder::columnsAsStatement).collect(Collectors.joining());
 
         final ArrayList<Column> primaryKeys = table.primaryKeys();
         final String pkString = primaryKeys.isEmpty()
@@ -91,17 +92,27 @@ public class StatementBuilder {
      * @example {@code first_name VARCHAR(14) NOT NULL}
      */
     private static String columnsAsStatement(final Column column) {
+
+        // Remove default constraint, if the column is autoincrement
+        column.constraints().removeIf(c ->
+                c.getConstraintType() == ConstraintType.DEFAULT &&
+                        column.constraints().stream().anyMatch(innerC -> innerC.getConstraintType() == ConstraintType.AUTO_INKREMENT)
+        );
+
+
         final String constraintString = column.constraints().stream()
                 .filter(constraint -> constraint.getConstraintType() != ConstraintType.PRIMARY_KEY)
-                .map(StatementBuilder::constraintAsStatement)
+                .map(SchemaStatementBuilder::constraintAsStatement)
                 .collect(Collectors.joining(" "));
+
+        final String dbSpecificType = DestinationConsts.getType(column.dataType());
 
         // special case: auto increment (resp. serial) columns in postgres may not define the datatype and default constraint
         if (constraintString.contains("SERIAL")) {
-            return column.name() + " " + constraintString.replaceAll("DEFAULT.*", "") + ",";
+            return "\n" + column.name() + " " + constraintString.replaceAll("DEFAULT.*", "") + ",";
         }
-        return column.dataType().hasLength ? column.name() + " " + column.dataType() + "(" + column.maxLength() + ")" + " " + constraintString + "," :
-                column.name() + " " + column.dataType() + " " + constraintString + ",";
+        return column.dataType().hasLength ? "\n" + column.name() + " " + dbSpecificType + "(" + column.maxLength() + ")" + " " + constraintString + "," :
+                "\n" + column.name() + " " + dbSpecificType + " " + constraintString + ",";
     }
 
     /**
@@ -117,7 +128,7 @@ public class StatementBuilder {
         return switch (constraintType) {
             case NOT_NULL, UNIQUE, PRIMARY_KEY, FOREIGN_KEY -> constraintType.asString;
             case DEFAULT -> constraintType.asString + " " + constraint.getValue();
-            case AUTO_INKREMENT -> Consts.autoIncrementConstraintName;
+            case AUTO_INKREMENT -> DestinationConsts.autoIncrementConstraintName;
         };
     }
 

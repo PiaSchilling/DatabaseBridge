@@ -1,6 +1,6 @@
-package de.hdm_stuttgart.mi.write.data;
+package de.hdm_stuttgart.mi.write.data.implementation;
 
-import de.hdm_stuttgart.mi.read.data.TableData;
+import de.hdm_stuttgart.mi.read.data.model.TableData;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

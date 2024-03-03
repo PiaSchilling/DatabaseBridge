@@ -1,5 +1,6 @@
-package de.hdm_stuttgart.mi.read.data;
+package de.hdm_stuttgart.mi.read.data.api;
 
+import de.hdm_stuttgart.mi.read.data.model.TableData;
 import de.hdm_stuttgart.mi.read.schema.model.Schema;
 
 import java.util.ArrayList;

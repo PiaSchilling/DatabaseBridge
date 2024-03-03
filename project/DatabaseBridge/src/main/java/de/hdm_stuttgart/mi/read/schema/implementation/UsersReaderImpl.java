@@ -5,7 +5,7 @@ import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
 import de.hdm_stuttgart.mi.read.schema.api.UsersReader;
 import de.hdm_stuttgart.mi.read.schema.model.User;
-import de.hdm_stuttgart.mi.util.Consts;
+import de.hdm_stuttgart.mi.util.consts.SourceConsts;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +30,7 @@ public class UsersReaderImpl implements UsersReader {
         try(Statement statement = sourceConnection.getConnection().createStatement()){
             final ResultSet usersResult = statement.executeQuery(buildSelectUserTableQuery());
             while (usersResult.next()){
-                final String userName = usersResult.getString(Consts.userNameColName);
+                final String userName = usersResult.getString(SourceConsts.userNameColName);
                 users.add(new User(userName));
             }
         } catch (SQLException e) {
@@ -45,7 +45,7 @@ public class UsersReaderImpl implements UsersReader {
      * @return a SELECT query based on the database system
      */
     private String buildSelectUserTableQuery() {
-        return  "SELECT * FROM " + Consts.userTableName;
+        return  "SELECT * FROM " + SourceConsts.userTableName;
     }
 
 }
