@@ -6,6 +6,7 @@ import de.hdm_stuttgart.mi.read.schema.api.PrivilegeReader;
 import de.hdm_stuttgart.mi.read.schema.model.AccessType;
 import de.hdm_stuttgart.mi.read.schema.model.ColumnPrivilege;
 import de.hdm_stuttgart.mi.read.schema.model.Privilege;
+import de.hdm_stuttgart.mi.util.consts.SourceConsts;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -34,11 +35,14 @@ public class PrivilegeReaderImpl implements PrivilegeReader {
                 final String grantee = privilegesResult.getString("GRANTEE");
                 final String accessType = privilegesResult.getString("PRIVILEGE");
 
-                tablePrivileges.add(new Privilege(
-                        tableName,
-                        grantor,
-                        grantee,
-                        AccessType.fromString(accessType)));
+                // Do not add privileges for system users like mysql.sys, postgres, ...
+                if (!SourceConsts.systemUserNames.contains(grantee)) {
+                    tablePrivileges.add(new Privilege(
+                            tableName,
+                            grantor,
+                            grantee,
+                            AccessType.fromString(accessType)));
+                }
             }
         } catch (SQLException sqlException) {
             log.log(Level.SEVERE, "SQLException while reading tablePrivileges: " + sqlException.getMessage());
@@ -57,13 +61,17 @@ public class PrivilegeReaderImpl implements PrivilegeReader {
                 final String grantor = privilegesResult.getString("GRANTOR");
                 final String grantee = privilegesResult.getString("GRANTEE");
                 final String accessType = privilegesResult.getString("PRIVILEGE");
+                
+                // Do not add privileges for system users like mysql.sys, postgres, ...
+                if (!SourceConsts.systemUserNames.contains(grantee)) {
+                    columnPrivileges.add(new ColumnPrivilege(
+                            tableName,
+                            grantor,
+                            grantee,
+                            AccessType.fromString(accessType),
+                            columnName));
+                }
 
-                columnPrivileges.add(new ColumnPrivilege(
-                        tableName,
-                        grantor,
-                        grantee,
-                        AccessType.fromString(accessType),
-                        columnName));
             }
         } catch (SQLException sqlException) {
             log.log(Level.SEVERE, "SQLException while reading columnPrivileges: " + sqlException.getMessage());

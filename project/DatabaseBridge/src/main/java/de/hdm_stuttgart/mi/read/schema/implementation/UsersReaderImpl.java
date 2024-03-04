@@ -31,8 +31,8 @@ public class UsersReaderImpl implements UsersReader {
             final ResultSet usersResult = statement.executeQuery(buildSelectUserTableQuery());
             while (usersResult.next()) {
                 final String userName = usersResult.getString(SourceConsts.userNameColName);
-                // do not add system users like mysql.sys
-                if (!userName.contains(".")) {
+                // do not add system users like mysql.sys, postgres, ...
+                if (!SourceConsts.systemUserNames.contains(userName)) {
                     users.add(new User(userName));
                 }
             }
