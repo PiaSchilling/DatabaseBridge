@@ -31,6 +31,7 @@ public class DataStatementBuilder   {
         //Get values of all rows in Form (value1, value2, ...)
         try {
             int rowCount = 0;
+            tableData.data().beforeFirst();
             while (tableData.data().next()) {
                 if(rowCount % 100 == 0 && rowCount > 0) {
                     insertQuery.setLength(insertQuery.length() - 2);
@@ -52,7 +53,7 @@ public class DataStatementBuilder   {
             insertQuery.setLength(insertQuery.length() - 2);
             insertQuery.append(";");
             statements.add(insertQuery.toString());
-            tableData.data().close();
+            //tableData.data().close();
             return statements;
         } catch (SQLException sqlException) {
             System.out.println(sqlException.getMessage());

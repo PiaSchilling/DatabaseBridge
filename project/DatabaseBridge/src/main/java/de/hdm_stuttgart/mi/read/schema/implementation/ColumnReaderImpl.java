@@ -34,7 +34,7 @@ public class ColumnReaderImpl implements ColumnReader {
         ArrayList<Column> columns = new ArrayList<>();
         try {
 
-            final ResultSet metaColumns = metaData.getColumns(null, schemaName, tableName, null);
+            final ResultSet metaColumns = metaData.getColumns(schemaName, schemaName, tableName, null);
             while (metaColumns.next()) {
                 String columnName = metaColumns.getString("COLUMN_NAME");
                 int columnDataTypeCode = metaColumns.getInt("DATA_TYPE");

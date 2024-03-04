@@ -9,11 +9,14 @@ import picocli.CommandLine;
  */
 @CommandLine.Command(
         name = "new",
-        description = "Creates a new configuration file at the specified path"
+        description = "Create a correctly formatted configuration file with empty values at the given path"
 )
 public class NewConfigFile implements Runnable {
-    @CommandLine.Parameters()
+    @CommandLine.Parameters(description = "path to new configuration file")
     private String fileLocation;
+
+    @CommandLine.Option(names = "--help", usageHelp = true, description = "display this help and exit")
+    boolean help;
 
     @Override
     public void run() {
