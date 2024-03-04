@@ -30,6 +30,9 @@ public class DestinationConsts {
     final public static String autoIncrementConstraintName = propLoader.getConstant("autoIncrementConstraintName");
 
 
+    /**
+     * Temporary password which will be used for all transferred users since password transfer will not be implemented
+     */
     final public static String tempPassword = propLoader.getConstant("tempPassword");
 
     /**
@@ -41,5 +44,7 @@ public class DestinationConsts {
     public static String createUserStmt(Object... arguments) {
         return propLoader.getPlaceholderConst("createUserStmt", arguments);
     }
+
+    final public static String accessType_TRUNCATE = propLoader.getConstant("accessType_TRUNCATE");
 
 }

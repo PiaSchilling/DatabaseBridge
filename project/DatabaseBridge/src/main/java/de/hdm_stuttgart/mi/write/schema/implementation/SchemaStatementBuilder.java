@@ -29,16 +29,6 @@ public class SchemaStatementBuilder {
     }
 
     /**
-     * Get the CREATE USER statement for the provided user
-     *
-     * @param user the user for which the sql statement should be built
-     * @return a sql statement string which can be used to create the provided user
-     */
-    public static String createUserStatement(final User user) {
-        return DestinationConsts.createUserStmt(user.username(), DestinationConsts.tempPassword) + "\n";
-    }
-
-    /**
      * Get the CREATE TABLE statement for the provided {@code table}
      *
      * @param table      the table for which the sql statement should be built

@@ -9,6 +9,7 @@ import de.hdm_stuttgart.mi.write.schema.api.SchemaWriter;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class SchemaWriterImpl implements SchemaWriter {
 
@@ -23,6 +24,7 @@ public class SchemaWriterImpl implements SchemaWriter {
     public String getDDLScript(Schema schema) {
         final String schemaName = schema.name();
         final ArrayList<Table> tables = schema.tables();
+        final ArrayList<Privilege> privileges = filterPrivileges(schema.tablePrivileges(), schema.views());
 
         return getCreateUsersStatement(schema.users()) + "\n" +
                 getDropSchemaStatement(schemaName) + "\n" +
@@ -30,7 +32,8 @@ public class SchemaWriterImpl implements SchemaWriter {
                 getCreateSchemaStatement(schemaName) + "\n" +
                 getCreateTablesStatement(schemaName, tables) + "\n" +
                 getCreateRelationsStatement(schemaName, tables) + "\n" +
-                getCreateViewsStatement(schemaName, schema.views());
+                getCreateViewsStatement(schemaName, schema.views()) + "\n" +
+                getGrantPrivilegesStatement(schemaName, privileges);
     }
 
     @Override
@@ -43,11 +46,14 @@ public class SchemaWriterImpl implements SchemaWriter {
     public void writeTablesAndUsersToDatabase(Schema schema) {
         final String schemaName = schema.name();
         final ArrayList<Table> tables = schema.tables();
+        final ArrayList<Privilege> privileges = filterPrivileges(schema.tablePrivileges(), schema.views());
+
         executeCreateUsers(schema.users());
         executeDropSchema(schemaName);
         executeDropTables(schemaName, tables);
         executeCreateSchema(schemaName);
         executeCreateTables(schemaName, tables);
+        executeGrantPrivileges(schemaName, privileges);
     }
 
     @Override
@@ -80,14 +86,14 @@ public class SchemaWriterImpl implements SchemaWriter {
         StringBuilder builder = new StringBuilder();
         for (User user : users
         ) {
-            builder.append(SchemaStatementBuilder.createUserStatement(user))
+            builder.append(UserStatementBuilder.createUserStatement(user))
                     .append("\n");
         }
         return builder.toString();
     }
 
     private String getSingleCreateUsersStatement(User user) {
-        return SchemaStatementBuilder.createUserStatement(user);
+        return UserStatementBuilder.createUserStatement(user);
     }
 
     public void executeCreateUsers(ArrayList<User> users) {
@@ -95,6 +101,44 @@ public class SchemaWriterImpl implements SchemaWriter {
         ) {
             StatementExecutor.executeWrite(destinationConnection, getSingleCreateUsersStatement(user));
         }
+    }
+
+    // - - - - -  Privileges - - - -
+    private String getGrantPrivilegesStatement(final String schemaName, final ArrayList<Privilege> privileges) {
+        StringBuilder builder = new StringBuilder();
+        for (Privilege privilege : privileges
+        ) {
+            builder.append(UserStatementBuilder.grantPrivilegeStatement(privilege, schemaName))
+                    .append("\n");
+        }
+        return builder.toString();
+    }
+
+    private String getSingleGrantPrivilegeStatement(final String schemaName, final Privilege privilege) {
+        return UserStatementBuilder.grantPrivilegeStatement(privilege, schemaName);
+    }
+
+    public void executeGrantPrivileges(final String schemaName, final ArrayList<Privilege> privileges) {
+
+        for (Privilege privilege : privileges
+        ) {
+            StatementExecutor.executeWrite(destinationConnection, getSingleGrantPrivilegeStatement(schemaName, privilege));
+        }
+    }
+
+    /**
+     * Filter out Privileges on views since for some DB systems it's not possible to grant Privileges on Views,
+     *
+     * @param privileges list of all Privileges of a schema that might contain privileges on views
+     * @param views      list of all view of a schema that will be used to filter the privileges
+     * @return a filtered list that only contains privileges on real tables not views
+     */
+    private ArrayList<Privilege> filterPrivileges(ArrayList<Privilege> privileges, ArrayList<View> views) {
+        final ArrayList<String> viewNames = views.stream().map(View::name).collect(Collectors.toCollection(ArrayList::new));
+
+        return privileges.stream()
+                .filter(privilege -> !viewNames.contains(privilege.getTableName()))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     // - - - - - - Tables - - - - -
