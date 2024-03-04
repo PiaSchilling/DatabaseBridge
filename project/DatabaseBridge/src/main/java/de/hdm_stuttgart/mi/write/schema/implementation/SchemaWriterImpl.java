@@ -3,10 +3,7 @@ package de.hdm_stuttgart.mi.write.schema.implementation;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
-import de.hdm_stuttgart.mi.read.schema.model.FkRelation;
-import de.hdm_stuttgart.mi.read.schema.model.Schema;
-import de.hdm_stuttgart.mi.read.schema.model.Table;
-import de.hdm_stuttgart.mi.read.schema.model.View;
+import de.hdm_stuttgart.mi.read.schema.model.*;
 import de.hdm_stuttgart.mi.util.StatementExecutor;
 import de.hdm_stuttgart.mi.write.schema.api.SchemaWriter;
 
@@ -27,7 +24,8 @@ public class SchemaWriterImpl implements SchemaWriter {
         final String schemaName = schema.name();
         final ArrayList<Table> tables = schema.tables();
 
-        return getDropSchemaStatement(schemaName) + "\n" +
+        return getCreateUsersStatement(schema.users()) + "\n" +
+                getDropSchemaStatement(schemaName) + "\n" +
                 getDropTablesStatement(schemaName, tables) + "\n" +
                 getCreateSchemaStatement(schemaName) + "\n" +
                 getCreateTablesStatement(schemaName, tables) + "\n" +
@@ -37,14 +35,15 @@ public class SchemaWriterImpl implements SchemaWriter {
 
     @Override
     public void writeSchemaToDatabase(Schema schema) {
-        writeTablesToDatabase(schema);
+        writeTablesAndUsersToDatabase(schema);
         writeRelationsAndViewsToDatabase(schema);
     }
 
     @Override
-    public void writeTablesToDatabase(Schema schema) {
+    public void writeTablesAndUsersToDatabase(Schema schema) {
         final String schemaName = schema.name();
         final ArrayList<Table> tables = schema.tables();
+        executeCreateUsers(schema.users());
         executeDropSchema(schemaName);
         executeDropTables(schemaName, tables);
         executeCreateSchema(schemaName);
@@ -59,6 +58,7 @@ public class SchemaWriterImpl implements SchemaWriter {
         executeCreateViews(schemaName, schema.views());
     }
 
+    // - - - - - - Schemas - - - - -
     private String getDropSchemaStatement(String schemaName) {
         return SchemaStatementBuilder.dropSchemaStatement(schemaName);
     }
@@ -75,6 +75,29 @@ public class SchemaWriterImpl implements SchemaWriter {
         StatementExecutor.executeWrite(destinationConnection, getCreateSchemaStatement(schemaName));
     }
 
+    // - - - - - - Users - - - - -
+    private String getCreateUsersStatement(ArrayList<User> users) {
+        StringBuilder builder = new StringBuilder();
+        for (User user : users
+        ) {
+            builder.append(SchemaStatementBuilder.createUserStatement(user))
+                    .append("\n");
+        }
+        return builder.toString();
+    }
+
+    private String getSingleCreateUsersStatement(User user) {
+        return SchemaStatementBuilder.createUserStatement(user);
+    }
+
+    public void executeCreateUsers(ArrayList<User> users) {
+        for (User user : users
+        ) {
+            StatementExecutor.executeWrite(destinationConnection, getSingleCreateUsersStatement(user));
+        }
+    }
+
+    // - - - - - - Tables - - - - -
     private String getDropTablesStatement(String schemaName, ArrayList<Table> tables) {
         StringBuilder builder = new StringBuilder();
         for (Table table : tables
@@ -117,6 +140,7 @@ public class SchemaWriterImpl implements SchemaWriter {
         return builder.toString();
     }
 
+    // - - - - - - Relations - - - - -
     private String getSingleCreateRelationsStatement(String schemaName, Table table, FkRelation relation) {
         return SchemaStatementBuilder.singleAlterTableAddFkRelationStatement(table, relation, schemaName);
     }
@@ -140,6 +164,7 @@ public class SchemaWriterImpl implements SchemaWriter {
         }
     }
 
+    // - - - - - - Views - - - - -
     private String getSingleCreateViewStatement(String schemaName, View view) {
         return SchemaStatementBuilder.createViewStatement(view, schemaName);
     }

@@ -59,7 +59,7 @@ public class Controller {
         final DataWriter dataWriter = injector.getInstance(DataWriter.class);
 
         final Schema schema = schemaReader.readSchema(sourceConnectionDetails.getSchema());
-        schemaWriter.writeTablesToDatabase(schema);
+        schemaWriter.writeTablesAndUsersToDatabase(schema);
         final ArrayList<TableData> data = dataReader.readData(schema);
         dataWriter.writeData(data);
         schemaWriter.writeRelationsAndViewsToDatabase(schema);

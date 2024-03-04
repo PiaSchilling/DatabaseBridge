@@ -8,12 +8,34 @@ import java.util.stream.Collectors;
 
 public class SchemaStatementBuilder {
 
+    /**
+     * Get the DROP SCHEMA statement for the provided schema
+     *
+     * @param schemaName the name of the schema for which the sql statement should be built
+     * @return a sql statement string which can be used to drop the provided schema
+     */
     public static String dropSchemaStatement(final String schemaName) {
         return DestinationConsts.dropSchemaStmt(schemaName) + "\n";
     }
 
+    /**
+     * Get the CREATE SCHEMA statement for the provided schema
+     *
+     * @param schemaName the name of the schema for which the sql statement should be built
+     * @return a sql statement string which can be used to create the provided schema
+     */
     public static String createSchemaStatement(final String schemaName) {
         return "CREATE SCHEMA " + schemaName + ";";
+    }
+
+    /**
+     * Get the CREATE USER statement for the provided user
+     *
+     * @param user the user for which the sql statement should be built
+     * @return a sql statement string which can be used to create the provided user
+     */
+    public static String createUserStatement(final User user) {
+        return DestinationConsts.createUserStmt(user.username(), DestinationConsts.tempPassword) + "\n";
     }
 
     /**
@@ -97,6 +119,7 @@ public class SchemaStatementBuilder {
         return "ALTER TABLE " + schemaName + "." + table.name() + " ADD CONSTRAINT " + fkRelationAsStatement(relation, schemaName) + ";";
     }
 
+
     /**
      * Get a column as statement representation which can be used to build the columns in a CREATE TABLE statement
      * (primary key constraints will be ignored since they will be added on table level)
@@ -125,8 +148,9 @@ public class SchemaStatementBuilder {
         if (constraintString.contains("SERIAL")) {
             return "\n" + column.name() + " " + constraintString.replaceAll("DEFAULT.*", "") + ",";
         }
-        return column.dataType().hasLength ? "\n" + column.name() + " " + dbSpecificType + "(" + column.maxLength() + ")" + " " + constraintString + "," :
-                "\n" + column.name() + " " + dbSpecificType + " " + constraintString + ",";
+        return column.dataType().hasLength && !dbSpecificType.equals("TEXT")
+                ? "\n" + column.name() + " " + dbSpecificType + "(" + column.maxLength() + ")" + " " + constraintString + ","
+                : "\n" + column.name() + " " + dbSpecificType + " " + constraintString + ",";
     }
 
     /**

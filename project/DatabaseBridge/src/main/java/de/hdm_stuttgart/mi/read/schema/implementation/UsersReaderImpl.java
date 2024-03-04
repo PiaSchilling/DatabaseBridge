@@ -27,14 +27,17 @@ public class UsersReaderImpl implements UsersReader {
     @Override
     public ArrayList<User> readUsers() {
         final ArrayList<User> users = new ArrayList<>();
-        try(Statement statement = sourceConnection.getConnection().createStatement()){
+        try (Statement statement = sourceConnection.getConnection().createStatement()) {
             final ResultSet usersResult = statement.executeQuery(buildSelectUserTableQuery());
-            while (usersResult.next()){
+            while (usersResult.next()) {
                 final String userName = usersResult.getString(SourceConsts.userNameColName);
-                users.add(new User(userName));
+                // do not add system users like mysql.sys
+                if (!userName.contains(".")) {
+                    users.add(new User(userName));
+                }
             }
         } catch (SQLException e) {
-            log.log(Level.SEVERE, "SQLException while reading users: "+ e.getMessage());
+            log.log(Level.SEVERE, "SQLException while reading users: " + e.getMessage());
             return users;
         }
         return users;
@@ -42,10 +45,11 @@ public class UsersReaderImpl implements UsersReader {
 
     /**
      * Builds a database system specific query to select all users from the users-table
+     *
      * @return a SELECT query based on the database system
      */
     private String buildSelectUserTableQuery() {
-        return  "SELECT * FROM " + SourceConsts.userTableName;
+        return "SELECT DISTINCT * FROM " + SourceConsts.userTableName;
     }
 
 }
