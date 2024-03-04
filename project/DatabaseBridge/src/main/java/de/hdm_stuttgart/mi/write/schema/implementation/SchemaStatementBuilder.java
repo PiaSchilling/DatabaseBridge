@@ -64,12 +64,13 @@ public class SchemaStatementBuilder {
     }
 
     /**
-     * Get all ALTER TABLE ADD CONSTRAINT statement for the provided tables fk relations
+     * Get all ALTER TABLE ADD CONSTRAINT statements for the provided tables fk relations
      *
-     * @param table      the table for which the sql statement should be built
+     * @param table      the table for which the sql statements should be built
      * @param schemaName the name of the schema the provided table belongs to
      * @return a SQL statement string which can be used to add all fk relations via ALTER TABLE
-     * @example {@code ALTER TABLE titles ADD CONSTRAINT FOREIGN KEY(emp_no) REFERENCES employees(emp_no) ON UPDATE RESTRICT ON DELETE CASCADE;}
+     * @example {@code ALTER TABLE ecommerce.order_items ADD CONSTRAINT order_items_order_id_fkey FOREIGN KEY(order_id) REFERENCES ecommerce.orders(order_id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+     * ALTER TABLE ecommerce.order_items ADD CONSTRAINT order_items_product_id_fkey FOREIGN KEY(product_id) REFERENCES ecommerce.products(product_id) ON UPDATE NO ACTION ON DELETE NO ACTION;}
      */
     public static String alterTableAddFkRelationStatement(final Table table, final String schemaName) {
         if (!table.isChildTable()) {
@@ -81,6 +82,19 @@ public class SchemaStatementBuilder {
                 .map(relation -> fkRelationAsStatement(relation, schemaName))
                 .map(e -> "ALTER TABLE " + schemaName + "." + table.name() + " ADD CONSTRAINT " + e + ";")
                 .collect(Collectors.joining());
+    }
+
+    /**
+     * Get single ALTER TABLE ADD CONSTRAINT statements for the provided fk relation
+     *
+     * @param table      the table for which the sql statement should be built
+     * @param relation   the relation for which the sql statement should be built
+     * @param schemaName the name of the schema the provided table belongs to
+     * @return a SQL statement string which can be used to add all fk relations via ALTER TABLE
+     * @example {@code ALTER TABLE titles ADD CONSTRAINT FOREIGN KEY(emp_no) REFERENCES employees(emp_no) ON UPDATE RESTRICT ON DELETE CASCADE;}
+     */
+    public static String singleAlterTableAddFkRelationStatement(final Table table, final FkRelation relation, final String schemaName) {
+        return "ALTER TABLE " + schemaName + "." + table.name() + " ADD CONSTRAINT " + fkRelationAsStatement(relation, schemaName) + ";";
     }
 
     /**

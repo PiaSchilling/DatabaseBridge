@@ -3,6 +3,7 @@ package de.hdm_stuttgart.mi.write.schema.implementation;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
+import de.hdm_stuttgart.mi.read.schema.model.FkRelation;
 import de.hdm_stuttgart.mi.read.schema.model.Schema;
 import de.hdm_stuttgart.mi.read.schema.model.Table;
 import de.hdm_stuttgart.mi.read.schema.model.View;
@@ -116,6 +117,10 @@ public class SchemaWriterImpl implements SchemaWriter {
         return builder.toString();
     }
 
+    private String getSingleCreateRelationsStatement(String schemaName, Table table, FkRelation relation) {
+        return SchemaStatementBuilder.singleAlterTableAddFkRelationStatement(table, relation, schemaName);
+    }
+
     public String getCreateRelationsStatement(String schemaName, ArrayList<Table> tables) {
         StringBuilder builder = new StringBuilder();
         for (Table table : tables
@@ -127,7 +132,17 @@ public class SchemaWriterImpl implements SchemaWriter {
     }
 
     public void executeCreateRelations(String schemaName, ArrayList<Table> tables) {
-        StatementExecutor.executeWrite(destinationConnection, getCreateRelationsStatement(schemaName, tables));
+        for (Table table : tables
+        ) {
+            for (FkRelation relation : table.importedFkRelations()) {
+                StatementExecutor.executeWrite(destinationConnection,
+                        getSingleCreateRelationsStatement(schemaName, table, relation));
+            }
+        }
+    }
+
+    private String getSingleCreateViewStatement(String schemaName, View view) {
+        return SchemaStatementBuilder.createViewStatement(view, schemaName);
     }
 
     public String getCreateViewsStatement(String schemaName, ArrayList<View> views) {
@@ -141,7 +156,11 @@ public class SchemaWriterImpl implements SchemaWriter {
     }
 
     public void executeCreateViews(String schemaName, ArrayList<View> views) {
-        StatementExecutor.executeWrite(destinationConnection, getCreateViewsStatement(schemaName, views));
+        for (View view : views
+        ) {
+            StatementExecutor.executeWrite(destinationConnection, getSingleCreateViewStatement(schemaName, view));
+        }
+
     }
 
 }

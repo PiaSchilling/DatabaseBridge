@@ -60,7 +60,7 @@ public class Controller {
 
         final Schema schema = schemaReader.readSchema(sourceConnectionDetails.getSchema());
         schemaWriter.writeTablesToDatabase(schema);
-        final ArrayList<TableData> data = dataReader.readData(schema); // TODO Kiara check if correct
+        final ArrayList<TableData> data = dataReader.readData(schema);
         dataWriter.writeData(data);
         schemaWriter.writeRelationsAndViewsToDatabase(schema);
         System.out.println("Finished");
