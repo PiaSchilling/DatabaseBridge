@@ -1,7 +1,6 @@
 package de.hdm_stuttgart.mi.subcommands;
 
 import de.hdm_stuttgart.mi.control.Controller;
-import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Option;
