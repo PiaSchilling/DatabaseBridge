@@ -27,11 +27,11 @@ public class SchemaWriterImpl implements SchemaWriter {
         final String schemaName = schema.name();
         final ArrayList<Table> tables = schema.tables();
 
-        return getDropSchemaStatement(schemaName) +
-                getDropTablesStatement(schemaName, tables) +
-                getCreateSchemaStatement(schemaName) +
-                getCreateTablesStatement(schemaName, tables) +
-                getCreateRelationsStatement(schemaName, tables) +
+        return getDropSchemaStatement(schemaName) + "\n" +
+                getDropTablesStatement(schemaName, tables) + "\n" +
+                getCreateSchemaStatement(schemaName) + "\n" +
+                getCreateTablesStatement(schemaName, tables) + "\n" +
+                getCreateRelationsStatement(schemaName, tables) + "\n" +
                 getCreateViewsStatement(schemaName, schema.views());
     }
 
@@ -112,7 +112,7 @@ public class SchemaWriterImpl implements SchemaWriter {
         for (Table table : tables
         ) {
             builder.append(SchemaStatementBuilder.createTableStatement(table, schemaName))
-                    .append("\n");
+                    .append("\n\n");
         }
         return builder.toString();
     }
@@ -125,8 +125,7 @@ public class SchemaWriterImpl implements SchemaWriter {
         StringBuilder builder = new StringBuilder();
         for (Table table : tables
         ) {
-            builder.append(SchemaStatementBuilder.alterTableAddFkRelationStatement(table, schemaName))
-                    .append("\n");
+            builder.append(SchemaStatementBuilder.alterTableAddFkRelationStatement(table, schemaName));
         }
         return builder.toString();
     }

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class SchemaStatementBuilder {
 
     public static String dropSchemaStatement(final String schemaName) {
-        return DestinationConsts.dropSchemaStmt(schemaName);
+        return DestinationConsts.dropSchemaStmt(schemaName) + "\n";
     }
 
     public static String createSchemaStatement(final String schemaName) {
@@ -80,7 +80,7 @@ public class SchemaStatementBuilder {
         return table.importedFkRelations()
                 .stream()
                 .map(relation -> fkRelationAsStatement(relation, schemaName))
-                .map(e -> "ALTER TABLE " + schemaName + "." + table.name() + " ADD CONSTRAINT " + e + ";")
+                .map(e -> "ALTER TABLE " + schemaName + "." + table.name() + " ADD CONSTRAINT " + e + ";\n")
                 .collect(Collectors.joining());
     }
 
