@@ -28,7 +28,7 @@ public abstract class DbSysConstsLoader {
 
 
     /**
-     * Initialize the provider by loading the according .properties into databaseSystemsConsts
+     * Initialize the provider by loading the database system specific .properties-files
      *
      * @param databaseSystem the databaseSystem for which this class should be initialized
      */

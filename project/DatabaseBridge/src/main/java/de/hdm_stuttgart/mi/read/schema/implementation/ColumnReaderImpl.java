@@ -166,35 +166,6 @@ public class ColumnReaderImpl implements ColumnReader {
         return null;
     }
 
-    /** todo check if this can be removed
-     * Checks if {@code column} defines a FOREIGN KEY constraint
-     *
-     * @param columnName the name of the column to check
-     * @param tableName  the name of the table to check
-     * @return a Constraint object with type FOREIGN KEY if the column defines this the constraint, null if not or if an error
-     * occurs
-     */
-    private Constraint readForeignKeyConstraint(String columnName, String tableName) {
-        try {
-            ResultSet foreignKeys = metaData.getImportedKeys(null, null, tableName);
-
-            while (foreignKeys.next()) {
-                String fkColumnName = foreignKeys.getString("FKCOLUMN_NAME");
-                String pkTableName = foreignKeys.getString("PKTABLE_NAME");
-                String pkColumnName = foreignKeys.getString("PKCOLUMN_NAME");
-
-                if (Objects.equals(fkColumnName, columnName)) {
-                    return new Constraint(ConstraintType.FOREIGN_KEY, pkTableName + "," + pkColumnName);
-                }
-            }
-
-        } catch (SQLException e) {
-            log.log(Level.SEVERE, "SQLException while extracting FOREIGN_KEY from column: " + e.getMessage());
-            return null;
-        }
-        return null;
-    }
-
     /**
      * Checks if {@code column} defines the DEFAULT constraint
      *

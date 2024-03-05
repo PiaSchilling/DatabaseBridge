@@ -9,7 +9,7 @@ public enum ConstraintType {
     PRIMARY_KEY("PRIMARY KEY"),
     FOREIGN_KEY("FOREIGN KEY"),
     DEFAULT("DEFAULT"),
-    AUTO_INKREMENT("AUTO_INCREMENT"); // TODO remove FK
+    AUTO_INKREMENT("AUTO_INCREMENT");
 
     public final String asString;
 
