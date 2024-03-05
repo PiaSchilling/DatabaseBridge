@@ -59,7 +59,7 @@ public class TableReaderImpl implements TableReader {
     private ArrayList<FkRelation> readImportedFkRelations(String tableName,String schemaName) {
         final ArrayList<FkRelation> importedFkRelations = new ArrayList<>();
         try {
-            final ResultSet importedKeys = metaData.getImportedKeys(null, schemaName, tableName);
+            final ResultSet importedKeys = metaData.getImportedKeys(schemaName, schemaName, tableName);
             while (importedKeys.next()) {
                 final String referencedTableName = importedKeys.getString("PKTABLE_NAME");
                 final String referencedColumnName = importedKeys.getString("PKCOLUMN_NAME");
@@ -94,7 +94,7 @@ public class TableReaderImpl implements TableReader {
     private ArrayList<FkRelation> readExportedFkRelations(String tableName,String schemaName) {
         final ArrayList<FkRelation> exportedFkRelations = new ArrayList<>();
         try {
-            final ResultSet importedKeys = metaData.getExportedKeys(null, schemaName, tableName);
+            final ResultSet importedKeys = metaData.getExportedKeys(schemaName, schemaName, tableName);
             while (importedKeys.next()) {
                 final String referencingTableName = importedKeys.getString("FKTABLE_NAME");
                 final String referencingColumnName = importedKeys.getString("FKCOLUMN_NAME");

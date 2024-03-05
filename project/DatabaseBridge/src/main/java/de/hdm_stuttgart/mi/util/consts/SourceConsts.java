@@ -38,5 +38,9 @@ public class SourceConsts {
      */
     final public static int varcharMaxLength = Integer.parseInt(propLoader.getConstant("varcharMaxLength"));
 
+    final public static String viewRegex = propLoader.getConstant("viewRegex");
+
+    final public static String viewReplacement = propLoader.getConstant("viewReplacement");
+
 
 }

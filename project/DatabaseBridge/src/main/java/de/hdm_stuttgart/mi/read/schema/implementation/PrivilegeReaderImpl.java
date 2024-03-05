@@ -50,7 +50,7 @@ public class PrivilegeReaderImpl implements PrivilegeReader {
     public ArrayList<ColumnPrivilege> readColumnPrivileges(String schemaName) {
         // TODO does not work for mysql and mariaDB
         ArrayList<ColumnPrivilege> columnPrivileges = new ArrayList<>();
-        try (ResultSet privilegesResult = metaData.getColumnPrivileges(null, schemaName, "employees", null)) {
+        try (ResultSet privilegesResult = metaData.getColumnPrivileges(schemaName, schemaName, "employees", null)) {
             while (privilegesResult.next()) {
                 final String tableName = privilegesResult.getString("TABLE_NAME");
                 final String columnName = privilegesResult.getString("COLUMN_NAME");

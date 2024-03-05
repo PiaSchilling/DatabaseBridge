@@ -3,7 +3,6 @@ package de.hdm_stuttgart.mi.read.schema.implementation;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
-import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import de.hdm_stuttgart.mi.read.schema.api.ViewReader;
 import de.hdm_stuttgart.mi.read.schema.model.View;
 import de.hdm_stuttgart.mi.util.consts.SourceConsts;
@@ -72,11 +71,7 @@ public class ViewReaderImpl implements ViewReader {
         try (Statement statement = sourceConnection.getConnection().createStatement()) {
             final ResultSet viewResult = statement.executeQuery(SourceConsts.viewStmtQuery(viewName,schemaName));
             while (viewResult.next()) {
-                if(sourceConnection.getConnectionDetails().getDatabaseSystem() == DatabaseSystem.POSTGRES){
-                    viewStatement = viewResult.getString(SourceConsts.viewStmtColName);
-                }else {
-                    viewStatement = " " + viewResult.getString(SourceConsts.viewStmtColName) + ";";
-                }
+                viewStatement = " " + viewResult.getString(SourceConsts.viewStmtColName).replaceAll(SourceConsts.viewRegex, SourceConsts.viewReplacement);
 
             }
         } catch (SQLException e) {
