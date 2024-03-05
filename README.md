@@ -35,7 +35,13 @@ The CLI defines the following commands:
 To create an config file template, run:
 
 ```
-databasebridge new
+databasebridge new <path_to_save_location_template_file>
+```
+
+For example:
+
+```
+databasebridge new /Users/exampleUser/Desktop/template.json
 ```
 
 To start the transfer, run:
