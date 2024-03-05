@@ -15,10 +15,8 @@ import picocli.CommandLine.HelpCommand;
 )
 public class DataBaseBridge implements Runnable {
     public static void main(String[] args) {
-        //Only for Testing at the moment, provide arguments/ subcommands
-        String[] args2 = {"execute", "src/main/resources/test.json", "-s", "src/main/resources/ddl.text"};
         //Run the main class
-        int exitCode = new CommandLine(new DataBaseBridge()).execute(args2);
+        int exitCode = new CommandLine(new DataBaseBridge()).execute(args);
         System.exit(exitCode);
     }
 
