@@ -37,7 +37,6 @@ public class ViewReaderImpl implements ViewReader {
         ) {
             views.add(new View(viewName, readCreateViewStatement(viewName, schemaName)));
         }
-
         return views;
     }
 
@@ -72,7 +71,8 @@ public class ViewReaderImpl implements ViewReader {
         try (Statement statement = sourceConnection.getConnection().createStatement()) {
             final ResultSet viewResult = statement.executeQuery(SourceConsts.viewStmtQuery(viewName,schemaName));
             while (viewResult.next()) {
-                viewStatement = viewResult.getString(SourceConsts.viewStmtColName);
+                viewStatement = " " + viewResult.getString(SourceConsts.viewStmtColName).replaceAll(SourceConsts.viewRegex, SourceConsts.viewReplacement);
+
             }
         } catch (SQLException e) {
             log.log(Level.SEVERE, "SQLException while reading view statement: " + e.getMessage());

@@ -24,10 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,11 +34,10 @@ public class Controller {
 
     /**
      * Defines what should happen when the Execute command is executed
-     * Currently runs only schema read
      *
      * @param configFilePath the path to the configuration file the user specified
      */
-    public void onExecute(String configFilePath) {
+    public void onExecute(String configFilePath, String ddlFilePath) {
         final ConnectionDetails sourceConnectionDetails = buildConnectionDetails(configFilePath, "source");
         final ConnectionDetails destinationConnectionDetails = buildConnectionDetails(configFilePath, "destination");
 
@@ -75,6 +71,19 @@ public class Controller {
         schemaWriter.writeRelationsAndViewsToDatabase(schema);
         System.out.println("Wrting relations and views to destination DB finished.");
         System.out.println("Transferring finished. Closing connections...");
+
+        //Save DDL script to separate file
+        if(ddlFilePath != null) {
+            StringBuilder ddlScript = new StringBuilder();
+            ddlScript.append(schemaWriter.getDDLScript(schema));
+            ddlScript.append(dataWriter.getDDLScript(data));
+            try{
+                Files.writeString(Path.of(ddlFilePath), ddlScript, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                System.out.println("DDL script saved in file: " + ddlFilePath);
+            } catch (IOException e) {
+                System.err.println("Error saving DDL script to file: " + e.getMessage());
+            }
+        }
 
 
         final ConnectionHandler sourceConnectionHandler = injector

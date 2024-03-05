@@ -8,22 +8,23 @@ import picocli.CommandLine.HelpCommand;
 
 @Command(
         name= "databasebridge",
-        description= "Copies a source database into destination database, all parameters need to be specified in a configuration file",
+        description= "Easily migrate database schemas between systems",
         subcommands = {
                 Execute.class, NewConfigFile.class, HelpCommand.class,
         }
 )
 public class DataBaseBridge implements Runnable {
     public static void main(String[] args) {
-        //Only for Testing at the moment, provide arguments/ subcommands
-        String[] args2 = {"execute", "src/main/resources/test.json"};
         //Run the main class
-        int exitCode = new CommandLine(new DataBaseBridge()).execute(args2);
+        int exitCode = new CommandLine(new DataBaseBridge()).execute(args);
         System.exit(exitCode);
     }
 
     @Override
     public void run() {
-        System.out.println("This is the the main command");
+        System.out.println("Welcome to DataBaseBridge!");
+        System.out.println("DataBaseBridge helps you seamlessly migrate databases from one system to another.");
+        System.out.println("Supported systems: MySQL, PostgreSQL and MariaDB.\n");
+        System.out.println("Use 'databasebridge help' for usage information.");
     }
 }

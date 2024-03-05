@@ -32,4 +32,19 @@ public class DataWriterImpl implements DataWriter {
 
         }
     }
+
+    @Override
+    public String getDDLScript(ArrayList<TableData> data) {
+        StringBuilder ddlScript = new StringBuilder();
+        for (TableData tableData : data) {
+            ArrayList<String> statements = DataStatementBuilder.dataAsStatement(tableData);
+            if (statements != null) {
+                for (String statement : statements) {
+                    ddlScript.append(statement).append("\n");
+                }
+            }
+
+        }
+        return ddlScript.toString();
+    }
 }

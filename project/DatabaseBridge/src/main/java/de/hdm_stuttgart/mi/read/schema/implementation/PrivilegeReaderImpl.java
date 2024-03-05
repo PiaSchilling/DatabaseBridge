@@ -27,7 +27,7 @@ public class PrivilegeReaderImpl implements PrivilegeReader {
     @Override
     public ArrayList<Privilege> readTablePrivileges(String schemaName) {
         ArrayList<Privilege> tablePrivileges = new ArrayList<>();
-        try (ResultSet privilegesResult = metaData.getTablePrivileges(null, schemaName, null)) {
+        try (ResultSet privilegesResult = metaData.getTablePrivileges(schemaName, schemaName, null)) {
             while (privilegesResult.next()) {
                 final String tableName = privilegesResult.getString("TABLE_NAME");
                 final String grantor = privilegesResult.getString("GRANTOR");

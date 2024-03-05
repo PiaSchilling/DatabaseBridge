@@ -43,4 +43,9 @@ public class SourceConsts {
      * String contains names of system users which should not be transferred
      */
     final public static String systemUserNames = propLoader.getConstant("systemUserNames");
+    final public static String viewRegex = propLoader.getConstant("viewRegex");
+
+    final public static String viewReplacement = propLoader.getConstant("viewReplacement");
+
+
 }
