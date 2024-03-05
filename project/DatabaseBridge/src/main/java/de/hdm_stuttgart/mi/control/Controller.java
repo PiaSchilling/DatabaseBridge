@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
+import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
 import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
 import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import de.hdm_stuttgart.mi.di.ConnectModule;
@@ -58,17 +61,28 @@ public class Controller {
         final DataReader dataReader = injector.getInstance(DataReader.class);
         final DataWriter dataWriter = injector.getInstance(DataWriter.class);
 
+        System.out.println("Reading source schema...");
         final Schema schema = schemaReader.readSchema(sourceConnectionDetails.getSchema());
-        System.out.println("Schema " + sourceConnectionDetails.getSchema() + " was successfully read");
+        System.out.println("Reading source schema finished. Writing tables and users to destination DB...");
         schemaWriter.writeTablesAndUsersToDatabase(schema);
-        System.out.println("Tables and users were successfully transferred");
+        System.out.println("Writing tables and users to destination DB finished. Reading data from source DB...");
         final ArrayList<TableData> data = dataReader.readData(schema);
-        System.out.println("Data was successfully read");
+        System.out.println("Reading data from source DB finished. Writing data to destination DB...");
         dataWriter.writeData(data);
-        System.out.println("Data was successfully transferred");
+        System.out.println("Writing data to destination DB finished. Wrting relations and views to destination DB...");
         schemaWriter.writeRelationsAndViewsToDatabase(schema);
-        System.out.println("Relations and views were successfully created");
-        System.out.println("Application finished successfully");
+        System.out.println("Wrting relations and views to destination DB finished.");
+        System.out.println("Transferring finished. Closing connections...");
+
+
+        final ConnectionHandler sourceConnectionHandler = injector
+                .getInstance(Key.get(ConnectionHandler.class, Names.named("sourceConnection")));
+        final ConnectionHandler destinationConnectionHandler = injector
+                .getInstance(Key.get(ConnectionHandler.class, Names.named("destinationConnection")));
+        sourceConnectionHandler.closeConnection();
+        destinationConnectionHandler.closeConnection();
+
+        System.out.println("Connections closed. Application finished.");
     }
 
     /**
