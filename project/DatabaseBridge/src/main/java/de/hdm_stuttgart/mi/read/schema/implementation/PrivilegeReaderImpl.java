@@ -5,6 +5,7 @@ import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.read.schema.api.PrivilegeReader;
 import de.hdm_stuttgart.mi.read.schema.model.AccessType;
 import de.hdm_stuttgart.mi.read.schema.model.Privilege;
+import de.hdm_stuttgart.mi.util.consts.SourceConsts;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
