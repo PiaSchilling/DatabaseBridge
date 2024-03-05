@@ -59,11 +59,16 @@ public class Controller {
         final DataWriter dataWriter = injector.getInstance(DataWriter.class);
 
         final Schema schema = schemaReader.readSchema(sourceConnectionDetails.getSchema());
+        System.out.println("Schema " + sourceConnectionDetails.getSchema() + " was successfully read");
         schemaWriter.writeTablesAndUsersToDatabase(schema);
+        System.out.println("Tables and users were successfully transferred");
         final ArrayList<TableData> data = dataReader.readData(schema);
+        System.out.println("Data was successfully read");
         dataWriter.writeData(data);
+        System.out.println("Data was successfully transferred");
         schemaWriter.writeRelationsAndViewsToDatabase(schema);
-        System.out.println("Finished");
+        System.out.println("Relations and views were successfully created");
+        System.out.println("Application finished successfully");
     }
 
     /**
