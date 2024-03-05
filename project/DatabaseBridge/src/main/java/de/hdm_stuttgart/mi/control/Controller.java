@@ -20,6 +20,7 @@ import de.hdm_stuttgart.mi.util.consts.DestinationDbSysConstsLoader;
 import de.hdm_stuttgart.mi.util.consts.SourceDbSysConstsLoader;
 import de.hdm_stuttgart.mi.write.data.api.DataWriter;
 import de.hdm_stuttgart.mi.write.schema.api.SchemaWriter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +46,7 @@ public class Controller {
         final ConnectionDetails destinationConnectionDetails = buildConnectionDetails(configFilePath, "destination");
 
         if (sourceConnectionDetails == null || destinationConnectionDetails == null) {
+            System.out.println("Exiting application due to empty connection configurations.");
             return;
         }
 
@@ -122,17 +124,34 @@ public class Controller {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(new File(configFilePath));
+
+            String databaseSystem = rootNode.get(connectionType + "Database").get("databaseSystem").asText();
+            String databaseDriverName = rootNode.get(connectionType + "Database").get("databaseDriverName").asText();
+            String databaseDriverJar = rootNode.get(connectionType + "Database").get("databaseDriverJar").asText();
+            String hostAddress = rootNode.get(connectionType + "Database").get("hostAddress").asText();
+            int port = rootNode.get(connectionType + "Database").get("port").asInt();
+            String database = rootNode.get(connectionType + "Database").get("database").asText();
+            String username = rootNode.get(connectionType + "Database").get("username").asText();
+            String password = rootNode.get(connectionType + "Database").get("password").asText();
+
+            boolean anyEmptyOrNull = StringUtils.isAnyEmpty(databaseSystem, databaseDriverName, databaseDriverJar,
+                    hostAddress, database, username, password);
+
+            if (anyEmptyOrNull) {
+                System.out.println("Please check the config file again, one of the parameters is empty.");
+                return null;
+            }
+
             return new ConnectionDetails(
-                    DatabaseSystem.valueOf(rootNode.get(connectionType + "Database").get("databaseSystem").asText()),
-                    rootNode.get(connectionType + "Database").get("databaseDriverName").asText(),
-                    rootNode.get(connectionType + "Database").get("databaseDriverJar").asText(),
-                    rootNode.get(connectionType + "Database").get("hostAddress").asText(),
-                    rootNode.get(connectionType + "Database").get("port").asInt(),
-                    rootNode.get(connectionType + "Database").get("database").asText(),
-                    rootNode.get(connectionType + "Database").get("username").asText(),
-                    rootNode.get(connectionType + "Database").get("password").asText()
+                    DatabaseSystem.valueOf(databaseSystem),
+                    databaseDriverName,
+                    databaseDriverJar,
+                    hostAddress,
+                    port,
+                    database,
+                    username,
+                    password
             );
-            // TODO check if any values are empty that may not be empty
         } catch (IOException e) {
             log.log(Level.SEVERE, "Not able to read json-tree from config file " + configFilePath + ":" + e.getMessage());
         }

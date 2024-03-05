@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.read.schema.api.PrivilegeReader;
 import de.hdm_stuttgart.mi.read.schema.model.AccessType;
-import de.hdm_stuttgart.mi.read.schema.model.ColumnPrivilege;
 import de.hdm_stuttgart.mi.read.schema.model.Privilege;
 import de.hdm_stuttgart.mi.util.consts.SourceConsts;
 
@@ -49,34 +48,5 @@ public class PrivilegeReaderImpl implements PrivilegeReader {
             log.log(Level.SEVERE, "SQLException while reading tablePrivileges: " + sqlException.getMessage());
         }
         return tablePrivileges;
-    }
-
-    @Override
-    public ArrayList<ColumnPrivilege> readColumnPrivileges(String schemaName) {
-        // TODO does not work for mysql and mariaDB
-        ArrayList<ColumnPrivilege> columnPrivileges = new ArrayList<>();
-        try (ResultSet privilegesResult = metaData.getColumnPrivileges(null, schemaName, "employees", null)) {
-            while (privilegesResult.next()) {
-                final String tableName = privilegesResult.getString("TABLE_NAME");
-                final String columnName = privilegesResult.getString("COLUMN_NAME");
-                final String grantor = privilegesResult.getString("GRANTOR");
-                final String grantee = privilegesResult.getString("GRANTEE");
-                final String accessType = privilegesResult.getString("PRIVILEGE");
-
-                // Do not add privileges for system users like mysql.sys, postgres, ...
-                if (!SourceConsts.systemUserNames.contains(grantee)) {
-                    columnPrivileges.add(new ColumnPrivilege(
-                            tableName,
-                            grantor,
-                            grantee,
-                            AccessType.fromString(accessType),
-                            columnName));
-                }
-
-            }
-        } catch (SQLException sqlException) {
-            log.log(Level.SEVERE, "SQLException while reading columnPrivileges: " + sqlException.getMessage());
-        }
-        return columnPrivileges;
     }
 }
