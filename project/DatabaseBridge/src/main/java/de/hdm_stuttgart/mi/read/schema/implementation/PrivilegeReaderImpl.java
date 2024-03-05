@@ -36,7 +36,8 @@ public class PrivilegeReaderImpl implements PrivilegeReader {
                 final String accessType = privilegesResult.getString("PRIVILEGE");
 
                 // Do not add privileges for system users like mysql.sys, postgres, ...
-                if (!SourceConsts.systemUserNames.contains(grantee)) {
+                // Explicitly grant privileges to current logged-in user also if it's named like a system user
+                if (!SourceConsts.systemUserNames.contains(grantee) || metaData.getUserName().equals(grantee)) {
                     tablePrivileges.add(new Privilege(
                             tableName,
                             grantor,
@@ -61,7 +62,7 @@ public class PrivilegeReaderImpl implements PrivilegeReader {
                 final String grantor = privilegesResult.getString("GRANTOR");
                 final String grantee = privilegesResult.getString("GRANTEE");
                 final String accessType = privilegesResult.getString("PRIVILEGE");
-                
+
                 // Do not add privileges for system users like mysql.sys, postgres, ...
                 if (!SourceConsts.systemUserNames.contains(grantee)) {
                     columnPrivileges.add(new ColumnPrivilege(

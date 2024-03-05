@@ -5,6 +5,7 @@ import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
 import de.hdm_stuttgart.mi.read.schema.api.UsersReader;
 import de.hdm_stuttgart.mi.read.schema.model.User;
+import de.hdm_stuttgart.mi.util.consts.DestinationConsts;
 import de.hdm_stuttgart.mi.util.consts.SourceConsts;
 
 import java.sql.ResultSet;
@@ -27,15 +28,22 @@ public class UsersReaderImpl implements UsersReader {
     @Override
     public ArrayList<User> readUsers() {
         final ArrayList<User> users = new ArrayList<>();
+        final User currentLoggedInUser = new User(sourceConnection.getConnectionDetails().getUsername(),
+                sourceConnection.getConnectionDetails().getPassword(), true);
         try (Statement statement = sourceConnection.getConnection().createStatement()) {
             final ResultSet usersResult = statement.executeQuery(buildSelectUserTableQuery());
             while (usersResult.next()) {
                 final String userName = usersResult.getString(SourceConsts.userNameColName);
-                // do not add system users like mysql.sys, postgres, ...
-                if (!SourceConsts.systemUserNames.contains(userName)) {
-                    users.add(new User(userName));
+                if (userName.equals(currentLoggedInUser.username())) {
+                    // add current logged-in user with password since password is available for this user
+                    users.add(currentLoggedInUser);
+                } else if (!SourceConsts.systemUserNames.contains(userName)) {
+                    // do not add system users like mysql.sys, postgres, ...
+                    // add all other users with default password since passwords are not available
+                    users.add(new User(userName, DestinationConsts.tempPassword, false));
                 }
             }
+
         } catch (SQLException e) {
             log.log(Level.SEVERE, "SQLException while reading users: " + e.getMessage());
             return users;

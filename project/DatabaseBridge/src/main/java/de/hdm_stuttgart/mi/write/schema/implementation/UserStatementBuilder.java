@@ -14,7 +14,7 @@ public class UserStatementBuilder {
      * @return a sql statement string which can be used to create the provided user
      */
     public static String createUserStatement(final User user) {
-        return DestinationConsts.createUserStmt(user.username(), DestinationConsts.tempPassword) + "\n";
+        return DestinationConsts.createUserStmt(user.username(), user.password()) + "\n";
     }
 
     /**
