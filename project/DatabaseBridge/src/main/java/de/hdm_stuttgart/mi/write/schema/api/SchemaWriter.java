@@ -28,7 +28,7 @@ public interface SchemaWriter {
      *
      * @param schema the schema of which the tables should be written to the DB
      */
-    void writeTablesToDatabase(Schema schema);
+    void writeTablesAndUsersToDatabase(Schema schema);
 
     /**
      * Only write the relations and views of the schema to the database which is defined in the

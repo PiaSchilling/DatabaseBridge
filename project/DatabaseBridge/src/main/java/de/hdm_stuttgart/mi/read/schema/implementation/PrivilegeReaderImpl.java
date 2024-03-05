@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.hdm_stuttgart.mi.read.schema.api.PrivilegeReader;
 import de.hdm_stuttgart.mi.read.schema.model.AccessType;
-import de.hdm_stuttgart.mi.read.schema.model.ColumnPrivilege;
 import de.hdm_stuttgart.mi.read.schema.model.Privilege;
 
 import java.sql.DatabaseMetaData;
@@ -34,40 +33,19 @@ public class PrivilegeReaderImpl implements PrivilegeReader {
                 final String grantee = privilegesResult.getString("GRANTEE");
                 final String accessType = privilegesResult.getString("PRIVILEGE");
 
-                tablePrivileges.add(new Privilege(
-                        tableName,
-                        grantor,
-                        grantee,
-                        AccessType.fromString(accessType)));
+                // Do not add privileges for system users like mysql.sys, postgres, ...
+                // Explicitly grant privileges to current logged-in user also if it's named like a system user
+                if (!SourceConsts.systemUserNames.contains(grantee) || metaData.getUserName().equals(grantee)) {
+                    tablePrivileges.add(new Privilege(
+                            tableName,
+                            grantor,
+                            grantee,
+                            AccessType.fromString(accessType)));
+                }
             }
         } catch (SQLException sqlException) {
             log.log(Level.SEVERE, "SQLException while reading tablePrivileges: " + sqlException.getMessage());
         }
         return tablePrivileges;
-    }
-
-    @Override
-    public ArrayList<ColumnPrivilege> readColumnPrivileges(String schemaName) {
-        // TODO does not work for mysql and mariaDB
-        ArrayList<ColumnPrivilege> columnPrivileges = new ArrayList<>();
-        try (ResultSet privilegesResult = metaData.getColumnPrivileges(schemaName, schemaName, "employees", null)) {
-            while (privilegesResult.next()) {
-                final String tableName = privilegesResult.getString("TABLE_NAME");
-                final String columnName = privilegesResult.getString("COLUMN_NAME");
-                final String grantor = privilegesResult.getString("GRANTOR");
-                final String grantee = privilegesResult.getString("GRANTEE");
-                final String accessType = privilegesResult.getString("PRIVILEGE");
-
-                columnPrivileges.add(new ColumnPrivilege(
-                        tableName,
-                        grantor,
-                        grantee,
-                        AccessType.fromString(accessType),
-                        columnName));
-            }
-        } catch (SQLException sqlException) {
-            log.log(Level.SEVERE, "SQLException while reading columnPrivileges: " + sqlException.getMessage());
-        }
-        return columnPrivileges;
     }
 }

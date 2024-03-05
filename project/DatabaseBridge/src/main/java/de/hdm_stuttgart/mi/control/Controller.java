@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
+import de.hdm_stuttgart.mi.connect.api.ConnectionHandler;
 import de.hdm_stuttgart.mi.connect.model.ConnectionDetails;
 import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import de.hdm_stuttgart.mi.di.ConnectModule;
@@ -17,6 +20,7 @@ import de.hdm_stuttgart.mi.util.consts.DestinationDbSysConstsLoader;
 import de.hdm_stuttgart.mi.util.consts.SourceDbSysConstsLoader;
 import de.hdm_stuttgart.mi.write.data.api.DataWriter;
 import de.hdm_stuttgart.mi.write.schema.api.SchemaWriter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +42,7 @@ public class Controller {
         final ConnectionDetails destinationConnectionDetails = buildConnectionDetails(configFilePath, "destination");
 
         if (sourceConnectionDetails == null || destinationConnectionDetails == null) {
+            System.out.println("Exiting application due to empty connection configurations.");
             return;
         }
 
@@ -54,11 +59,18 @@ public class Controller {
         final DataReader dataReader = injector.getInstance(DataReader.class);
         final DataWriter dataWriter = injector.getInstance(DataWriter.class);
 
+        System.out.println("Reading source schema...");
         final Schema schema = schemaReader.readSchema(sourceConnectionDetails.getSchema());
-        schemaWriter.writeTablesToDatabase(schema);
+        System.out.println("Reading source schema finished. Writing tables and users to destination DB...");
+        schemaWriter.writeTablesAndUsersToDatabase(schema);
+        System.out.println("Writing tables and users to destination DB finished. Reading data from source DB...");
         final ArrayList<TableData> data = dataReader.readData(schema);
+        System.out.println("Reading data from source DB finished. Writing data to destination DB...");
         dataWriter.writeData(data);
+        System.out.println("Writing data to destination DB finished. Wrting relations and views to destination DB...");
         schemaWriter.writeRelationsAndViewsToDatabase(schema);
+        System.out.println("Wrting relations and views to destination DB finished.");
+        System.out.println("Transferring finished. Closing connections...");
 
         //Save DDL script to separate file
         if(ddlFilePath != null) {
@@ -73,7 +85,15 @@ public class Controller {
             }
         }
 
-        System.out.println("Finished");
+
+        final ConnectionHandler sourceConnectionHandler = injector
+                .getInstance(Key.get(ConnectionHandler.class, Names.named("sourceConnection")));
+        final ConnectionHandler destinationConnectionHandler = injector
+                .getInstance(Key.get(ConnectionHandler.class, Names.named("destinationConnection")));
+        sourceConnectionHandler.closeConnection();
+        destinationConnectionHandler.closeConnection();
+
+        System.out.println("Connections closed. Application finished.");
     }
 
     /**
@@ -113,17 +133,34 @@ public class Controller {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(new File(configFilePath));
+
+            String databaseSystem = rootNode.get(connectionType + "Database").get("databaseSystem").asText();
+            String databaseDriverName = rootNode.get(connectionType + "Database").get("databaseDriverName").asText();
+            String databaseDriverJar = rootNode.get(connectionType + "Database").get("databaseDriverJar").asText();
+            String hostAddress = rootNode.get(connectionType + "Database").get("hostAddress").asText();
+            int port = rootNode.get(connectionType + "Database").get("port").asInt();
+            String database = rootNode.get(connectionType + "Database").get("database").asText();
+            String username = rootNode.get(connectionType + "Database").get("username").asText();
+            String password = rootNode.get(connectionType + "Database").get("password").asText();
+
+            boolean anyEmptyOrNull = StringUtils.isAnyEmpty(databaseSystem, databaseDriverName, databaseDriverJar,
+                    hostAddress, database, username, password);
+
+            if (anyEmptyOrNull) {
+                System.out.println("Please check the config file again, one of the parameters is empty.");
+                return null;
+            }
+
             return new ConnectionDetails(
-                    DatabaseSystem.valueOf(rootNode.get(connectionType + "Database").get("databaseSystem").asText()),
-                    rootNode.get(connectionType + "Database").get("databaseDriverName").asText(),
-                    rootNode.get(connectionType + "Database").get("databaseDriverJar").asText(),
-                    rootNode.get(connectionType + "Database").get("hostAddress").asText(),
-                    rootNode.get(connectionType + "Database").get("port").asInt(),
-                    rootNode.get(connectionType + "Database").get("database").asText(),
-                    rootNode.get(connectionType + "Database").get("username").asText(),
-                    rootNode.get(connectionType + "Database").get("password").asText()
+                    DatabaseSystem.valueOf(databaseSystem),
+                    databaseDriverName,
+                    databaseDriverJar,
+                    hostAddress,
+                    port,
+                    database,
+                    username,
+                    password
             );
-            // TODO check if any values are empty that may not be empty
         } catch (IOException e) {
             log.log(Level.SEVERE, "Not able to read json-tree from config file " + configFilePath + ":" + e.getMessage());
         }

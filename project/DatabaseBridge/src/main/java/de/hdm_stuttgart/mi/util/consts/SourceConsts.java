@@ -27,6 +27,7 @@ public class SourceConsts {
      * The name of the table which holds all users
      */
     final public static String userTableName = propLoader.getConstant("userTableName");
+
     /**
      * The name of the column in the users table that contains usernames
      */
@@ -38,6 +39,10 @@ public class SourceConsts {
      */
     final public static int varcharMaxLength = Integer.parseInt(propLoader.getConstant("varcharMaxLength"));
 
+    /**
+     * String contains names of system users which should not be transferred
+     */
+    final public static String systemUserNames = propLoader.getConstant("systemUserNames");
     final public static String viewRegex = propLoader.getConstant("viewRegex");
 
     final public static String viewReplacement = propLoader.getConstant("viewReplacement");

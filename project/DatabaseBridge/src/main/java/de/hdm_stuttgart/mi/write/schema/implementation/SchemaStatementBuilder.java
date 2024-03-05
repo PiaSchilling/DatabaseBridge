@@ -8,10 +8,22 @@ import java.util.stream.Collectors;
 
 public class SchemaStatementBuilder {
 
+    /**
+     * Get the DROP SCHEMA statement for the provided schema
+     *
+     * @param schemaName the name of the schema for which the sql statement should be built
+     * @return a sql statement string which can be used to drop the provided schema
+     */
     public static String dropSchemaStatement(final String schemaName) {
-        return DestinationConsts.dropSchemaStmt(schemaName);
+        return DestinationConsts.dropSchemaStmt(schemaName) + "\n";
     }
 
+    /**
+     * Get the CREATE SCHEMA statement for the provided schema
+     *
+     * @param schemaName the name of the schema for which the sql statement should be built
+     * @return a sql statement string which can be used to create the provided schema
+     */
     public static String createSchemaStatement(final String schemaName) {
         return "CREATE SCHEMA " + schemaName + ";";
     }
@@ -64,12 +76,13 @@ public class SchemaStatementBuilder {
     }
 
     /**
-     * Get all ALTER TABLE ADD CONSTRAINT statement for the provided tables fk relations
+     * Get all ALTER TABLE ADD CONSTRAINT statements for the provided tables fk relations
      *
-     * @param table      the table for which the sql statement should be built
+     * @param table      the table for which the sql statements should be built
      * @param schemaName the name of the schema the provided table belongs to
      * @return a SQL statement string which can be used to add all fk relations via ALTER TABLE
-     * @example {@code ALTER TABLE titles ADD CONSTRAINT FOREIGN KEY(emp_no) REFERENCES employees(emp_no) ON UPDATE RESTRICT ON DELETE CASCADE;}
+     * @example {@code ALTER TABLE ecommerce.order_items ADD CONSTRAINT order_items_order_id_fkey FOREIGN KEY(order_id) REFERENCES ecommerce.orders(order_id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+     * ALTER TABLE ecommerce.order_items ADD CONSTRAINT order_items_product_id_fkey FOREIGN KEY(product_id) REFERENCES ecommerce.products(product_id) ON UPDATE NO ACTION ON DELETE NO ACTION;}
      */
     public static String alterTableAddFkRelationStatement(final Table table, final String schemaName) {
         if (!table.isChildTable()) {
@@ -79,9 +92,23 @@ public class SchemaStatementBuilder {
         return table.importedFkRelations()
                 .stream()
                 .map(relation -> fkRelationAsStatement(relation, schemaName))
-                .map(e -> "ALTER TABLE " + schemaName + "." + table.name() + " ADD CONSTRAINT " + e + ";")
+                .map(e -> "ALTER TABLE " + schemaName + "." + table.name() + " ADD CONSTRAINT " + e + ";\n")
                 .collect(Collectors.joining());
     }
+
+    /**
+     * Get single ALTER TABLE ADD CONSTRAINT statements for the provided fk relation
+     *
+     * @param table      the table for which the sql statement should be built
+     * @param relation   the relation for which the sql statement should be built
+     * @param schemaName the name of the schema the provided table belongs to
+     * @return a SQL statement string which can be used to add all fk relations via ALTER TABLE
+     * @example {@code ALTER TABLE titles ADD CONSTRAINT FOREIGN KEY(emp_no) REFERENCES employees(emp_no) ON UPDATE RESTRICT ON DELETE CASCADE;}
+     */
+    public static String singleAlterTableAddFkRelationStatement(final Table table, final FkRelation relation, final String schemaName) {
+        return "ALTER TABLE " + schemaName + "." + table.name() + " ADD CONSTRAINT " + fkRelationAsStatement(relation, schemaName) + ";";
+    }
+
 
     /**
      * Get a column as statement representation which can be used to build the columns in a CREATE TABLE statement
@@ -111,8 +138,9 @@ public class SchemaStatementBuilder {
         if (constraintString.contains("SERIAL")) {
             return "\n" + column.name() + " " + constraintString.replaceAll("DEFAULT.*", "") + ",";
         }
-        return column.dataType().hasLength ? "\n" + column.name() + " " + dbSpecificType + "(" + column.maxLength() + ")" + " " + constraintString + "," :
-                "\n" + column.name() + " " + dbSpecificType + " " + constraintString + ",";
+        return column.dataType().hasLength && !dbSpecificType.equals("TEXT")
+                ? "\n" + column.name() + " " + dbSpecificType + "(" + column.maxLength() + ")" + " " + constraintString + ","
+                : "\n" + column.name() + " " + dbSpecificType + " " + constraintString + ",";
     }
 
     /**
