@@ -47,4 +47,14 @@ public class DestinationConsts {
 
     final public static String accessType_TRUNCATE = propLoader.getConstant("accessType_TRUNCATE");
 
+    /**
+     * SQL syntax to use a specific schema
+     *
+     * @param arguments params to fill the placeholders, 1 argument required: schemaName
+     * @return the valid SQL statement containing the arguments
+     */
+    public static String useSchema(Object... arguments) {
+        return propLoader.getPlaceholderConst("useSchemaStmt", arguments);
+    }
+
 }
