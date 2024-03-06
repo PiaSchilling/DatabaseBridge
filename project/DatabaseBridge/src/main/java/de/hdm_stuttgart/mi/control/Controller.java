@@ -144,9 +144,9 @@ public class Controller {
             String password = rootNode.get(connectionType + "Database").get("password").asText();
 
             boolean anyEmptyOrNull = StringUtils.isAnyEmpty(databaseSystem, databaseDriverName, databaseDriverJar,
-                    hostAddress, database, username, password);
+                    hostAddress, username, password);
 
-            if (anyEmptyOrNull) {
+            if (anyEmptyOrNull || (connectionType.equals("source") && database.isEmpty())) {
                 System.out.println("Please check the config file again, one of the parameters is empty.");
                 return null;
             }
