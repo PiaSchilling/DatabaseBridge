@@ -30,6 +30,7 @@ public class SchemaWriterImpl implements SchemaWriter {
                 getDropSchemaStatement(schemaName) + "\n" +
                 getDropTablesStatement(schemaName, tables) + "\n" +
                 getCreateSchemaStatement(schemaName) + "\n" +
+                getUseSchema(schemaName) + "\n" +
                 getCreateTablesStatement(schemaName, tables) + "\n" +
                 getCreateRelationsStatement(schemaName, tables) + "\n" +
                 getCreateViewsStatement(schemaName, schema.views()) + "\n" +
@@ -52,6 +53,7 @@ public class SchemaWriterImpl implements SchemaWriter {
         executeDropSchema(schemaName);
         executeDropTables(schemaName, tables);
         executeCreateSchema(schemaName);
+        executeUseSchema(schemaName);
         executeCreateTables(schemaName, tables);
         executeGrantPrivileges(schemaName, privileges);
     }
@@ -79,6 +81,14 @@ public class SchemaWriterImpl implements SchemaWriter {
 
     public void executeCreateSchema(String schemaName) {
         StatementExecutor.executeWrite(destinationConnection, getCreateSchemaStatement(schemaName));
+    }
+
+    private String getUseSchema(String schemaName) {
+        return SchemaStatementBuilder.useSchemaStatement(schemaName);
+    }
+
+    public void executeUseSchema(String schemaName) {
+        StatementExecutor.executeWrite(destinationConnection, getUseSchema(schemaName));
     }
 
     // - - - - - - Users - - - - -

@@ -29,6 +29,14 @@ public class SchemaStatementBuilder {
     }
 
     /**
+     * Get the USE SCHEMA statement for the provided schema
+     *
+     * @param schemaName the name of the schema for which the sql statement should be built
+     * @return  a sql statement string which can be used to use the current schema
+     */
+    public static String useSchemaStatement(final String schemaName) { return DestinationConsts.useSchema(schemaName);}
+
+    /**
      * Get the CREATE TABLE statement for the provided {@code table}
      *
      * @param table      the table for which the sql statement should be built
