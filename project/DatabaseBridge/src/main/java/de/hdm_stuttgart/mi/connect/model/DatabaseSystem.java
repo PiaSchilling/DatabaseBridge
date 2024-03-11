@@ -8,7 +8,6 @@ public enum DatabaseSystem {
             "postgres_types.properties"),
     MYSQL("mySQL_consts.properties",
             "mySQL_types.properties"),
-    // todo views sind broken
     MARIADB("mariaDB_consts.properties",
             "mariaDB_types.properties");
 

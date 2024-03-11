@@ -22,8 +22,7 @@ import de.hdm_stuttgart.mi.write.data.api.DataWriter;
 import de.hdm_stuttgart.mi.write.schema.api.SchemaWriter;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -103,18 +102,21 @@ public class Controller {
      * @param configFileLocation the path to location the user wants the template file to be placed
      */
     public void onNewConfigFile(String configFileLocation) {
-        Path sourcePath = Path.of("src/main/resources/empty.json");
-        Path destinationPath = Path.of(configFileLocation);
-
-        try {
-            // Copy the file using Files.copy method
-            Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-
-            System.out.println("JSON file created successfully at: " + destinationPath);
-        } catch (NoSuchFileException e) {
-            System.out.println("The file couldn't be created at the provided path, please provide a valid path!");
-        } catch (IOException e) {
-            log.log(Level.SEVERE, "Not able to read config file " + configFileLocation + ":" + e.getMessage());
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("empty.json")) {
+            //Write to new file
+            try (FileOutputStream fos = new FileOutputStream(configFileLocation)) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, bytesRead);
+                }
+            } catch (IOException e) {
+                System.out.println("The file couldn't be created at the provided path, please provide a valid path!");
+                log.log(Level.SEVERE, "Not able to create new file" + configFileLocation + ":");
+            }
+        }catch (IOException e) {
+            log.log(Level.SEVERE, "Not able to find reference file: " + e.getMessage());
+            System.out.println("Not able to find reference file");
         }
     }
 
