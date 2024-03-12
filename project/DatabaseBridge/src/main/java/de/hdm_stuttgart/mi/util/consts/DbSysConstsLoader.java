@@ -3,10 +3,9 @@ package de.hdm_stuttgart.mi.util.consts;
 import de.hdm_stuttgart.mi.connect.model.DatabaseSystem;
 import de.hdm_stuttgart.mi.util.SQLType;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,13 +33,15 @@ public abstract class DbSysConstsLoader {
      */
     public void init(DatabaseSystem databaseSystem) {
         try {
-            String rootPath = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
-            String constsPath = rootPath + databaseSystem.propertyFileName;
-            String typesPath = rootPath + databaseSystem.typesFileName;
+            InputStream constsStream = getClass().getClassLoader().getResourceAsStream(databaseSystem.propertyFileName);
+            InputStream typesStream = getClass().getClassLoader().getResourceAsStream(databaseSystem.typesFileName);
+
             constsProps = new Properties();
             typesProps = new Properties();
-            constsProps.load(new FileInputStream(constsPath));
-            typesProps.load(new FileInputStream(typesPath));
+
+            constsProps.load(constsStream);
+            typesProps.load(typesStream);
+
             isInitialized = true;
         } catch (NullPointerException nE) {
             log.log(Level.SEVERE, "Not able to get Path to resource-directory: " + nE.getMessage());
