@@ -79,6 +79,7 @@ fabric.properties
 
 # Package Files #
 *.jar
+!DatabaseBridge.jar
 *.war
 *.nar
 *.ear
