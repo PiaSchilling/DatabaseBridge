@@ -38,7 +38,7 @@ Run the [here](DatabaseBridge.jar) provided `DatabaseBridge.jar` with the accord
 Example usage:
 
 ```
-java -jar DatabaseBridge.jar databasebridge help
+java -jar DatabaseBridge.jar help
 ```
 
 ### CLI
