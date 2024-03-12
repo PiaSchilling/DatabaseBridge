@@ -20,7 +20,6 @@ import de.hdm_stuttgart.mi.util.consts.DestinationDbSysConstsLoader;
 import de.hdm_stuttgart.mi.util.consts.SourceDbSysConstsLoader;
 import de.hdm_stuttgart.mi.write.data.api.DataWriter;
 import de.hdm_stuttgart.mi.write.schema.api.SchemaWriter;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.nio.file.*;
@@ -72,11 +71,11 @@ public class Controller {
         System.out.println("Transferring finished. Closing connections...");
 
         //Save DDL script to separate file
-        if(ddlFilePath != null) {
+        if (ddlFilePath != null) {
             StringBuilder ddlScript = new StringBuilder();
             ddlScript.append(schemaWriter.getDDLScript(schema));
             ddlScript.append(dataWriter.getDDLScript(data));
-            try{
+            try {
                 Files.writeString(Path.of(ddlFilePath), ddlScript, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                 System.out.println("DDL script saved in file: " + ddlFilePath);
             } catch (IOException e) {
@@ -111,10 +110,11 @@ public class Controller {
                     fos.write(buffer, 0, bytesRead);
                 }
             } catch (IOException e) {
+                System.out.println(e.getMessage());
                 System.out.println("The file couldn't be created at the provided path, please provide a valid path!");
                 log.log(Level.SEVERE, "Not able to create new file" + configFileLocation + ":");
             }
-        }catch (IOException e) {
+        } catch (IOException e) {
             log.log(Level.SEVERE, "Not able to find reference file: " + e.getMessage());
             System.out.println("Not able to find reference file");
         }
@@ -145,8 +145,8 @@ public class Controller {
             String username = rootNode.get(connectionType + "Database").get("username").asText();
             String password = rootNode.get(connectionType + "Database").get("password").asText();
 
-            boolean anyEmptyOrNull = StringUtils.isAnyEmpty(databaseSystem, databaseDriverName, databaseDriverJar,
-                    hostAddress, username, password);
+            boolean anyEmptyOrNull = databaseSystem.isBlank() || databaseDriverName.isBlank() || databaseDriverJar.isBlank() ||
+                    hostAddress.isBlank() || username.isBlank() || password.isBlank();
 
             if (anyEmptyOrNull || (connectionType.equals("source") && database.isEmpty())) {
                 System.out.println("Please check the config file again, one of the parameters is empty.");
