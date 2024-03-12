@@ -1,0 +1,16 @@
+/* MySQL Constraint Test */
+SHOW CREATE TABLE movie;
+
+SELECT *
+FROM information_schema.TABLE_CONSTRAINTS
+WHERE TABLE_NAME = 'movie';
+
+select COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_COLUMN_NAME, REFERENCED_TABLE_NAME
+from information_schema.KEY_COLUMN_USAGE
+where TABLE_NAME = 'movie';
+
+/*See table constraints    */
+DESCRIBE movies.movie;
+
+/*Get all table names in schema movies */
+SHOW TABLES from movies;

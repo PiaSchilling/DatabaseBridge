@@ -1,0 +1,22 @@
+{
+    "sourceDatabase": {
+        "databaseSystem": "MYSQL",
+        "databaseDriverName": "com.mysql.cj.jdbc.Driver",
+        "databaseDriverJar": "src/main/resources/jar/mysql-connector-j-8.0.33.jar",
+        "hostAddress": "localhost",
+        "port" : 3306,
+        "database": "employees",
+        "username": "root",
+        "password": "example"
+    },
+    "destinationDatabase": {
+        "databaseSystem": "POSTGRES",
+        "databaseDriverName": "org.postgresql.Driver",
+        "databaseDriverJar": "src/main/resources/jar/postgresql-42.7.1.jar",
+        "hostAddress": "localhost",
+        "port" : "5432",
+        "database": "test",
+        "username": "postgres",
+        "password": "example"
+    }
+}
