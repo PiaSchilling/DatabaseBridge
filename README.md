@@ -1,5 +1,9 @@
 # DatabaseBridge
 
+[TOC]
+
+
+
 ## Description
 DatabaseBridge is an application designed to facilitate the smooth migration of an existing database to another database system. For instance, it allows the transfer of a Postgresql database to a Mysql database, ensuring all tables and relationships are migrated to the new database system. Moreover, it aims to retain as many integrity constraints as possible. The application features a command-line interface and is compatible with various database systems.
 
@@ -23,7 +27,19 @@ DatabaseBridge is an application designed to facilitate the smooth migration of 
   - MariaDB: `mariadb.sys,healthcheck,root,'mariadb.sys'@'localhost',mariadb.sys'@'localhost`
   - MySQL: `mysql.session,mysql.sys,mysql.infoschema,healthcheck,root,mysql.session@localhost,mysql.sys@localhost,mysql.infoschema@localhost`
 
+## Known issues
+
+- Views referencing other views might cause problems
+
 ## Usage
+
+Run the [here](DatabaseBridge.jar) provided `DatabaseBridge.jar` with the according CLI command. (see section below for information about the CLI)
+
+Example usage:
+
+```
+java -jar DatabaseBridge.jar databasebridge help
+```
 
 ### CLI
 
